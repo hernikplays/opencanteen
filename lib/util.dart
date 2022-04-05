@@ -1,5 +1,6 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:opencanteen/okna/burza.dart';
 
 import 'okna/home.dart';
 import 'okna/jidelnicek.dart';
@@ -18,6 +19,7 @@ Drawer drawerGenerator(
             ),
             ListTile(
               selected: true,
+              title: const Text("Domů"),
               leading: const Icon(Icons.home),
               onTap: () => Navigator.pop(context),
             ),
@@ -29,6 +31,16 @@ Drawer drawerGenerator(
                 MaterialPageRoute(
                   builder: (context) =>
                       JidelnicekPage(canteen: canteen, user: user),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.store),
+              title: const Text('Burza'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BurzaPage(canteen: canteen, user: user),
                 ),
               ),
             ),
@@ -46,6 +58,7 @@ Drawer drawerGenerator(
               child: Text("OpenCanteen"),
             ),
             ListTile(
+              title: const Text("Domů"),
               leading: const Icon(Icons.home),
               onTap: () => Navigator.push(
                   context,
@@ -58,10 +71,55 @@ Drawer drawerGenerator(
               title: const Text('Jídelníček'),
               onTap: () => Navigator.pop(context),
             ),
+            ListTile(
+              leading: const Icon(Icons.store),
+              title: const Text('Burza'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BurzaPage(canteen: canteen, user: user),
+                ),
+              ),
+            ),
           ],
         ),
       );
       break;
+    case 3:
+      drawer = Drawer(
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              child: Text("OpenCanteen"),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text("Domů"),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (c) => HomePage(canteen: canteen, user: user))),
+            ),
+            ListTile(
+              leading: const Icon(Icons.restaurant),
+              title: const Text('Jídelníček'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      JidelnicekPage(canteen: canteen, user: user),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.store),
+              selected: true,
+              title: const Text('Burza'),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
   }
   return drawer;
 }

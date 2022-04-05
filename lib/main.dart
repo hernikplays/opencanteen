@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/loginmanager.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale("cs")],
       title: 'OpenCanteen',
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -58,6 +62,18 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       if (r != null) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => Dialog(
+                  child: SizedBox(
+                    height: 100,
+                    child: Row(children: const [
+                      CircularProgressIndicator(),
+                      Text("Přihlašuji vás")
+                    ]),
+                  ),
+                ));
         var canteen = Canteen(r["url"]!);
         var l = await canteen.login(r["user"]!, r["pass"]!);
         if (!l) {
@@ -88,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text("Přihlášení"),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width - 50,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -120,13 +136,16 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.url,
                 controller: canteenControl,
               ),
-              Switch(
-                  value: rememberMe,
-                  onChanged: (value) {
-                    setState(() {
-                      rememberMe = value;
-                    });
-                  }),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Switch(
+                    value: rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        rememberMe = value;
+                      });
+                    }),
+                const Text("Zapamatovat si mě")
+              ]),
               TextButton(
                   onPressed: () async {
                     if (canteenControl.text.contains("http://")) {
