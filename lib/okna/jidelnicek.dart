@@ -182,66 +182,73 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
       appBar: AppBar(
         title: const Text('Jídelníček'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Text("Kredit: $kredit Kč"),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      den = den.subtract(const Duration(days: 1));
-                      nactiJidlo();
-                    });
-                  },
-                  icon: const Icon(Icons.arrow_left)),
-              TextButton(
-                  onPressed: () async {
-                    var datePicked = await showDatePicker(
-                        context: context,
-                        initialDate: den,
-                        currentDate: den,
-                        firstDate: DateTime(2019, 1, 1),
-                        lastDate: DateTime(den.year + 1, 12, 31),
-                        locale: const Locale("cs"));
-                    if (datePicked == null) return;
-                    setState(() {
-                      den = datePicked;
-                      nactiJidlo();
-                    });
-                  },
-                  child: Text(
-                      "${den.day}. ${den.month}. ${den.year} - $denTydne")),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      den = den.add(const Duration(days: 1));
-                      nactiJidlo();
-                    });
-                  },
-                  icon: const Icon(Icons.arrow_right)),
-            ]),
-            SingleChildScrollView(
-              child: GestureDetector(
-                child: Column(children: obsah),
-                onHorizontalDragEnd: (details) {
-                  if (details.primaryVelocity?.compareTo(0) == -1) {
-                    setState(() {
-                      den = den.subtract(const Duration(days: 1));
-                      nactiJidlo();
-                    });
-                  } else {
-                    setState(() {
-                      den = den.add(const Duration(days: 1));
-                      nactiJidlo();
-                    });
-                  }
-                },
-              ),
-            )
-          ],
+      body: RefreshIndicator(
+        child: Center(
+          child: SizedBox(
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Text("Kredit: $kredit Kč"),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          den = den.subtract(const Duration(days: 1));
+                          nactiJidlo();
+                        });
+                      },
+                      icon: const Icon(Icons.arrow_left)),
+                  TextButton(
+                      onPressed: () async {
+                        var datePicked = await showDatePicker(
+                            context: context,
+                            initialDate: den,
+                            currentDate: den,
+                            firstDate: DateTime(2019, 1, 1),
+                            lastDate: DateTime(den.year + 1, 12, 31),
+                            locale: const Locale("cs"));
+                        if (datePicked == null) return;
+                        setState(() {
+                          den = datePicked;
+                          nactiJidlo();
+                        });
+                      },
+                      child: Text(
+                          "${den.day}. ${den.month}. ${den.year} - $denTydne")),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          den = den.add(const Duration(days: 1));
+                          nactiJidlo();
+                        });
+                      },
+                      icon: const Icon(Icons.arrow_right)),
+                ]),
+                SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: GestureDetector(
+                    child: Column(children: obsah),
+                    onHorizontalDragEnd: (details) {
+                      if (details.primaryVelocity?.compareTo(0) == -1) {
+                        setState(() {
+                          den = den.subtract(const Duration(days: 1));
+                          nactiJidlo();
+                        });
+                      } else {
+                        setState(() {
+                          den = den.add(const Duration(days: 1));
+                          nactiJidlo();
+                        });
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+            width: MediaQuery.of(context).size.width - 50,
+          ),
         ),
+        onRefresh: nactiJidlo,
       ),
     );
   }

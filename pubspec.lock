@@ -28,7 +28,7 @@ packages:
       name: canteenlib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0-alpha.13"
+    version: "0.1.0-alpha.14"
   characters:
     dependency: transitive
     description:

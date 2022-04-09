@@ -28,6 +28,14 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           kredit = kr.kredit;
           dnes = jd;
+          if (jd.jidla.isEmpty) {
+            obsah = [
+              const Text(
+                "Žádné jídlo pro dnešní den",
+                style: TextStyle(fontSize: 20),
+              )
+            ];
+          }
           for (var j in jd.jidla) {
             if (j.objednano) jidloDnes = j;
             obsah.add(
@@ -99,30 +107,33 @@ class _HomePageState extends State<HomePage> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Center(
             child: SizedBox(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "${widget.user} - $kredit kč",
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Dnes je ${DateTime.now().day}. ${DateTime.now().month}.",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Column(children: obsah),
-                  ),
-                ],
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height / 1.5,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "${widget.user} - $kredit kč",
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Dnes je ${DateTime.now().day}. ${DateTime.now().month}.",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Column(children: obsah),
+                    ),
+                  ],
+                ),
+                width: MediaQuery.of(context).size.width - 50,
               ),
-              width: MediaQuery.of(context).size.width - 50,
             ),
           ),
         ),

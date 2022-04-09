@@ -49,7 +49,7 @@ class _BurzaPageState extends State<BurzaPage> {
                       Text("${b.pocet}x"),
                       TextButton(
                           onPressed: () {
-                            widget.canteen.objednatZBurzy(b).then((_) {
+                            widget.canteen.objednatZBurzy(b).then((a) {
                               nactiBurzu();
                             });
                           },
