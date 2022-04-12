@@ -50,6 +50,39 @@ class _BurzaPageState extends State<BurzaPage> {
                       TextButton(
                           onPressed: () {
                             widget.canteen.objednatZBurzy(b).then((a) {
+                              if (a) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Objednáno"),
+                                    content: const Text(
+                                        "Jídlo bylo úspěšně objednáno."),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("OK"),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Nelze objednat"),
+                                    content: const Text(
+                                        "Jídlo se nepodařilo objednat."),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("OK"),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
                               nactiBurzu();
                             });
                           },

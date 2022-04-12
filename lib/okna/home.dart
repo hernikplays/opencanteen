@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/main.dart';
 import 'package:opencanteen/util.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.user, required this.canteen})
@@ -78,6 +79,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void kliknuti(String value) {
+    switch (value) {
+      case 'Odhlásit se':
+        const storage = FlutterSecureStorage();
+        storage.deleteAll();
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (c) => const LoginPage()));
+        break;
+      case 'Nahlásit chybu':
+        launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
+        break;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -91,14 +106,17 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Domů"),
         actions: [
-          IconButton(
-              onPressed: (() {
-                const storage = FlutterSecureStorage();
-                storage.deleteAll();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (c) => const LoginPage()));
-              }),
-              icon: const Icon(Icons.logout))
+          PopupMenuButton(
+            onSelected: kliknuti,
+            itemBuilder: (BuildContext context) {
+              return {'Nahlásit chybu', 'Odhlásit se'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
         ],
       ),
       body: RefreshIndicator(
