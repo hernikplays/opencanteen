@@ -5,5 +5,6 @@
 - Upgrade knihovny
 - Odhlášení přesunuto do textového menu
 - Odstraněna stránka domů, hlavní stránka je nyní jídelníček
+- Přidána stránka `O Aplikaci`
 # 0.1.0
 - První verze

@@ -1,8 +1,11 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
+import 'about.dart';
 
 class JidelnicekPage extends StatefulWidget {
   const JidelnicekPage({Key? key, required this.canteen, required this.user})
@@ -169,6 +172,24 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     });
   }
 
+  void kliknuti(String value) {
+    switch (value) {
+      case 'Odhlásit se':
+        const storage = FlutterSecureStorage();
+        storage.deleteAll();
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (c) => const LoginPage()));
+        break;
+      case 'Nahlásit chybu':
+        launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
+        break;
+      case 'O Aplikaci':
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const AboutPage()));
+        break;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -181,6 +202,20 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
       drawer: drawerGenerator(context, widget.canteen, widget.user, 1),
       appBar: AppBar(
         title: const Text('Jídelníček'),
+        actions: [
+          PopupMenuButton(
+            onSelected: kliknuti,
+            itemBuilder: (BuildContext context) {
+              return {'Nahlásit chybu', 'O Aplikaci', 'Odhlásit se'}
+                  .map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         child: Center(
