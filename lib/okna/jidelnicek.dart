@@ -178,7 +178,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, widget.user, 2),
+      drawer: drawerGenerator(context, widget.canteen, widget.user, 1),
       appBar: AppBar(
         title: const Text('Jídelníček'),
       ),
@@ -227,16 +227,23 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: GestureDetector(
-                    child: Column(children: obsah),
+                    child: Container(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimary
+                          .withOpacity(0),
+                      child: Column(children: obsah),
+                      height: MediaQuery.of(context).size.height - 160,
+                    ),
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity?.compareTo(0) == -1) {
                         setState(() {
-                          den = den.subtract(const Duration(days: 1));
+                          den = den.add(const Duration(days: 1));
                           nactiJidlo();
                         });
                       } else {
                         setState(() {
-                          den = den.add(const Duration(days: 1));
+                          den = den.subtract(const Duration(days: 1));
                           nactiJidlo();
                         });
                       }

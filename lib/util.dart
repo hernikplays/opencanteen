@@ -2,7 +2,6 @@ import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:opencanteen/okna/burza.dart';
 
-import 'okna/home.dart';
 import 'okna/jidelnicek.dart';
 
 Drawer drawerGenerator(
@@ -24,17 +23,6 @@ Drawer drawerGenerator(
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
-              leading: const Icon(Icons.restaurant),
-              title: const Text('Jídelníček'),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      JidelnicekPage(canteen: canteen, user: user),
-                ),
-              ),
-            ),
-            ListTile(
               leading: const Icon(Icons.store),
               title: const Text('Burza'),
               onTap: () => Navigator.push(
@@ -49,42 +37,6 @@ Drawer drawerGenerator(
       );
 
       break;
-    case 2:
-      // Jidelnicek page
-      drawer = Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              child: Text("OpenCanteen"),
-            ),
-            ListTile(
-              title: const Text("Domů"),
-              leading: const Icon(Icons.home),
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (c) => HomePage(canteen: canteen, user: user))),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restaurant),
-              selected: true,
-              title: const Text('Jídelníček'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('Burza'),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BurzaPage(canteen: canteen, user: user),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-      break;
     case 3:
       drawer = Drawer(
         child: ListView(
@@ -98,18 +50,8 @@ Drawer drawerGenerator(
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (c) => HomePage(canteen: canteen, user: user))),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restaurant),
-              title: const Text('Jídelníček'),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      JidelnicekPage(canteen: canteen, user: user),
-                ),
-              ),
+                      builder: (c) =>
+                          JidelnicekPage(canteen: canteen, user: user))),
             ),
             ListTile(
               leading: const Icon(Icons.store),

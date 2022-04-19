@@ -4,5 +4,6 @@
 - Domovská obrazovka nyní zobrazuje zprávu, pokud na dnešní den není žádné jídlo v jídelníčku
 - Upgrade knihovny
 - Odhlášení přesunuto do textového menu
+- Odstraněna stránka domů, hlavní stránka je nyní jídelníček
 # 0.1.0
 - První verze
