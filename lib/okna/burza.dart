@@ -126,7 +126,7 @@ class _BurzaPageState extends State<BurzaPage> {
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height - 120,
+                    height: MediaQuery.of(context).size.height / 1.3,
                     child: Column(children: obsah),
                   ),
                 )

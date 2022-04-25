@@ -283,7 +283,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                           .onPrimary
                           .withOpacity(0),
                       child: Column(children: obsah),
-                      height: MediaQuery.of(context).size.height - 160,
+                      height: MediaQuery.of(context).size.height / 1.3,
                     ),
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity?.compareTo(0) == -1) {

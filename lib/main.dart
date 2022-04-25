@@ -121,130 +121,136 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Přihlášení"),
-      ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width - 50,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'OpenCanteen',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
-              ),
-              const Text(
-                'Přihlášení',
-                textAlign: TextAlign.center,
-              ),
-              TextField(
-                controller: userControl,
-                autofillHints: const [AutofillHints.username],
-                decoration:
-                    const InputDecoration(labelText: 'Uživatelské jméno'),
-              ),
-              TextField(
-                autofillHints: const [AutofillHints.password],
-                decoration: const InputDecoration(labelText: 'Heslo'),
-                controller: passControl,
-                obscureText: true,
-              ),
-              TextField(
-                autofillHints: const [AutofillHints.url],
-                decoration: const InputDecoration(labelText: 'iCanteen URL'),
-                keyboardType: TextInputType.url,
-                controller: canteenControl,
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Switch(
-                    value: rememberMe,
-                    onChanged: (value) {
-                      setState(() {
-                        rememberMe = value;
-                      });
-                    }),
-                const Text("Zapamatovat si mě")
-              ]),
-              TextButton(
-                  onPressed: () async {
-                    if (canteenControl.text.contains("http://")) {
-                      // kontrolujeme šifrované spojení
-                      var d = await showDialog<bool>(
-                          context: context,
-                          builder: (c) => AlertDialog(
-                                title: const Text("Varování!"),
-                                content: const SingleChildScrollView(
-                                    child: Text(
-                                        "Snažíte se přihlásit přes nešifrované spojení HTTP, jste si jisti, že tak chcete učinit?")),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(c, true),
-                                      child: const Text("Ano")),
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(c, false),
-                                      child: const Text("Ne, změnit"))
-                                ],
-                              ));
-                      if (!d!) return;
-                    }
-
-                    // souhlas
-                    const storage = FlutterSecureStorage();
-                    var odsouhlasil = await storage.read(key: "oc_souhlas");
-                    if (odsouhlasil == null || odsouhlasil != "ano") {
-                      var d = await showDialog<bool>(
-                          context: context,
-                          builder: (c) => AlertDialog(
-                                title: const Text("Pozor"),
-                                content: const SingleChildScrollView(
-                                    child: Text(
-                                        "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Tato zpráva se znovu neukáže.")),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(c, true),
-                                      child: const Text("Souhlasím")),
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(c, false),
-                                      child: const Text("Nesouhlasím"))
-                                ],
-                              ));
-                      if (!d!) return;
-                      await storage.write(key: "oc_souhlas", value: "ano");
-                    }
-
-                    var canteen = Canteen(canteenControl.text);
-                    var l =
-                        await canteen.login(userControl.text, passControl.text);
-                    if (!l) {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              "Přihlášení se nezdařilo, zkontrolujte údaje"),
-                        ),
-                      );
-                      return;
-                    }
-                    if (rememberMe) {
-                      LoginManager.setDetails(userControl.text,
-                          passControl.text, canteenControl.text);
-                    }
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => JidelnicekPage(
-                                user: userControl.text,
-                                canteen: canteen,
-                              )),
-                    );
-                  },
-                  child: const Text("Přihlásit se")),
-            ],
-          ),
+        appBar: AppBar(
+          title: const Text("Přihlášení"),
         ),
-      ),
-    );
+        body: Center(
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width - 50,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'OpenCanteen',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                  ),
+                  const Text(
+                    'Přihlášení',
+                    textAlign: TextAlign.center,
+                  ),
+                  TextField(
+                    controller: userControl,
+                    autofillHints: const [AutofillHints.username],
+                    decoration:
+                        const InputDecoration(labelText: 'Uživatelské jméno'),
+                  ),
+                  TextField(
+                    autofillHints: const [AutofillHints.password],
+                    decoration: const InputDecoration(labelText: 'Heslo'),
+                    controller: passControl,
+                    obscureText: true,
+                  ),
+                  TextField(
+                    autofillHints: const [AutofillHints.url],
+                    decoration:
+                        const InputDecoration(labelText: 'iCanteen URL'),
+                    keyboardType: TextInputType.url,
+                    controller: canteenControl,
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Switch(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value;
+                          });
+                        }),
+                    const Text("Zapamatovat si mě")
+                  ]),
+                  TextButton(
+                      onPressed: () async {
+                        if (canteenControl.text.contains("http://")) {
+                          // kontrolujeme šifrované spojení
+                          var d = await showDialog<bool>(
+                              context: context,
+                              builder: (c) => AlertDialog(
+                                    title: const Text("Varování!"),
+                                    content: const SingleChildScrollView(
+                                        child: Text(
+                                            "Snažíte se přihlásit přes nešifrované spojení HTTP, jste si jisti, že tak chcete učinit?")),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(c, true),
+                                          child: const Text("Ano")),
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(c, false),
+                                          child: const Text("Ne, změnit"))
+                                    ],
+                                  ));
+                          if (!d!) return;
+                        }
+
+                        // souhlas
+                        const storage = FlutterSecureStorage();
+                        var odsouhlasil = await storage.read(key: "oc_souhlas");
+                        if (odsouhlasil == null || odsouhlasil != "ano") {
+                          var d = await showDialog<bool>(
+                              context: context,
+                              builder: (c) => AlertDialog(
+                                    title: const Text("Pozor"),
+                                    content: const SingleChildScrollView(
+                                        child: Text(
+                                            "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Tato zpráva se znovu neukáže.")),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(c, true),
+                                          child: const Text("Souhlasím")),
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(c, false),
+                                          child: const Text("Nesouhlasím"))
+                                    ],
+                                  ));
+                          if (!d!) return;
+                          await storage.write(key: "oc_souhlas", value: "ano");
+                        }
+
+                        var canteen = Canteen(canteenControl.text);
+                        var l = await canteen.login(
+                            userControl.text, passControl.text);
+                        if (!l) {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Přihlášení se nezdařilo, zkontrolujte údaje"),
+                            ),
+                          );
+                          return;
+                        }
+                        if (rememberMe) {
+                          LoginManager.setDetails(userControl.text,
+                              passControl.text, canteenControl.text);
+                        }
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => JidelnicekPage(
+                                    user: userControl.text,
+                                    canteen: canteen,
+                                  )),
+                        );
+                      },
+                      child: const Text("Přihlásit se")),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }
