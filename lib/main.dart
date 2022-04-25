@@ -87,7 +87,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: SizedBox(
                     height: 100,
                     child: Row(children: const [
-                      CircularProgressIndicator(),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(),
+                      ),
                       Text("Přihlašuji vás")
                     ]),
                   ),

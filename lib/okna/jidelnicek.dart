@@ -84,16 +84,31 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                     ),
                     onTap: () async {
                       if (!j.lzeObjednat) return;
-
-                      widget.canteen
-                          .objednat(j)
-                          .then((value) => nactiJidlo())
-                          .catchError((o) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => Dialog(
+                                child: SizedBox(
+                                  height: 100,
+                                  child: Row(children: const [
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    Text("Objednávám...")
+                                  ]),
+                                ),
+                              ));
+                      widget.canteen.objednat(j).then((_) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        nactiJidlo();
+                      }).catchError((o) {
+                        Navigator.of(context, rootNavigator: true).pop();
                         showDialog(
                             context: context,
                             builder: (bc) => AlertDialog(
                                   title: const Text(
-                                      "Nepodařilo se vložit jídlo na burzu"),
+                                      "Jídlo se nepodařilo objednat."),
                                   content: Text(o.toString()),
                                   actions: [
                                     TextButton(
@@ -107,7 +122,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                       });
                     },
                     onLongPress: () async {
-                      if (!j.objednano) return;
+                      if (!j.objednano || j.burzaUrl == null) return;
                       if (!j.naBurze) {
                         // pokud není na burze, radši se zeptáme
                         var d = await showDialog(
