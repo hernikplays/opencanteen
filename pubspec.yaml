@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   flutter_localizations: 
     sdk: flutter
-  canteenlib: ^0.1.0-alpha.14
+  canteenlib: ^0.1.0-alpha.15
   connectivity_plus: ^2.2.1
   flutter_secure_storage: ^5.0.2
   url_launcher: ^6.0.20
