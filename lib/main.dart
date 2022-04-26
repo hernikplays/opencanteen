@@ -123,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Přihlášení"),
+          automaticallyImplyLeading: false,
         ),
         body: Center(
           child: SingleChildScrollView(
