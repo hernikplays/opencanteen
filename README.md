@@ -11,5 +11,8 @@ Aplikace vás přihlásí do instance iCanteen ***pokud ji podporuje [canteenlib
 - Burza
 - Sledovač burzy
 
+## Jak používat
+Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/opencanteen/wiki/Pou%C5%BE%C3%ADv%C3%A1n%C3%AD-aplikace)
+
 ## Stažení (BETA verze)
 <a href="https://play.google.com/store/apps/details?id=cz.hernikplays.opencanteen"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Play Logo" width="300px"></a>
