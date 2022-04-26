@@ -17,4 +17,9 @@ class LoginManager {
     await storage.write(key: "oc_pass", value: pass);
     await storage.write(key: "oc_url", value: url);
   }
+
+  static Future<bool> zapamatovat() async {
+    const storage = FlutterSecureStorage();
+    return await storage.containsKey(key: "oc_pass");
+  }
 }

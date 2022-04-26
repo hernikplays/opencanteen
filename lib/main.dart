@@ -219,7 +219,11 @@ class _LoginPageState extends State<LoginPage> {
                           if (!d!) return;
                           await storage.write(key: "oc_souhlas", value: "ano");
                         }
-
+                        if (!canteenControl.text.startsWith("https://") &&
+                            !canteenControl.text.startsWith("http://")) {
+                          canteenControl.text =
+                              "https://" + canteenControl.text;
+                        }
                         var canteen = Canteen(canteenControl.text);
                         var l = await canteen.login(
                             userControl.text, passControl.text);

@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../loginmanager.dart';
 import '../main.dart';
 import 'about.dart';
 
@@ -47,7 +52,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     }
     widget.canteen.ziskejUzivatele().then((kr) {
       kredit = kr.kredit;
-      widget.canteen.jidelnicekDen(den: den).then((jd) {
+      widget.canteen.jidelnicekDen(den: den).then((jd) async {
         setState(() {
           obsah = [];
           if (jd.jidla.isEmpty) {
@@ -205,9 +210,39 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     }
   }
 
+  /// uložení jídelníčku pro dnešek offline
+  void ulozitDnesekOffline() async {
+    if (await LoginManager.zapamatovat()) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      for (var f in appDocDir.listSync()) {
+        // Vymažeme obsah
+        if (f.path.contains("jidelnicek")) {
+          f.deleteSync();
+        }
+      }
+      // Uložíme nová data
+      var j = await widget.canteen.jidelnicekDen();
+      var soubor = File(appDocDir.path +
+          "/jidelnicek_${den.year}-${den.month}-${den.day}.json");
+      soubor.createSync();
+      var jidla = [];
+      for (var jidlo in j.jidla) {
+        jidla.add({
+          "nazev": jidlo.nazev,
+          "varianta": jidlo.varianta,
+          "objednano": jidlo.objednano,
+          "cena": jidlo.cena,
+          "naBurze": jidlo.naBurze
+        });
+      }
+      await soubor.writeAsString(json.encode(jidla));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    ulozitDnesekOffline();
     nactiJidlo();
   }
 

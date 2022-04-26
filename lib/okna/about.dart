@@ -20,7 +20,10 @@ class _AboutPageState extends State<AboutPage> {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const Text("OpenCanteen", style: TextStyle(fontSize: 30)),
           const Text("© 2022 Matyáš Caras a přispěvatelé"),
-          const Text("Vydáno pod licencí GNU GPLv3"),
+          InkWell(
+              onTap: () => launch(
+                  "https://github.com/hernikplays/opencanteen/blob/main/LICENSE"),
+              child: const Text("Vydáno pod licencí GNU GPLv3")),
           const SizedBox(height: 15),
           const Text("Použité knihovny:", style: TextStyle(fontSize: 19)),
           const SizedBox(height: 10),
@@ -47,7 +50,12 @@ class _AboutPageState extends State<AboutPage> {
           cudlik(
               "canteenlib",
               "Copyright (c) 2022 Matyáš Caras and contributors, licence MIT",
-              "https://github.com/hernikplays/canteenlib/blob/main/LICENSE")
+              "https://github.com/hernikplays/canteenlib/blob/main/LICENSE"),
+          const SizedBox(height: 10),
+          cudlik(
+              "path_provider",
+              "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
+              "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE")
         ]),
       ),
     );
