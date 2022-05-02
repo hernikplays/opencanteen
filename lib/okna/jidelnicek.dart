@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../loginmanager.dart';
@@ -212,7 +213,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
 
   /// uložení jídelníčku pro dnešek offline
   void ulozitDnesekOffline() async {
-    if (await LoginManager.zapamatovat()) {
+    var prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("offline") != null && prefs.getBool("offline")!) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       for (var f in appDocDir.listSync()) {
         // Vymažeme obsah
