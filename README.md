@@ -16,8 +16,10 @@ Aplikace vás přihlásí do instance iCanteen ***pokud ji podporuje [canteenlib
 Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/opencanteen/wiki/Pou%C5%BE%C3%ADv%C3%A1n%C3%AD-aplikace)
 
 ## Stažení (BETA verze)
-<a href="https://play.google.com/store/apps/details?id=cz.hernikplays.opencanteen"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Play Logo" width="300px"></a>
-
+<div align="center">
+<a href="https://play.google.com/store/apps/details?id=cz.hernikplays.opencanteen" target="_blank"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Play Logo" width="300px"></a><br>
+<a href="https://testflight.apple.com/join/HOQhP3rW" target="_blank"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width="200px" alt="iOS App Store logo"></a>
+</div>
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_large)
