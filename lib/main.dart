@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:canteenlib/canteenlib.dart';
 
+import 'lang/lang.dart';
+import 'lang/lang_en.dart';
 import 'okna/jidelnicek.dart';
 
 /*
@@ -22,7 +25,7 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    */
+*/
 
 void main() {
   runApp(const MyApp());
@@ -36,8 +39,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: const [Locale("cs")],
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        ...GlobalMaterialLocalizations.delegates
+      ],
+      supportedLocales: const [Locale("cs"), Locale("en")],
       title: 'OpenCanteen',
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -258,4 +264,26 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ));
   }
+}
+
+class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
+  const AppLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => ['cs', 'en'].contains(locale.languageCode);
+
+  @override
+  Future<Languages> load(Locale locale) => _load(locale);
+
+  static Future<Languages> _load(Locale locale) async {
+    switch (locale.languageCode) {
+      case 'cs':
+        return LanguageCz();
+      default:
+        return LanguageEn();
+    }
+  }
+
+  @override
+  bool shouldReload(LocalizationsDelegate<Languages> old) => false;
 }
