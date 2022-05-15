@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../lang/lang.dart';
+
 class AboutPage extends StatefulWidget {
   const AboutPage({Key? key}) : super(key: key);
 
@@ -13,7 +15,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("O Aplikaci"),
+        title: Text(Languages.of(context)!.about),
       ),
       body: SingleChildScrollView(
         child: SizedBox(
@@ -26,7 +28,8 @@ class _AboutPageState extends State<AboutPage> {
                     "https://github.com/hernikplays/opencanteen/blob/main/LICENSE"),
                 child: const Text("Vydáno pod licencí GNU GPLv3")),
             const SizedBox(height: 15),
-            const Text("Použité knihovny:", style: TextStyle(fontSize: 19)),
+            Text(Languages.of(context)!.usedLibs,
+                style: const TextStyle(fontSize: 19)),
             const SizedBox(height: 10),
             cudlik(
                 "Flutter",

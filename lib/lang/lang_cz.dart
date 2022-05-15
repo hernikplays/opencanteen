@@ -39,6 +39,9 @@ class LanguageCz extends Languages {
   String get friday => "Pátek";
 
   @override
+  String get home => "Domů";
+
+  @override
   String get httpLogin =>
       "Snažíte se přihlásit přes nešifrované spojení HTTP, jste si jisti, že tak chcete učinit?";
 
@@ -131,10 +134,16 @@ class LanguageCz extends Languages {
   String get tuesday => "Úterý";
 
   @override
+  String get usedLibs => "Použité knihovny:";
+
+  @override
   String get username => "Uživatelské jméno";
 
   @override
   String get verifyExchange => "Opravdu chcete vložit jídlo na burzu?";
+
+  @override
+  String get warning => "Pozor!";
 
   @override
   String get wednesday => "Středa";

@@ -7,6 +7,8 @@ abstract class Languages {
 
   String get appName;
 
+  String get home;
+
   // Login
 
   String get errorContacting;
@@ -36,6 +38,8 @@ abstract class Languages {
   String get disagree;
 
   String get loginFailed;
+
+  String get warning;
 
   // Jídelníček
 
@@ -98,6 +102,10 @@ abstract class Languages {
   String get cannotOrder;
 
   String get order;
+
+  // About
+
+  String get usedLibs;
 
   // Settings
 

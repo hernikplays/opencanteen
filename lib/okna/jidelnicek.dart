@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../lang/lang.dart';
 import '../main.dart';
 import 'about.dart';
 
@@ -22,7 +23,7 @@ class JidelnicekPage extends StatefulWidget {
 }
 
 class _JidelnicekPageState extends State<JidelnicekPage> {
-  List<Widget> obsah = [const Text("Načítám...")];
+  List<Widget> obsah = [const CircularProgressIndicator()];
   DateTime den = DateTime.now();
   String denTydne = "";
   double kredit = 0.0;
@@ -30,25 +31,25 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     obsah = [const CircularProgressIndicator()];
     switch (den.weekday) {
       case 2:
-        denTydne = "Úterý";
+        denTydne = Languages.of(context)!.tuesday;
         break;
       case 3:
-        denTydne = "Středa";
+        denTydne = Languages.of(context)!.wednesday;
         break;
       case 4:
-        denTydne = "Čtvrtek";
+        denTydne = Languages.of(context)!.thursday;
         break;
       case 5:
-        denTydne = "Pátek";
+        denTydne = Languages.of(context)!.friday;
         break;
       case 6:
-        denTydne = "Sobota";
+        denTydne = Languages.of(context)!.saturday;
         break;
       case 7:
-        denTydne = "Neděle";
+        denTydne = Languages.of(context)!.sunday;
         break;
       default:
-        denTydne = "Pondělí";
+        denTydne = Languages.of(context)!.monday;
     }
     widget.canteen.ziskejUzivatele().then((kr) {
       kredit = kr.kredit;
@@ -56,9 +57,9 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
         setState(() {
           obsah = [];
           if (jd.jidla.isEmpty) {
-            obsah.add(const Text(
-              "Žádné jídlo pro tento den",
-              style: TextStyle(fontSize: 15),
+            obsah.add(Text(
+              Languages.of(context)!.noFood,
+              style: const TextStyle(fontSize: 15),
             ));
           } else {
             for (var j in jd.jidla) {
@@ -76,7 +77,9 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                             j.nazev,
                           ),
                         ),
-                        Text((j.naBurze) ? "V BURZE" : "${j.cena} Kč"),
+                        Text((j.naBurze)
+                            ? Languages.of(context)!.inExchange
+                            : "${j.cena} Kč"),
                         Checkbox(
                             value: j.objednano,
                             fillColor: (j.lzeObjednat)
@@ -95,12 +98,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                           builder: (_) => Dialog(
                                 child: SizedBox(
                                   height: 100,
-                                  child: Row(children: const [
-                                    Padding(
+                                  child: Row(children: [
+                                    const Padding(
                                       padding: EdgeInsets.all(10),
                                       child: CircularProgressIndicator(),
                                     ),
-                                    Text("Objednávám...")
+                                    Text(Languages.of(context)!.ordering)
                                   ]),
                                 ),
                               ));
@@ -112,12 +115,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                         showDialog(
                             context: context,
                             builder: (bc) => AlertDialog(
-                                  title: const Text(
-                                      "Jídlo se nepodařilo objednat."),
+                                  title: Text(
+                                      Languages.of(context)!.errorOrdering),
                                   content: Text(o.toString()),
                                   actions: [
                                     TextButton(
-                                      child: const Text("Zavřít"),
+                                      child: Text(Languages.of(context)!.close),
                                       onPressed: () {
                                         Navigator.pop(bc);
                                       },
@@ -133,20 +136,20 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                         var d = await showDialog(
                             context: context,
                             builder: (bc) => SimpleDialog(
-                                  title: const Text(
-                                      "Opravdu chcete vložit jídlo na burzu?"),
+                                  title: Text(
+                                      Languages.of(context)!.verifyExchange),
                                   children: [
                                     SimpleDialogOption(
                                       onPressed: () {
                                         Navigator.pop(bc, true);
                                       },
-                                      child: const Text("Ano"),
+                                      child: Text(Languages.of(context)!.yes),
                                     ),
                                     SimpleDialogOption(
                                       onPressed: () {
                                         Navigator.pop(bc, false);
                                       },
-                                      child: const Text("Ne"),
+                                      child: Text(Languages.of(context)!.no),
                                     ),
                                   ],
                                 ));
@@ -158,12 +161,13 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                             showDialog(
                                 context: context,
                                 builder: (bc) => AlertDialog(
-                                      title: const Text(
-                                          "Nepodařilo se vložit jídlo na burzu"),
+                                      title: Text(
+                                          Languages.of(context)!.exchangeError),
                                       content: Text(o.toString()),
                                       actions: [
                                         TextButton(
-                                          child: const Text("Zavřít"),
+                                          child: Text(
+                                              Languages.of(context)!.close),
                                           onPressed: () {
                                             Navigator.pop(bc);
                                           },
@@ -192,21 +196,17 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     });
   }
 
-  void kliknuti(String value) {
-    switch (value) {
-      case 'Odhlásit se':
-        const storage = FlutterSecureStorage();
-        storage.deleteAll();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginPage()));
-        break;
-      case 'Nahlásit chybu':
-        launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
-        break;
-      case 'O Aplikaci':
-        Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const AboutPage()));
-        break;
+  void kliknuti(String value, BuildContext context) {
+    if (value == Languages.of(context)!.signOut) {
+      const storage = FlutterSecureStorage();
+      storage.deleteAll();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (c) => const LoginPage()));
+    } else if (value == Languages.of(context)!.reportBugs) {
+      launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
+    } else if (value == Languages.of(context)!.about) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (c) => const AboutPage()));
     }
   }
 
@@ -241,8 +241,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     ulozitDnesekOffline();
     nactiJidlo();
   }
@@ -252,13 +252,16 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     return Scaffold(
       drawer: drawerGenerator(context, widget.canteen, widget.user, 1),
       appBar: AppBar(
-        title: const Text('Jídelníček'),
+        title: Text(Languages.of(context)!.menu),
         actions: [
           PopupMenuButton(
-            onSelected: kliknuti,
+            onSelected: ((String value) => kliknuti(value, context)),
             itemBuilder: (BuildContext context) {
-              return {'Nahlásit chybu', 'O Aplikaci', 'Odhlásit se'}
-                  .map((String choice) {
+              return {
+                Languages.of(context)!.reportBugs,
+                Languages.of(context)!.about,
+                Languages.of(context)!.signOut
+              }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -274,7 +277,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text("Kredit: $kredit Kč"),
+                Text("${Languages.of(context)!.balance}$kredit Kč"),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
                       onPressed: () {

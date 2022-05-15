@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
         AppLocalizationsDelegate(),
         ...GlobalMaterialLocalizations.delegates
       ],
-      supportedLocales: const [Locale("cs"), Locale("en")],
-      title: 'OpenCanteen',
+      supportedLocales: const [Locale("cs", ""), Locale("en", "")],
+      title: "OpenCanteen",
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
@@ -78,9 +78,8 @@ class _LoginPageState extends State<LoginPage> {
       if (connectivityResult == ConnectivityResult.none) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                "Nastala chyba při kontaktování serveru, zkontrolujte připojení"),
+          SnackBar(
+            content: Text(Languages.of(context)!.errorContacting),
           ),
         );
       }
@@ -92,12 +91,12 @@ class _LoginPageState extends State<LoginPage> {
             builder: (_) => Dialog(
                   child: SizedBox(
                     height: 100,
-                    child: Row(children: const [
-                      Padding(
+                    child: Row(children: [
+                      const Padding(
                         padding: EdgeInsets.all(10),
                         child: CircularProgressIndicator(),
                       ),
-                      Text("Přihlašuji vás")
+                      Text(Languages.of(context)!.loggingIn)
                     ]),
                   ),
                 ));
@@ -106,8 +105,8 @@ class _LoginPageState extends State<LoginPage> {
         if (!l) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Přihlášení se nezdařilo, zkontrolujte údaje"),
+            SnackBar(
+              content: Text(Languages.of(context)!.loginFailed),
             ),
           );
           return;
@@ -128,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Přihlášení"),
+          title: Text(Languages.of(context)!.logIn),
           automaticallyImplyLeading: false,
         ),
         body: Center(
@@ -138,31 +137,33 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text(
-                    'OpenCanteen',
+                  Text(
+                    Languages.of(context)!.logIn,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 40),
                   ),
-                  const Text(
-                    'Přihlášení',
+                  Text(
+                    Languages.of(context)!.logIn,
                     textAlign: TextAlign.center,
                   ),
                   TextField(
                     controller: userControl,
                     autofillHints: const [AutofillHints.username],
-                    decoration:
-                        const InputDecoration(labelText: 'Uživatelské jméno'),
+                    decoration: InputDecoration(
+                        labelText: Languages.of(context)!.username),
                   ),
                   TextField(
                     autofillHints: const [AutofillHints.password],
-                    decoration: const InputDecoration(labelText: 'Heslo'),
+                    decoration: InputDecoration(
+                        labelText: Languages.of(context)!.password),
                     controller: passControl,
                     obscureText: true,
                   ),
                   TextField(
                     autofillHints: const [AutofillHints.url],
-                    decoration:
-                        const InputDecoration(labelText: 'iCanteen URL'),
+                    decoration: InputDecoration(
+                        labelText: Languages.of(context)!.iCanteenUrl),
                     keyboardType: TextInputType.url,
                     controller: canteenControl,
                   ),
@@ -174,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                             rememberMe = value;
                           });
                         }),
-                    const Text("Zapamatovat si mě")
+                    Text(Languages.of(context)!.rememberMe)
                   ]),
                   TextButton(
                       onPressed: () async {
@@ -183,19 +184,21 @@ class _LoginPageState extends State<LoginPage> {
                           var d = await showDialog<bool>(
                               context: context,
                               builder: (c) => AlertDialog(
-                                    title: const Text("Varování!"),
-                                    content: const SingleChildScrollView(
+                                    title: Text(Languages.of(context)!.warning),
+                                    content: SingleChildScrollView(
                                         child: Text(
-                                            "Snažíte se přihlásit přes nešifrované spojení HTTP, jste si jisti, že tak chcete učinit?")),
+                                            Languages.of(context)!.httpLogin)),
                                     actions: [
                                       TextButton(
                                           onPressed: () =>
                                               Navigator.pop(c, true),
-                                          child: const Text("Ano")),
+                                          child:
+                                              Text(Languages.of(context)!.yes)),
                                       TextButton(
                                           onPressed: () =>
                                               Navigator.pop(c, false),
-                                          child: const Text("Ne, změnit"))
+                                          child: Text(
+                                              Languages.of(context)!.noChange))
                                     ],
                                   ));
                           if (!d!) return;
@@ -208,19 +211,21 @@ class _LoginPageState extends State<LoginPage> {
                           var d = await showDialog<bool>(
                               context: context,
                               builder: (c) => AlertDialog(
-                                    title: const Text("Pozor"),
-                                    content: const SingleChildScrollView(
-                                        child: Text(
-                                            "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Tato zpráva se znovu neukáže.")),
+                                    title: Text(Languages.of(context)!.warning),
+                                    content: SingleChildScrollView(
+                                        child: Text(Languages.of(context)!
+                                            .notOfficial)),
                                     actions: [
                                       TextButton(
                                           onPressed: () =>
                                               Navigator.pop(c, true),
-                                          child: const Text("Souhlasím")),
+                                          child: Text(
+                                              Languages.of(context)!.agree)),
                                       TextButton(
                                           onPressed: () =>
                                               Navigator.pop(c, false),
-                                          child: const Text("Nesouhlasím"))
+                                          child: Text(
+                                              Languages.of(context)!.disagree))
                                     ],
                                   ));
                           if (!d!) return;
@@ -237,9 +242,8 @@ class _LoginPageState extends State<LoginPage> {
                         if (!l) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  "Přihlášení se nezdařilo, zkontrolujte údaje"),
+                            SnackBar(
+                              content: Text(Languages.of(context)!.loginFailed),
                             ),
                           );
                           return;
@@ -257,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                                   )),
                         );
                       },
-                      child: const Text("Přihlásit se")),
+                      child: Text(Languages.of(context)!.logIn)),
                 ],
               ),
             ),
@@ -276,6 +280,7 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   Future<Languages> load(Locale locale) => _load(locale);
 
   static Future<Languages> _load(Locale locale) async {
+    debugPrint(locale.countryCode);
     switch (locale.languageCode) {
       case 'cs':
         return LanguageCz();

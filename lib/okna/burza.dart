@@ -2,6 +2,7 @@ import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:opencanteen/util.dart';
 
+import '../lang/lang.dart';
 import '../main.dart';
 
 class BurzaPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class BurzaPage extends StatefulWidget {
 class _BurzaPageState extends State<BurzaPage> {
   List<Widget> obsah = [];
   double kredit = 0.0;
-  Future<void> nactiBurzu() async {
+  Future<void> nactiBurzu(BuildContext context) async {
     obsah = [const CircularProgressIndicator()];
     widget.canteen.ziskejUzivatele().then((kr) {
       kredit = kr.kredit;
@@ -25,11 +26,11 @@ class _BurzaPageState extends State<BurzaPage> {
           obsah = [];
           if (burza.isEmpty) {
             obsah = [
-              const Text(
-                "Žádné jídlo v burze.",
-                style: TextStyle(fontSize: 20),
+              Text(
+                Languages.of(context)!.noExchange,
+                style: const TextStyle(fontSize: 20),
               ),
-              const Text("Potáhněte zvrchu pro načtení.")
+              Text(Languages.of(context)!.pullToReload)
             ];
           } else {
             for (var b in burza) {
@@ -54,12 +55,12 @@ class _BurzaPageState extends State<BurzaPage> {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Objednáno"),
-                                    content: const Text(
-                                        "Jídlo bylo úspěšně objednáno."),
+                                    title: Text(Languages.of(context)!.ordered),
+                                    content: Text(
+                                        Languages.of(context)!.orderSuccess),
                                     actions: [
                                       TextButton(
-                                        child: const Text("OK"),
+                                        child: Text(Languages.of(context)!.ok),
                                         onPressed: () =>
                                             Navigator.of(context).pop(),
                                       )
@@ -70,12 +71,13 @@ class _BurzaPageState extends State<BurzaPage> {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Nelze objednat"),
-                                    content: const Text(
-                                        "Jídlo se nepodařilo objednat."),
+                                    title: Text(
+                                        Languages.of(context)!.cannotOrder),
+                                    content: Text(
+                                        Languages.of(context)!.errorOrdering),
                                     actions: [
                                       TextButton(
-                                        child: const Text("OK"),
+                                        child: Text(Languages.of(context)!.ok),
                                         onPressed: () =>
                                             Navigator.of(context).pop(),
                                       )
@@ -83,10 +85,10 @@ class _BurzaPageState extends State<BurzaPage> {
                                   ),
                                 );
                               }
-                              nactiBurzu();
+                              nactiBurzu(context);
                             });
                           },
-                          child: const Text("Objednat")),
+                          child: Text(Languages.of(context)!.order)),
                     ],
                   ),
                 ),
@@ -106,7 +108,7 @@ class _BurzaPageState extends State<BurzaPage> {
   @override
   void initState() {
     super.initState();
-    nactiBurzu();
+    nactiBurzu(context);
   }
 
   @override
@@ -114,14 +116,14 @@ class _BurzaPageState extends State<BurzaPage> {
     return Scaffold(
       drawer: drawerGenerator(context, widget.canteen, widget.user, 3),
       appBar: AppBar(
-        title: const Text('Burza'),
+        title: Text(Languages.of(context)!.exchange),
       ),
       body: RefreshIndicator(
           child: Center(
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text("Kredit: $kredit Kč"),
+                Text("${Languages.of(context)!.balance}$kredit Kč"),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -133,7 +135,7 @@ class _BurzaPageState extends State<BurzaPage> {
               ],
             ),
           ),
-          onRefresh: () => nactiBurzu()),
+          onRefresh: () => nactiBurzu(context)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:opencanteen/okna/burza.dart';
 
+import 'lang/lang.dart';
 import 'okna/jidelnicek.dart';
 
 Drawer drawerGenerator(
@@ -13,18 +14,18 @@ Drawer drawerGenerator(
       drawer = Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
-              child: Text("OpenCanteen"),
+            DrawerHeader(
+              child: Text(Languages.of(context)!.appName),
             ),
             ListTile(
               selected: true,
-              title: const Text("Domů"),
+              title: Text(Languages.of(context)!.home),
               leading: const Icon(Icons.home),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.store),
-              title: const Text('Burza'),
+              title: Text(Languages.of(context)!.exchange),
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -41,12 +42,12 @@ Drawer drawerGenerator(
       drawer = Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
-              child: Text("OpenCanteen"),
+            DrawerHeader(
+              child: Text(Languages.of(context)!.appName),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text("Domů"),
+              title: Text(Languages.of(context)!.home),
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -56,7 +57,7 @@ Drawer drawerGenerator(
             ListTile(
               leading: const Icon(Icons.store),
               selected: true,
-              title: const Text('Burza'),
+              title: Text(Languages.of(context)!.exchange),
               onTap: () => Navigator.pop(context),
             ),
           ],
