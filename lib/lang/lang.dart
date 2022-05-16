@@ -112,4 +112,11 @@ abstract class Languages {
   String get settings;
 
   String get saveOffline;
+
+  String get skipWeekend;
+
+  // Offline
+  String get offline;
+
+  String get mustLogout;
 }

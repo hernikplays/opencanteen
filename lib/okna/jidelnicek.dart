@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   DateTime den = DateTime.now();
   String denTydne = "";
   double kredit = 0.0;
+  bool _skipWeekend = false;
   Future<void> nactiJidlo() async {
     obsah = [const CircularProgressIndicator()];
     switch (den.weekday) {
@@ -207,7 +209,15 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     } else if (value == Languages.of(context)!.about) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
+    } else if (value == Languages.of(context)!.settings) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (c) => const Nastaveni()));
     }
+  }
+
+  void nactiNastaveni() async {
+    var prefs = await SharedPreferences.getInstance();
+    _skipWeekend = prefs.getBool("skip") ?? false;
   }
 
   /// uložení jídelníčku pro dnešek offline
@@ -233,7 +243,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           "varianta": jidlo.varianta,
           "objednano": jidlo.objednano,
           "cena": jidlo.cena,
-          "naBurze": jidlo.naBurze
+          "naBurze": jidlo.naBurze,
+          "den": den.toString()
         });
       }
       await soubor.writeAsString(json.encode(jidla));
@@ -243,6 +254,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    nactiNastaveni();
     ulozitDnesekOffline();
     nactiJidlo();
   }
@@ -259,6 +271,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
+                Languages.of(context)!.settings,
                 Languages.of(context)!.about,
                 Languages.of(context)!.signOut
               }.map((String choice) {
@@ -283,6 +296,9 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                       onPressed: () {
                         setState(() {
                           den = den.subtract(const Duration(days: 1));
+                          if (den.weekday == 7 && _skipWeekend) {
+                            den = den.subtract(const Duration(days: 2));
+                          }
                           nactiJidlo();
                         });
                       },
@@ -308,6 +324,9 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                       onPressed: () {
                         setState(() {
                           den = den.add(const Duration(days: 1));
+                          if (den.weekday == 6 && _skipWeekend) {
+                            den = den.add(const Duration(days: 2));
+                          }
                           nactiJidlo();
                         });
                       },
@@ -328,11 +347,17 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                       if (details.primaryVelocity?.compareTo(0) == -1) {
                         setState(() {
                           den = den.add(const Duration(days: 1));
+                          if (den.weekday == 6 && _skipWeekend) {
+                            den = den.add(const Duration(days: 2));
+                          }
                           nactiJidlo();
                         });
                       } else {
                         setState(() {
                           den = den.subtract(const Duration(days: 1));
+                          if (den.weekday == 7 && _skipWeekend) {
+                            den = den.subtract(const Duration(days: 2));
+                          }
                           nactiJidlo();
                         });
                       }

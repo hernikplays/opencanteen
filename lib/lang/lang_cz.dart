@@ -70,6 +70,9 @@ class LanguageCz extends Languages {
   String get monday => "Pondělí";
 
   @override
+  String get mustLogout => "Online přejdete přetažením dolů.";
+
+  @override
   String get no => "Ne";
 
   @override
@@ -84,6 +87,9 @@ class LanguageCz extends Languages {
   @override
   String get notOfficial =>
       "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Tato zpráva se znovu neukáže.";
+
+  @override
+  String get offline => "JSTE OFFLINE";
 
   @override
   String get ok => "OK";
@@ -123,6 +129,9 @@ class LanguageCz extends Languages {
 
   @override
   String get signOut => "Odhlásit se";
+
+  @override
+  String get skipWeekend => "Při procházení menu přeskočit víkend";
 
   @override
   String get sunday => "Neděle";

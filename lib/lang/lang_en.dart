@@ -70,6 +70,9 @@ class LanguageEn extends Languages {
   String get monday => "Monday";
 
   @override
+  String get mustLogout => "To go online, pull down.";
+
+  @override
   String get no => "No";
 
   @override
@@ -84,6 +87,9 @@ class LanguageEn extends Languages {
   @override
   String get notOfficial =>
       "This is not an official app for accessing iCanteen. The author is not responsible for non-functionality or losses while using this app. This message will not appear again.";
+
+  @override
+  String get offline => "YOU ARE OFFLINE";
 
   @override
   String get ok => "OK";
@@ -116,13 +122,16 @@ class LanguageEn extends Languages {
   String get saturday => "Saturday";
 
   @override
-  String get saveOffline => "Save today`s menu offline";
+  String get saveOffline => "Save today's menu offline";
 
   @override
   String get settings => "Settings";
 
   @override
   String get signOut => "Sign out";
+
+  @override
+  String get skipWeekend => "Skip weekends when browsing menu";
 
   @override
   String get sunday => "Sunday";

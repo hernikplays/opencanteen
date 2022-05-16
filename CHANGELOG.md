@@ -3,6 +3,7 @@
 - Stránka s možnostmi nastavení aplikace
 - Přidán anglický překlad
 - Opravy chyb
+- Přidání možnosti přeskočení víkendu
 # 0.1.1
 - Přidán RefreshIndicator na obrazovku s jídelníčkem
 - Přidáno odsazení od okrajů u jídelníčku

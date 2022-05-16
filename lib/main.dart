@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -5,6 +8,9 @@ import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:canteenlib/canteenlib.dart';
+import 'package:opencanteen/okna/offline_jidelnicek.dart';
+import 'package:opencanteen/util.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
@@ -82,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             content: Text(Languages.of(context)!.errorContacting),
           ),
         );
+        goOffline();
       }
 
       if (r != null) {
@@ -101,24 +108,34 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ));
         var canteen = Canteen(r["url"]!);
-        var l = await canteen.login(r["user"]!, r["pass"]!);
-        if (!l) {
+        try {
+          var l = await canteen.login(r["user"]!, r["pass"]!);
+          if (!l) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(Languages.of(context)!.loginFailed),
+              ),
+            );
+            return;
+          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => JidelnicekPage(
+                      user: r["user"]!,
+                      canteen: canteen,
+                    )),
+          );
+        } catch (_) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(Languages.of(context)!.loginFailed),
+              content: Text(Languages.of(context)!.errorContacting),
             ),
           );
-          return;
+          goOffline();
         }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => JidelnicekPage(
-                    user: r["user"]!,
-                    canteen: canteen,
-                  )),
-        );
       }
     });
   }
@@ -138,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    Languages.of(context)!.logIn,
+                    Languages.of(context)!.appName,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 40),
@@ -237,29 +254,41 @@ class _LoginPageState extends State<LoginPage> {
                               "https://" + canteenControl.text;
                         }
                         var canteen = Canteen(canteenControl.text);
-                        var l = await canteen.login(
-                            userControl.text, passControl.text);
-                        if (!l) {
+                        try {
+                          var l = await canteen.login(
+                              userControl.text, passControl.text);
+                          if (!l) {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text(Languages.of(context)!.loginFailed),
+                              ),
+                            );
+                            return;
+                          }
+                          if (rememberMe) {
+                            LoginManager.setDetails(userControl.text,
+                                passControl.text, canteenControl.text);
+                          }
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JidelnicekPage(
+                                      user: userControl.text,
+                                      canteen: canteen,
+                                    )),
+                          );
+                        } on Exception catch (_) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(Languages.of(context)!.loginFailed),
+                              content:
+                                  Text(Languages.of(context)!.errorContacting),
                             ),
                           );
-                          return;
+                          goOffline();
                         }
-                        if (rememberMe) {
-                          LoginManager.setDetails(userControl.text,
-                              passControl.text, canteenControl.text);
-                        }
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => JidelnicekPage(
-                                    user: userControl.text,
-                                    canteen: canteen,
-                                  )),
-                        );
                       },
                       child: Text(Languages.of(context)!.logIn)),
                 ],
@@ -267,6 +296,32 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ));
+  }
+
+  void goOffline() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    var den = DateTime.now();
+    var soubor = File(appDocDir.path +
+        "/jidelnicek_${den.year}-${den.month}-${den.day}.json");
+    if (soubor.existsSync()) {
+      // načteme offline jídelníček
+      var input = await soubor.readAsString();
+      var r = jsonDecode(input);
+      List<OfflineJidlo> jidla = [];
+      for (var j in r) {
+        jidla.add(OfflineJidlo(
+            nazev: j["nazev"],
+            varianta: j["varianta"],
+            objednano: j["objednano"],
+            cena: j["cena"],
+            naBurze: j["naBurze"],
+            den: DateTime.parse(j["den"])));
+      }
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: ((context) => OfflineJidelnicek(jidla: jidla))));
+    }
   }
 }
 
@@ -280,7 +335,6 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
   Future<Languages> load(Locale locale) => _load(locale);
 
   static Future<Languages> _load(Locale locale) async {
-    debugPrint(locale.countryCode);
     switch (locale.languageCode) {
       case 'cs':
         return LanguageCz();

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// TODO
+
+import '../lang/lang.dart';
 
 class Nastaveni extends StatefulWidget {
   const Nastaveni({Key? key}) : super(key: key);
@@ -11,10 +15,14 @@ class Nastaveni extends StatefulWidget {
 
 class _NastaveniState extends State<Nastaveni> {
   bool _ukladatOffline = false;
+  bool _preskakovatVikend = false;
 
   void najitNastaveni() async {
     var preferences = await SharedPreferences.getInstance();
-    _ukladatOffline = preferences.getBool("offline") ?? false;
+    setState(() {
+      _ukladatOffline = preferences.getBool("offline") ?? false;
+      _preskakovatVikend = preferences.getBool("skip") ?? false;
+    });
   }
 
   void zmenitNastaveni(String key, bool value) async {
@@ -23,28 +31,62 @@ class _NastaveniState extends State<Nastaveni> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    najitNastaveni();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nastavení'),
+        title: Text(Languages.of(context)!.settings),
       ),
       body: Center(
-          child: Column(
-        children: [
-          Row(
-            children: [
-              const Text("Ukládat jídelníček na dnešní den offline"),
-              Switch(
-                  value: _ukladatOffline,
-                  onChanged: (value) {
-                    setState(() {
-                      _ukladatOffline = value;
-                      zmenitNastaveni("offline", value);
-                    });
-                  })
-            ],
-          )
-        ],
+          child: SizedBox(
+        width: MediaQuery.of(context).size.width / 1.1,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(Languages.of(context)!.saveOffline),
+                Switch(
+                    value: _ukladatOffline,
+                    onChanged: (value) {
+                      setState(() async {
+                        _ukladatOffline = value;
+                        if (!value) {
+                          Directory appDocDir =
+                              await getApplicationDocumentsDirectory();
+                          for (var f in appDocDir.listSync()) {
+                            // Vymažeme obsah
+                            if (f.path.contains("jidelnicek")) {
+                              f.deleteSync();
+                            }
+                          }
+                        }
+                        zmenitNastaveni("offline", value);
+                      });
+                    })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(Languages.of(context)!.skipWeekend),
+                Switch(
+                    value: _preskakovatVikend,
+                    onChanged: (value) {
+                      setState(() {
+                        _preskakovatVikend = value;
+                        zmenitNastaveni("skip", value);
+                      });
+                    })
+              ],
+            )
+          ],
+        ),
       )),
     );
   }

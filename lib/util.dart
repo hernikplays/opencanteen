@@ -66,3 +66,20 @@ Drawer drawerGenerator(
   }
   return drawer;
 }
+
+class OfflineJidlo {
+  String nazev;
+  String varianta;
+  bool objednano;
+  double cena;
+  bool naBurze;
+  DateTime den;
+
+  OfflineJidlo(
+      {required this.nazev,
+      required this.varianta,
+      required this.objednano,
+      required this.cena,
+      required this.naBurze,
+      required DateTime this.den});
+}
