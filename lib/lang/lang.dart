@@ -107,6 +107,10 @@ abstract class Languages {
 
   String get usedLibs;
 
+  String get license;
+
+  String get copyright;
+
   // Settings
 
   String get settings;

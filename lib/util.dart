@@ -81,5 +81,5 @@ class OfflineJidlo {
       required this.objednano,
       required this.cena,
       required this.naBurze,
-      required DateTime this.den});
+      required this.den});
 }

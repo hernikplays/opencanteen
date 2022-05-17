@@ -120,19 +120,22 @@ class _BurzaPageState extends State<BurzaPage> {
       ),
       body: RefreshIndicator(
           child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Text("${Languages.of(context)!.balance}$kredit Kč"),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 1.3,
-                    child: Column(children: obsah),
-                  ),
-                )
-              ],
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width - 50,
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Text("${Languages.of(context)!.balance}$kredit Kč"),
+                  const SizedBox(height: 10),
+                  SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 1.3,
+                      child: Column(children: obsah),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           onRefresh: () => nactiBurzu(context)),

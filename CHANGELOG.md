@@ -1,4 +1,4 @@
-# 0.2.0
+# 1.0.0
 - Ukládání dnešního jídelníčku offline
 - Stránka s možnostmi nastavení aplikace
 - Přidán anglický překlad

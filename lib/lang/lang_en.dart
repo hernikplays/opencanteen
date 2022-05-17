@@ -20,6 +20,9 @@ class LanguageEn extends Languages {
   String get close => "Close";
 
   @override
+  String get copyright => "© 2022 Matyáš Caras and contributors";
+
+  @override
   String get disagree => "I disagree";
 
   @override
@@ -50,6 +53,9 @@ class LanguageEn extends Languages {
 
   @override
   String get inExchange => "ON EXCHANGE";
+
+  @override
+  String get license => "Released under GNU GPLv3";
 
   @override
   String get loading => "Loading...";

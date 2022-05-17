@@ -20,6 +20,9 @@ class LanguageCz extends Languages {
   String get close => "Zavřít";
 
   @override
+  String get copyright => "© 2022 Matyáš Caras a přispěvatelé";
+
+  @override
   String get disagree => "Nesouhlasím";
 
   @override
@@ -50,6 +53,9 @@ class LanguageCz extends Languages {
 
   @override
   String get inExchange => "V BURZE";
+
+  @override
+  String get license => "Vydáno pod licencí GNU GPLv3";
 
   @override
   String get loading => "Načítání...";
