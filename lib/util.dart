@@ -5,8 +5,7 @@ import 'package:opencanteen/okna/burza.dart';
 import 'lang/lang.dart';
 import 'okna/jidelnicek.dart';
 
-Drawer drawerGenerator(
-    BuildContext context, Canteen canteen, String user, int p) {
+Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
   Drawer drawer = const Drawer();
   switch (p) {
     case 1:
@@ -29,7 +28,7 @@ Drawer drawerGenerator(
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BurzaPage(canteen: canteen, user: user),
+                  builder: (context) => BurzaPage(canteen: canteen),
                 ),
               ),
             ),
@@ -51,8 +50,7 @@ Drawer drawerGenerator(
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (c) =>
-                          JidelnicekPage(canteen: canteen, user: user))),
+                      builder: (c) => JidelnicekPage(canteen: canteen))),
             ),
             ListTile(
               leading: const Icon(Icons.store),

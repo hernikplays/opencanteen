@@ -1,3 +1,6 @@
+# 1.1.0
+- Přidat uvítací obrazovku při prvním spuštění
+- Mírné vyčištění kódu
 # 1.0.0
 - Ukládání dnešního jídelníčku offline
 - Stránka s možnostmi nastavení aplikace

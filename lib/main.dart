@@ -9,6 +9,7 @@ import 'package:opencanteen/loginmanager.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:opencanteen/okna/offline_jidelnicek.dart';
+import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -123,7 +124,6 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => JidelnicekPage(
-                      user: r["user"]!,
                       canteen: canteen,
                     )),
           );
@@ -220,34 +220,6 @@ class _LoginPageState extends State<LoginPage> {
                                   ));
                           if (!d!) return;
                         }
-
-                        // souhlas
-                        const storage = FlutterSecureStorage();
-                        var odsouhlasil = await storage.read(key: "oc_souhlas");
-                        if (odsouhlasil == null || odsouhlasil != "ano") {
-                          var d = await showDialog<bool>(
-                              context: context,
-                              builder: (c) => AlertDialog(
-                                    title: Text(Languages.of(context)!.warning),
-                                    content: SingleChildScrollView(
-                                        child: Text(Languages.of(context)!
-                                            .notOfficial)),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, true),
-                                          child: Text(
-                                              Languages.of(context)!.agree)),
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, false),
-                                          child: Text(
-                                              Languages.of(context)!.disagree))
-                                    ],
-                                  ));
-                          if (!d!) return;
-                          await storage.write(key: "oc_souhlas", value: "ano");
-                        }
                         if (!canteenControl.text.startsWith("https://") &&
                             !canteenControl.text.startsWith("http://")) {
                           canteenControl.text =
@@ -271,14 +243,25 @@ class _LoginPageState extends State<LoginPage> {
                             LoginManager.setDetails(userControl.text,
                                 passControl.text, canteenControl.text);
                           }
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => JidelnicekPage(
-                                      user: userControl.text,
-                                      canteen: canteen,
-                                    )),
-                          );
+                          // souhlas
+                          const storage = FlutterSecureStorage();
+                          var odsouhlasil =
+                              await storage.read(key: "oc_souhlas");
+                          if (odsouhlasil == null || odsouhlasil != "ano") {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (c) =>
+                                        WelcomeScreen(canteen: canteen)));
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => JidelnicekPage(
+                                        canteen: canteen,
+                                      )),
+                            );
+                          }
                         } on Exception catch (_) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(

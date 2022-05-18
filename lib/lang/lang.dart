@@ -85,6 +85,26 @@ abstract class Languages {
 
   String get balance;
 
+  // Uvítací obrazovka
+
+  String get welcome;
+
+  String get appDesc;
+
+  String get aboutOrder;
+
+  String get howOrder;
+
+  String get aboutToExch;
+
+  String get howToExch;
+
+  String get aboutFromExch;
+
+  String get howFromExch;
+
+  String get next;
+
   // Burza
 
   String get exchange;

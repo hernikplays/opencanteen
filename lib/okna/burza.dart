@@ -6,10 +6,8 @@ import '../lang/lang.dart';
 import '../main.dart';
 
 class BurzaPage extends StatefulWidget {
-  const BurzaPage({Key? key, required this.canteen, required this.user})
-      : super(key: key);
+  const BurzaPage({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
-  final String user;
   @override
   State<BurzaPage> createState() => _BurzaPageState();
 }
@@ -114,7 +112,7 @@ class _BurzaPageState extends State<BurzaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, widget.user, 3),
+      drawer: drawerGenerator(context, widget.canteen, 3),
       appBar: AppBar(
         title: Text(Languages.of(context)!.exchange),
       ),

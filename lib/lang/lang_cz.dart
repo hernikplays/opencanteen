@@ -92,7 +92,7 @@ class LanguageCz extends Languages {
 
   @override
   String get notOfficial =>
-      "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Tato zpráva se znovu neukáže.";
+      "Toto není oficiální aplikace k ovládání iCanteen. Autor neručí za ztráty nebo nefunkčnost v souvislosti s používáním této aplikace. Pokračováním souhlasíte.";
 
   @override
   String get offline => "JSTE OFFLINE";
@@ -165,4 +165,35 @@ class LanguageCz extends Languages {
 
   @override
   String get yes => "Ano";
+
+  @override
+  String get aboutFromExch => "Žádné jídlo? Žádný problém!";
+
+  @override
+  String get aboutOrder => "Klepnutím objednáte";
+
+  @override
+  String get aboutToExch => "Nemáte chuť?";
+
+  @override
+  String get appDesc =>
+      "OpenCanteen je neoficiální aplikace pro přístup do obědového systému iCanteen";
+
+  @override
+  String get howFromExch =>
+      "Z vysunovacího menu přejděte do burzy a objednejte si z dostupných jídel";
+
+  @override
+  String get howOrder =>
+      "Jednoduše klepněte na jídlo s modrým políčkem a máte objednáno";
+
+  @override
+  String get howToExch =>
+      "Stačí dlouze podržet jméno objednaného jídla a můžete ho přesunout na nebo z burzy";
+
+  @override
+  String get welcome => "Vítejte v OpenCanteen";
+
+  @override
+  String get next => "Další";
 }

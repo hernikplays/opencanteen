@@ -92,7 +92,7 @@ class LanguageEn extends Languages {
 
   @override
   String get notOfficial =>
-      "This is not an official app for accessing iCanteen. The author is not responsible for non-functionality or losses while using this app. This message will not appear again.";
+      "This is not an official app for accessing iCanteen. The author is not responsible for non-functionality or losses while using this app. By continuing you agree.";
 
   @override
   String get offline => "YOU ARE OFFLINE";
@@ -166,4 +166,34 @@ class LanguageEn extends Languages {
 
   @override
   String get yes => "Yes";
+
+  @override
+  String get appDesc => "OpenCanteen is a mobile app for accessing iCanteen.";
+
+  @override
+  String get welcome => "Welcome to OpenCanteen";
+
+  @override
+  String get aboutOrder => "Order with a tap";
+
+  @override
+  String get howOrder =>
+      "Simply tap on a meal with a blue checkbox next to it and it's done!";
+
+  @override
+  String get aboutToExch => "Don't want your food?";
+
+  @override
+  String get howToExch =>
+      "If you cannot cancel your order, simply long-tap on the ordered food and put it into the exchange.";
+
+  @override
+  String get aboutFromExch => "No food? No problem!";
+
+  @override
+  String get howFromExch =>
+      "Simply check the exchange from the sidebar and order when a meal is available.";
+
+  @override
+  String get next => "Next";
 }

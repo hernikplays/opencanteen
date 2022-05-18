@@ -15,10 +15,8 @@ import '../main.dart';
 import 'about.dart';
 
 class JidelnicekPage extends StatefulWidget {
-  const JidelnicekPage({Key? key, required this.canteen, required this.user})
-      : super(key: key);
+  const JidelnicekPage({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
-  final String user;
   @override
   State<JidelnicekPage> createState() => _JidelnicekPageState();
 }
@@ -262,7 +260,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, widget.user, 1),
+      drawer: drawerGenerator(context, widget.canteen, 1),
       appBar: AppBar(
         title: Text(Languages.of(context)!.menu),
         actions: [
