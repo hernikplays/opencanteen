@@ -86,7 +86,48 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                                 ? MaterialStateProperty.all(Colors.blue)
                                 : MaterialStateProperty.all(Colors.grey),
                             onChanged: (v) async {
-                              return;
+                              if (!j.lzeObjednat) return;
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) => Dialog(
+                                        child: SizedBox(
+                                          height: 100,
+                                          child: Row(children: [
+                                            const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            Text(
+                                                Languages.of(context)!.ordering)
+                                          ]),
+                                        ),
+                                      ));
+                              widget.canteen.objednat(j).then((_) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                nactiJidlo();
+                              }).catchError((o) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                showDialog(
+                                    context: context,
+                                    builder: (bc) => AlertDialog(
+                                          title: Text(Languages.of(context)!
+                                              .errorOrdering),
+                                          content: Text(o.toString()),
+                                          actions: [
+                                            TextButton(
+                                              child: Text(
+                                                  Languages.of(context)!.close),
+                                              onPressed: () {
+                                                Navigator.pop(bc);
+                                              },
+                                            )
+                                          ],
+                                        ));
+                              });
                             })
                       ],
                     ),
