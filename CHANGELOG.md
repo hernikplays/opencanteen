@@ -1,6 +1,7 @@
 # 1.1.0
 - Přidat uvítací obrazovku při prvním spuštění
 - Mírné vyčištění kódu
+- Jídlo lze nyní objednat/zrušit i kliknutím na checkbox
 # 1.0.0
 - Ukládání dnešního jídelníčku offline
 - Stránka s možnostmi nastavení aplikace
