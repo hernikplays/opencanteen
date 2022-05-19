@@ -66,7 +66,12 @@ class _AboutPageState extends State<AboutPage> {
               cudlik(
                   "shared_preferences",
                   "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
-                  "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE")
+                  "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE"),
+              const SizedBox(height: 10),
+              cudlik(
+                  "introduction_screen",
+                  "Copyright 2019 Jean-Charles Moussé, licence MIT",
+                  "https://github.com/Pyozer/introduction_screen/blob/master/LICENSE")
             ]),
           ),
         ),
