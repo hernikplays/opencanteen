@@ -14,7 +14,7 @@ class LanguageEn extends Languages {
   String get balance => "Balance: ";
 
   @override
-  String get cannotOrder => "Cannot order";
+  String get cannotOrder => "This food cannot be ordered.";
 
   @override
   String get close => "Close";

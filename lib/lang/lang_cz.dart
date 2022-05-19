@@ -14,7 +14,7 @@ class LanguageCz extends Languages {
   String get balance => "Kredit: ";
 
   @override
-  String get cannotOrder => "Nelze objednat";
+  String get cannotOrder => "Toto jídlo není možné objednat.";
 
   @override
   String get close => "Zavřít";

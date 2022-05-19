@@ -120,13 +120,22 @@ class _LoginPageState extends State<LoginPage> {
             );
             return;
           }
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => JidelnicekPage(
-                      canteen: canteen,
-                    )),
-          );
+          const storage = FlutterSecureStorage();
+          var odsouhlasil = await storage.read(key: "oc_souhlas");
+          if (odsouhlasil == null || odsouhlasil != "ano") {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (c) => WelcomeScreen(canteen: canteen)));
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => JidelnicekPage(
+                        canteen: canteen,
+                      )),
+            );
+          }
         } catch (_) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
