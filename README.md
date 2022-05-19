@@ -2,7 +2,7 @@
 Open-Source **neoficiální** iCanteen klient 
 
 [![wakatime](https://wakatime.com/badge/user/17178fab-a33c-430f-a764-7b3f26c7b966/project/e3ff9994-0026-4041-a529-1cb2041bdf4b.svg)](https://wakatime.com/badge/user/17178fab-a33c-430f-a764-7b3f26c7b966/project/e3ff9994-0026-4041-a529-1cb2041bdf4b)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_shield) [![Codemagic build status](https://api.codemagic.io/apps/62863e4c96304ce0518a1694/62863e4c96304ce0518a1693/status_badge.svg)](https://codemagic.io/apps/62863e4c96304ce0518a1694/62863e4c96304ce0518a1693/latest_build) [![Commit Style: Conventional Commits](https://img.shields.io/badge/commit%20style-conventional%20commits-pink)](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Co umí
 Aplikace vás přihlásí do instance iCanteen ***pokud ji podporuje [canteenlib](https://github.com/hernikplays/canteenlib/blob/main/COMPATIBILITY.md), jinak experimentálně***, a umožní vám zobrazit, objednávat obědy, objednávat nebo přidávat jídlo na burzu<sup>beta</sup>.
