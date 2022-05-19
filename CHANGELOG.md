@@ -1,3 +1,5 @@
+# 1.1.2
+- Přidat chybějící knihovnu do O Aplikaci (licence)
 # 1.1.1
 - Přidat informaci o neobjednatelném obědě (specialitka pro apple)
 - Zobrazovat uvítací obrazovku při nedokončení i když je uživatel zapamatován
