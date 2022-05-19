@@ -140,3 +140,4 @@ Temporary Items
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,linux,macos,visualstudiocode
+node_modules
