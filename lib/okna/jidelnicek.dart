@@ -393,7 +393,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                             currentDate: den,
                             firstDate: DateTime(2019, 1, 1),
                             lastDate: DateTime(den.year + 1, 12, 31),
-                            locale: const Locale("cs"));
+                            locale: Localizations.localeOf(context));
                         if (datePicked == null) return;
                         setState(() {
                           den = datePicked;
