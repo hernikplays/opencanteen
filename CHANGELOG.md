@@ -1,3 +1,6 @@
+# 1.1.1
+- Přidat informaci o neobjednatelném obědě (specialitka pro apple)
+- Zobrazovat uvítací obrazovku při nedokončení i když je uživatel zapamatován
 # 1.1.0
 - Přidat uvítací obrazovku při prvním spuštění
 - Mírné vyčištění kódu
