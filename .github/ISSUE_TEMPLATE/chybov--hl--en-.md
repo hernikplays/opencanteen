@@ -21,7 +21,7 @@ Kroky ke spuštění chyby:
 Chcete-li, přiložte snímky
 
 **Info o zařízení**
- - Verze Android: [např. 12]
+ - Verze systému zařízení: [např. Android 12, iOS 9]
  - Verze aplikace [např. 0.1.0]
 
 **Ostatní**
