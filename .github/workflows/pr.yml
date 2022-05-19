@@ -1,0 +1,33 @@
+name: "Lint PR"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  main:
+    name: Validate PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: amannn/action-semantic-pull-request@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: wagoid/commitlint-github-action@v4
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+  branch:
+    name: Uzavřít PRy mimo dev větev
+    needs: main
+    if: github.base_ref != 'dev' && github.actor != 'hernikplays'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: superbrothers/close-pull-request@v3
+        with:
+          comment: "Všechny pull requesty by měly směřovat na `dev` větev. Pokud je tohle chyba, napište správci repozitáře."
