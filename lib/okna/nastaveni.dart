@@ -54,18 +54,9 @@ class _NastaveniState extends State<Nastaveni> {
                 Switch(
                     value: _ukladatOffline,
                     onChanged: (value) {
-                      setState(() async {
+                      setState(() {
                         _ukladatOffline = value;
-                        if (!value) {
-                          Directory appDocDir =
-                              await getApplicationDocumentsDirectory();
-                          for (var f in appDocDir.listSync()) {
-                            // Vymažeme obsah
-                            if (f.path.contains("jidelnicek")) {
-                              f.deleteSync();
-                            }
-                          }
-                        }
+                        cistit(value);
                         zmenitNastaveni("offline", value);
                       });
                     })
@@ -89,5 +80,17 @@ class _NastaveniState extends State<Nastaveni> {
         ),
       )),
     );
+  }
+
+  void cistit(bool value) async {
+    if (!value) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      for (var f in appDocDir.listSync()) {
+        // Vymažeme obsah
+        if (f.path.contains("jidelnicek")) {
+          f.deleteSync();
+        }
+      }
+    }
   }
 }
