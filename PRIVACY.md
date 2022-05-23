@@ -10,7 +10,7 @@ Některé informace se mohou vztahovat pro oficiálně nevydané funkce.
 - Vývojář aplikace neručí za stabilitu aplikace ani za vzniklé škody, které mohly vzniknout používáním aplikace
 - Použití aplikace se řídí případnými podmínkami k používání systému iCanteen
 
-## Ochrana soukromí
+### Ochrana soukromí
 - Aplikace neobsahuje žádné analytické nebo sledovací systémy
 - Aplikace odesílá data pouze na URL instance systému iCanteen, kterou uživatel aplikace sám zadá
 - V případě, že tato instance není zabezpečena protokolem HTTPS, neručí vývojář aplikace za vzniklá nebezpečí
@@ -38,7 +38,7 @@ Some information may refer to unreleased functions of the app.
 - The application developer does not guarantee application's stability and is not responsible for any losses due to usage of this application
 - In case of terms of use of the iCanteen system, you are responsible for following them when using the application
 
-## Privacy policy
+### Privacy policy
 - The application does not contain any tracking, advertisment or analytics system
 - The application only communicates with the iCanteen instance specified by the user
 - In case the instance is not using HTTPS connection, the developer cannot be held responsible for losses or dangers
