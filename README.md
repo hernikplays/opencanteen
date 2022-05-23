@@ -18,9 +18,10 @@ Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/op
 ## Stažení
 <div align="center">
 <a href="https://play.google.com/store/apps/details?id=cz.hernikplays.opencanteen" target="_blank"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Play Logo" width="300px"></a><br>
+  <a href="https://apps.apple.com/us/app/opencanteen/id1621124445"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" width="200px"></a>
   
 ### Beta
-<a href="https://testflight.apple.com/join/HOQhP3rW" target="_blank">App Store</a>
+<a href="https://testflight.apple.com/join/HOQhP3rW" target="_blank">App Store</a><br>
   <a href="https://play.google.com/apps/testing/cz.hernikplays.opencanteen" target="_blank">Google Play</a>
 </div>
 
