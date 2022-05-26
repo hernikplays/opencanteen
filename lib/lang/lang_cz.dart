@@ -196,4 +196,15 @@ class LanguageCz extends Languages {
 
   @override
   String get next => "Další";
+
+  @override
+  String get checkOrdered =>
+      "Kontrolovat, jestli mám objednáno na příští týden";
+
+  @override
+  String get noOrder => "Na přístí týden nemáte objednané žádné jídlo!";
+
+  @override
+  String get corrupted =>
+      "Nastal problém s dešifrováním uložených údajů, prosím zkuste vyčistit veškerá data této aplikace.";
 }

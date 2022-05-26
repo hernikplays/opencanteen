@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
@@ -136,6 +137,13 @@ class _LoginPageState extends State<LoginPage> {
                       )),
             );
           }
+        } on PlatformException {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(Languages.of(context)!.corrupted),
+            ),
+          );
         } catch (_) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -271,6 +279,13 @@ class _LoginPageState extends State<LoginPage> {
                                       )),
                             );
                           }
+                        } on PlatformException {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(Languages.of(context)!.corrupted),
+                            ),
+                          );
                         } on Exception catch (_) {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
