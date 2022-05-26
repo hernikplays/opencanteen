@@ -196,4 +196,14 @@ class LanguageEn extends Languages {
 
   @override
   String get next => "Next";
+
+  @override
+  String get checkOrdered => "Check if I have ordered food for the next week";
+
+  @override
+  String get noOrder => "You did not order any food for the next week!";
+
+  @override
+  String get corrupted =>
+      "The saved credentials seem to be corrupted, please try clearing the application's data.";
 }
