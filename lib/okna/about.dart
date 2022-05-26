@@ -26,8 +26,8 @@ class _AboutPageState extends State<AboutPage> {
               const Text("OpenCanteen", style: TextStyle(fontSize: 30)),
               Text(Languages.of(context)!.copyright),
               InkWell(
-                  onTap: () => launch(
-                      "https://github.com/hernikplays/opencanteen/blob/main/LICENSE"),
+                  onTap: () => launchUrl(Uri.parse(
+                      "https://github.com/hernikplays/opencanteen/blob/main/LICENSE")),
                   child: Text(Languages.of(context)!.license)),
               const SizedBox(height: 15),
               Text(Languages.of(context)!.usedLibs,
@@ -44,9 +44,9 @@ class _AboutPageState extends State<AboutPage> {
                   "https://github.com/mogol/flutter_secure_storage/blob/develop/flutter_secure_storage/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
-                  "connectivity_plus",
-                  "Copyright 2017 The Chromium Authors. All rights reserved, licence BSD 3-Clause",
-                  "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/LICENSE"),
+                  "Material Icons",
+                  "Copyright Google. All rights reserved, licence Apache 2.0",
+                  "https://github.com/google/material-design-icons/blob/master/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
                   "url_launcher",
@@ -60,18 +60,32 @@ class _AboutPageState extends State<AboutPage> {
               const SizedBox(height: 10),
               cudlik(
                   "path_provider",
-                  "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
+                  "Copyright 2013 The Flutter Authors. All rights reserved, licence BSD-3-Clause",
                   "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
                   "shared_preferences",
-                  "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
+                  "Copyright 2013 The Flutter Authors. All rights reserved, licence BSD-3-Clause",
                   "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
                   "introduction_screen",
                   "Copyright 2019 Jean-Charles Moussé, licence MIT",
-                  "https://github.com/Pyozer/introduction_screen/blob/master/LICENSE")
+                  "https://github.com/Pyozer/introduction_screen/blob/master/LICENSE"),
+              const SizedBox(
+                height: 10,
+              ),
+              cudlik(
+                  "flutter_local_notifications",
+                  "Copyright 2018 Michael Bui. All rights reserved, licence BSD 3-Clause",
+                  "https://github.com/MaikuB/flutter_local_notifications/blob/master/flutter_local_notifications/LICENSE"),
+              const SizedBox(
+                height: 10,
+              ),
+              cudlik(
+                  "background_fetch",
+                  "Copyright (c) 2018 Transistor Software, licence MIT",
+                  "https://github.com/transistorsoft/flutter_background_fetch/blob/master/LICENSE")
             ]),
           ),
         ),
@@ -81,7 +95,7 @@ class _AboutPageState extends State<AboutPage> {
 
   Widget cudlik(String nazev, String copyright, String licence) {
     return InkWell(
-      onTap: () => launch(licence),
+      onTap: () => launchUrl(Uri.parse(licence)),
       child: Column(children: [
         Text(
           nazev,

@@ -1,3 +1,8 @@
+# 1.2.0
+- Přidat možnost automatického objednávání z burzy
+- Odstranit "connectivity_plus" knihovnu
+- Změnit launch na launchUrl kvůli změnám v knihovně
+- Nepodporovat instance s HTTP
 # 1.1.2
 - Přidat chybějící knihovnu do O Aplikaci (licence)
 # 1.1.1

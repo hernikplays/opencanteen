@@ -139,8 +139,15 @@ abstract class Languages {
 
   String get skipWeekend;
 
+  String get autoBurza;
+
+  String get autoburzaNeeds;
+
   // Offline
   String get offline;
 
   String get mustLogout;
+
+  // Autoburza
+  String get autoFound;
 }

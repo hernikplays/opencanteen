@@ -196,4 +196,15 @@ class LanguageCz extends Languages {
 
   @override
   String get next => "Další";
+
+  @override
+  String get autoBurza =>
+      "Automaticky objednat jídlo z burzy, pokud žádné nemám";
+
+  @override
+  String get autoburzaNeeds =>
+      "Tato funkcionalita vyžaduje stálé internetové připojení a vaše údaje musí být uložené (pomocí přepínače 'Zapamatovat si mě' na přihlašovací obrazovce)";
+
+  @override
+  String get autoFound => "Objednáno jídlo z burzy";
 }
