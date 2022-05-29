@@ -145,8 +145,15 @@ abstract class Languages {
 
   String get checkOrdered;
 
+  String get autoBurza;
+
+  String get autoburzaNeeds;
+
   // Offline
   String get offline;
 
   String get mustLogout;
+
+  // Autoburza
+  String get autoFound;
 }

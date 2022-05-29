@@ -1,18 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+=======
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:opencanteen/okna/offline_jidelnicek.dart';
 import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
@@ -35,8 +39,112 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+// Pouze pro Android
+void backgroundFetchHeadlessTask(HeadlessTask task) async {
+  String taskId = task.taskId;
+  bool isTimeout = task.timeout;
+  if (isTimeout) {
+    // Timeout
+    debugPrint("[BackgroundFetch] Headless task má time-out: $taskId");
+    BackgroundFetch.finish(taskId);
+    return;
+  }
+  debugPrint('[BackgroundFetch] Přišel headless event.');
+
+  var d = await LoginManager.getDetails(); // získat údaje
+  if (d != null) {
+    var c = Canteen(d["url"]!);
+    await c.login(d["user"]!, d["pass"]!); // přihlásit se
+    var burza = await c.ziskatBurzu(); // získat burzu
+
+    for (var jidlo in burza) {
+      try {
+        String locale = Intl.getCurrentLocale();
+        String title;
+        switch (locale) {
+          case "cs_CZ":
+            title = LanguageCz().autoFound;
+            break;
+          default:
+            title = LanguageEn().autoFound;
+        }
+        var r = await c.objednatZBurzy(jidlo); // objednat
+        if (r) {
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+              AndroidNotificationDetails('opencanteen', 'autoburza',
+                  channelDescription: 'Oznámení o objednání jídla z burzy',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'burza success');
+          const NotificationDetails platformChannelSpecifics =
+              NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+              0, title, null, platformChannelSpecifics);
+          break; // ukončit pokud objednáno
+        }
+      } catch (e) {
+        const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails('opencanteen', 'autoburza',
+                channelDescription: 'Oznámení o objednání jídla z burzy',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: 'burza fail');
+        const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        await flutterLocalNotificationsPlugin.show(
+            0,
+            "CHYBA PŘI OBJEDNÁVÁNÍ ${jidlo.nazev}",
+            e.toString(),
+            platformChannelSpecifics);
+      }
+    }
+  }
+  BackgroundFetch.finish(taskId);
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('notif_icon');
+
+  /// Note: permissions aren't requested here just to demonstrate that can be
+  /// done later
+  final IOSInitializationSettings initializationSettingsIOS =
+      IOSInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+          onDidReceiveLocalNotification: (
+            int id,
+            String? title,
+            String? body,
+            String? payload,
+          ) async {
+            debugPrint(body);
+          });
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String? payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+  });
+
   runApp(const MyApp());
+  var prefs = await SharedPreferences.getInstance();
+
+  if (prefs.getBool("autoburza") ?? false) {
+    debugPrint("Nastavuji");
+    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -78,21 +186,97 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController canteenControl = TextEditingController();
   bool rememberMe = false;
 
+  void nastavitPozadi() async {
+    // Configure BackgroundFetch.
+    int status = await BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            enableHeadless: true,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.ANY), (String taskId) async {
+      // Callback
+      debugPrint("[BackgroundFetch] Event získán $taskId");
+      var d = await LoginManager.getDetails();
+      if (d != null) {
+        var c = Canteen(d["url"]!);
+        await c.login(d["user"]!, d["pass"]!);
+        var burza = await c.ziskatBurzu();
+
+        for (var jidlo in burza) {
+          // DEBUG
+          var debugge = const AndroidNotificationDetails(
+              'opencanteen', 'debugge',
+              channelDescription: 'Debug opencanteen',
+              importance: Importance.max,
+              priority: Priority.high,
+              ticker: 'burza debug');
+          await flutterLocalNotificationsPlugin.show(
+              0,
+              "Nalezeno jídlo ${jidlo.nazev}",
+              null,
+              NotificationDetails(android: debugge)); // TODO debug
+          try {
+            var r = await c.objednatZBurzy(jidlo); // objednat
+            if (r) {
+              const AndroidNotificationDetails androidPlatformChannelSpecifics =
+                  AndroidNotificationDetails('opencanteen', 'autoburza',
+                      channelDescription: 'Oznámení o objednání jídla z burzy',
+                      importance: Importance.max,
+                      priority: Priority.high,
+                      ticker: 'burza success');
+              const NotificationDetails platformChannelSpecifics =
+                  NotificationDetails(android: androidPlatformChannelSpecifics);
+              await flutterLocalNotificationsPlugin.show(
+                  0,
+                  Languages.of(context)!.autoFound,
+                  null,
+                  platformChannelSpecifics);
+              break; // ukončit pokud objednáno
+            }
+          } catch (e) {
+            const AndroidNotificationDetails androidPlatformChannelSpecifics =
+                AndroidNotificationDetails('opencanteen', 'autoburza',
+                    channelDescription: 'Oznámení o objednání jídla z burzy',
+                    importance: Importance.max,
+                    priority: Priority.high,
+                    ticker: 'burza fail');
+            const NotificationDetails platformChannelSpecifics =
+                NotificationDetails(android: androidPlatformChannelSpecifics);
+            await flutterLocalNotificationsPlugin.show(
+                0,
+                "CHYBA PŘI OBJEDNÁVÁNÍ ${jidlo.nazev}",
+                e.toString(),
+                platformChannelSpecifics);
+          }
+        }
+      }
+      BackgroundFetch.finish(taskId);
+    }, (String taskId) async {
+      debugPrint("[BackgroundFetch] TASK TIMEOUT taskId: $taskId");
+      BackgroundFetch.finish(taskId);
+    });
+    debugPrint('[BackgroundFetch] úspěšně nakonfigurováno: $status');
+  }
+
   @override
   void initState() {
     super.initState();
     LoginManager.getDetails().then((r) async {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(Languages.of(context)!.errorContacting),
-          ),
-        );
-        goOffline();
+      if (Platform.isIOS) {
+        await flutterLocalNotificationsPlugin
+                .resolvePlatformSpecificImplementation<
+                    IOSFlutterLocalNotificationsPlugin>()
+                ?.requestPermissions(
+                  alert: true,
+                  badge: true,
+                  sound: true,
+                ) ??
+            false;
       }
-
       if (r != null) {
         showDialog(
             context: context,
@@ -121,6 +305,10 @@ class _LoginPageState extends State<LoginPage> {
             );
             return;
           }
+          var prefs = await SharedPreferences.getInstance();
+          if (prefs.getBool("autoburza") ?? false) {
+            nastavitPozadi();
+          }
           const storage = FlutterSecureStorage();
           var odsouhlasil = await storage.read(key: "oc_souhlas");
           if (odsouhlasil == null || odsouhlasil != "ano") {
@@ -144,7 +332,13 @@ class _LoginPageState extends State<LoginPage> {
               content: Text(Languages.of(context)!.corrupted),
             ),
           );
-        } catch (_) {
+        } catch (e) {
+          // DEBUG ODSTRANIT
+          showDialog(
+              context: context,
+              builder: (c) => SimpleDialog(
+                  title: Text("Chyba"), children: [Text(e.toString())]));
+
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -213,30 +407,6 @@ class _LoginPageState extends State<LoginPage> {
                   ]),
                   TextButton(
                       onPressed: () async {
-                        if (canteenControl.text.contains("http://")) {
-                          // kontrolujeme šifrované spojení
-                          var d = await showDialog<bool>(
-                              context: context,
-                              builder: (c) => AlertDialog(
-                                    title: Text(Languages.of(context)!.warning),
-                                    content: SingleChildScrollView(
-                                        child: Text(
-                                            Languages.of(context)!.httpLogin)),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, true),
-                                          child:
-                                              Text(Languages.of(context)!.yes)),
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, false),
-                                          child: Text(
-                                              Languages.of(context)!.noChange))
-                                    ],
-                                  ));
-                          if (!d!) return;
-                        }
                         if (!canteenControl.text.startsWith("https://") &&
                             !canteenControl.text.startsWith("http://")) {
                           canteenControl.text =
@@ -274,9 +444,10 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => JidelnicekPage(
-                                        canteen: canteen,
-                                      )),
+                                builder: (context) => JidelnicekPage(
+                                  canteen: canteen,
+                                ),
+                              ),
                             );
                           }
                         } on PlatformException {
@@ -286,7 +457,14 @@ class _LoginPageState extends State<LoginPage> {
                               content: Text(Languages.of(context)!.corrupted),
                             ),
                           );
-                        } on Exception catch (_) {
+                        
+                        } on Exception catch (e) {
+                          // TODO: DEBUG ODSTRANIT
+                          showDialog(
+                              context: context,
+                              builder: (c) => SimpleDialog(
+                                  title: Text("Chyba"),
+                                  children: [Text(e.toString())]));
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

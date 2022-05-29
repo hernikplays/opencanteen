@@ -206,4 +206,14 @@ class LanguageEn extends Languages {
   @override
   String get corrupted =>
       "The saved credentials seem to be corrupted, please try clearing the application's data.";
+
+  String get autoBurza =>
+      "Automatically order food from exchange when I didn't order one";
+
+  @override
+  String get autoburzaNeeds =>
+      "This function requires constant network connection and you need to have saved login details (using the 'Remember me' switch on the login page).";
+
+  @override
+  String get autoFound => "Successfully ordered food from exchange";
 }

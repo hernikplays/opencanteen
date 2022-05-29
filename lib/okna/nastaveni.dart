@@ -17,6 +17,7 @@ class _NastaveniState extends State<Nastaveni> {
   bool _ukladatOffline = false;
   bool _preskakovatVikend = false;
   bool _kontrolovatTyden = false;
+  bool _autoBurza = false;
 
   void najitNastaveni() async {
     var preferences = await SharedPreferences.getInstance();
@@ -24,6 +25,7 @@ class _NastaveniState extends State<Nastaveni> {
       _ukladatOffline = preferences.getBool("offline") ?? false;
       _preskakovatVikend = preferences.getBool("skip") ?? false;
       _kontrolovatTyden = preferences.getBool("tyden") ?? false;
+      _autoBurza = preferences.getBool("autoburza") ?? false;
     });
   }
 
@@ -88,6 +90,31 @@ class _NastaveniState extends State<Nastaveni> {
                       setState(() {
                         _kontrolovatTyden = value;
                         zmenitNastaveni("tyden", value);
+
+                Flexible(
+                  child: Text(Languages.of(context)!.autoBurza),
+                ),
+                Switch(
+                    value: _autoBurza,
+                    onChanged: (value) {
+                      if (value) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(Languages.of(context)!.warning),
+                            content:
+                                Text(Languages.of(context)!.autoburzaNeeds),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text(Languages.of(context)!.ok))
+                            ],
+                          ),
+                        );
+                      }
+                      setState(() {
+                        _autoBurza = value;
+                        zmenitNastaveni("autoburza", value);
                       });
                     })
               ],

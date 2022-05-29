@@ -1,3 +1,8 @@
+# 1.3.0
+- Přidat možnost automatického objednávání z burzy
+- Odstranit "connectivity_plus" knihovnu
+- Změnit launch na launchUrl kvůli změnám v knihovně
+- Nepodporovat instance s HTTP
 # 1.2.0
 - Přidat možnost zobrazení oznámení v případě neobjednaného jídla na příští týden
 - Přidat oznámení o rozbitých uložených údajích
