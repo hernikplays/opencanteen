@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -36,7 +37,30 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 */
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  HomeWidget.registerBackgroundCallback(backgroundCallback);
   runApp(const MyApp());
+}
+
+/// Volá se na práci s widgetem
+void backgroundCallback(Uri? uri) async {
+  if (uri != null && uri.host == 'update') {
+    String _obed = "Nic";
+    var d = await LoginManager.getDetails();
+    if (d != null) {
+      var c = Canteen(d["url"]!);
+      await c.login(d["user"]!, d["pass"]!);
+      var j = await c.jidelnicekDen();
+      try {
+        _obed = j.jidla.singleWhere((element) => element.objednano).nazev;
+      } catch (_) {
+        _obed = "Nic";
+      }
+    }
+    await HomeWidget.saveWidgetData<String>('_obed', _obed);
+    await HomeWidget.updateWidget(
+        name: 'AppWidgetProvider', iOSName: 'AppWidgetProvider');
+  }
 }
 
 class MyApp extends StatelessWidget {
