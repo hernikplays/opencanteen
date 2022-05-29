@@ -41,6 +41,8 @@ abstract class Languages {
 
   String get warning;
 
+  String get corrupted;
+
   // Jídelníček
 
   String get loading;
@@ -84,6 +86,8 @@ abstract class Languages {
   String get menu;
 
   String get balance;
+
+  String get noOrder;
 
   // Uvítací obrazovka
 
@@ -131,13 +135,15 @@ abstract class Languages {
 
   String get copyright;
 
-  // Settings
+  // Nastavení
 
   String get settings;
 
   String get saveOffline;
 
   String get skipWeekend;
+
+  String get checkOrdered;
 
   // Offline
   String get offline;

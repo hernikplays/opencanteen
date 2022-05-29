@@ -27,6 +27,26 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   String denTydne = "";
   double kredit = 0.0;
   bool _skipWeekend = false;
+
+  void kontrolaTyden(BuildContext context) async {
+    var prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("tyden") ?? false) {
+      // Zjistit jestli je objednáno na přístí týden
+      var pristi = den.add(const Duration(days: 7));
+      var jidelnicek = await widget.canteen.jidelnicekDen(den: pristi);
+      if (jidelnicek.jidla.isNotEmpty &&
+          !jidelnicek.jidla.any((element) => element.objednano == true)) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(Languages.of(context)!.noOrder),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> nactiJidlo() async {
     obsah = [const CircularProgressIndicator()];
     switch (den.weekday) {
@@ -270,6 +290,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
               );
             }
           }
+          kontrolaTyden(context);
         });
       });
     }).catchError((o) {

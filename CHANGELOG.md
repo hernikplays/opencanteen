@@ -1,3 +1,6 @@
+# 1.2.0
+- Přidat možnost zobrazení oznámení v případě neobjednaného jídla na příští týden
+- Přidat oznámení o rozbitých uložených údajích
 # 1.1.2
 - Přidat chybějící knihovnu do O Aplikaci (licence)
 # 1.1.1

@@ -16,12 +16,14 @@ class Nastaveni extends StatefulWidget {
 class _NastaveniState extends State<Nastaveni> {
   bool _ukladatOffline = false;
   bool _preskakovatVikend = false;
+  bool _kontrolovatTyden = false;
 
   void najitNastaveni() async {
     var preferences = await SharedPreferences.getInstance();
     setState(() {
       _ukladatOffline = preferences.getBool("offline") ?? false;
       _preskakovatVikend = preferences.getBool("skip") ?? false;
+      _kontrolovatTyden = preferences.getBool("tyden") ?? false;
     });
   }
 
@@ -72,6 +74,20 @@ class _NastaveniState extends State<Nastaveni> {
                       setState(() {
                         _preskakovatVikend = value;
                         zmenitNastaveni("skip", value);
+                      });
+                    })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(child: Text(Languages.of(context)!.checkOrdered)),
+                Switch(
+                    value: _kontrolovatTyden,
+                    onChanged: (value) {
+                      setState(() {
+                        _kontrolovatTyden = value;
+                        zmenitNastaveni("tyden", value);
                       });
                     })
               ],
