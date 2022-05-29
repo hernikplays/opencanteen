@@ -198,6 +198,15 @@ class LanguageEn extends Languages {
   String get next => "Next";
 
   @override
+  String get checkOrdered => "Check if I have ordered food for the next week";
+
+  @override
+  String get noOrder => "You did not order any food for the next week!";
+
+  @override
+  String get corrupted =>
+      "The saved credentials seem to be corrupted, please try clearing the application's data.";
+
   String get autoBurza =>
       "Automatically order food from exchange when I didn't order one";
 

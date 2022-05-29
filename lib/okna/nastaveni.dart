@@ -16,6 +16,7 @@ class Nastaveni extends StatefulWidget {
 class _NastaveniState extends State<Nastaveni> {
   bool _ukladatOffline = false;
   bool _preskakovatVikend = false;
+  bool _kontrolovatTyden = false;
   bool _autoBurza = false;
 
   void najitNastaveni() async {
@@ -23,6 +24,7 @@ class _NastaveniState extends State<Nastaveni> {
     setState(() {
       _ukladatOffline = preferences.getBool("offline") ?? false;
       _preskakovatVikend = preferences.getBool("skip") ?? false;
+      _kontrolovatTyden = preferences.getBool("tyden") ?? false;
       _autoBurza = preferences.getBool("autoburza") ?? false;
     });
   }
@@ -81,6 +83,14 @@ class _NastaveniState extends State<Nastaveni> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Flexible(child: Text(Languages.of(context)!.checkOrdered)),
+                Switch(
+                    value: _kontrolovatTyden,
+                    onChanged: (value) {
+                      setState(() {
+                        _kontrolovatTyden = value;
+                        zmenitNastaveni("tyden", value);
+
                 Flexible(
                   child: Text(Languages.of(context)!.autoBurza),
                 ),
