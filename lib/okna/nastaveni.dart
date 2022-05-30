@@ -47,42 +47,40 @@ class _NastaveniState extends State<Nastaveni> {
         title: Text(Languages.of(context)!.settings),
       ),
       body: Center(
-          child: SizedBox(
-        width: MediaQuery.of(context).size.width / 1.1,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(Languages.of(context)!.saveOffline),
-                Switch(
-                    value: _ukladatOffline,
-                    onChanged: (value) {
-                      setState(() {
-                        _ukladatOffline = value;
-                        cistit(value);
-                        zmenitNastaveni("offline", value);
-                      });
-                    })
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(Languages.of(context)!.skipWeekend),
-                Switch(
-                    value: _preskakovatVikend,
-                    onChanged: (value) {
-                      setState(() {
-                        _preskakovatVikend = value;
-                        zmenitNastaveni("skip", value);
-                      });
-                    })
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 1.1,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(Languages.of(context)!.saveOffline),
+                  Switch(
+                      value: _ukladatOffline,
+                      onChanged: (value) {
+                        setState(() {
+                          _ukladatOffline = value;
+                          cistit(value);
+                          zmenitNastaveni("offline", value);
+                        });
+                      })
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(Languages.of(context)!.skipWeekend),
+                  Switch(
+                      value: _preskakovatVikend,
+                      onChanged: (value) {
+                        setState(() {
+                          _preskakovatVikend = value;
+                          zmenitNastaveni("skip", value);
+                        });
+                      })
+                ],
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Flexible(child: Text(Languages.of(context)!.checkOrdered)),
                 Switch(
                     value: _kontrolovatTyden,
@@ -90,7 +88,10 @@ class _NastaveniState extends State<Nastaveni> {
                       setState(() {
                         _kontrolovatTyden = value;
                         zmenitNastaveni("tyden", value);
-
+                      });
+                    }),
+              ]),
+              Row(children: [
                 Flexible(
                   child: Text(Languages.of(context)!.autoBurza),
                 ),
@@ -117,11 +118,11 @@ class _NastaveniState extends State<Nastaveni> {
                         zmenitNastaveni("autoburza", value);
                       });
                     })
-              ],
-            )
-          ],
+              ])
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 

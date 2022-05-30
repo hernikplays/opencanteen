@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-=======
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -457,7 +456,6 @@ class _LoginPageState extends State<LoginPage> {
                               content: Text(Languages.of(context)!.corrupted),
                             ),
                           );
-                        
                         } on Exception catch (e) {
                           // TODO: DEBUG ODSTRANIT
                           showDialog(
