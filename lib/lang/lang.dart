@@ -145,6 +145,10 @@ abstract class Languages {
 
   String get checkOrdered;
 
+  String get notifyLunch;
+
+  String get notifyAt;
+
   // Offline
   String get offline;
 

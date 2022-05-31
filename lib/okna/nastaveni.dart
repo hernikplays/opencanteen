@@ -17,6 +17,8 @@ class _NastaveniState extends State<Nastaveni> {
   bool _ukladatOffline = false;
   bool _preskakovatVikend = false;
   bool _kontrolovatTyden = false;
+  bool _oznameniObed = false;
+  String? _oznameniCas;
 
   void najitNastaveni() async {
     var preferences = await SharedPreferences.getInstance();
@@ -24,6 +26,8 @@ class _NastaveniState extends State<Nastaveni> {
       _ukladatOffline = preferences.getBool("offline") ?? false;
       _preskakovatVikend = preferences.getBool("skip") ?? false;
       _kontrolovatTyden = preferences.getBool("tyden") ?? false;
+      _oznameniObed = preferences.getBool("oznamit") ?? false;
+      _oznameniCas = preferences.getString("oznameni_cas");
     });
   }
 
@@ -91,6 +95,26 @@ class _NastaveniState extends State<Nastaveni> {
                       });
                     })
               ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(Languages.of(context)!.skipWeekend),
+                Switch(
+                    value: _oznameniObed,
+                    onChanged: (value) {
+                      setState(() {
+                        _oznameniObed = value;
+                        zmenitNastaveni("oznamit", value);
+                      });
+                    })
+              ],
+            ),
+            Text(Languages.of(context)!.notifyAt),
+            TimePickerDialog(
+              initialTime: (_oznameniCas == null)
+                  ? TimeOfDay.now()
+                  : TimeOfDay.fromDateTime(DateTime.parse(_oznameniCas!)),
             )
           ],
         ),

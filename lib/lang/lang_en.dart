@@ -206,4 +206,10 @@ class LanguageEn extends Languages {
   @override
   String get corrupted =>
       "The saved credentials seem to be corrupted, please try clearing the application's data.";
+
+  @override
+  String get notifyAt => "Send notification at";
+
+  @override
+  String get notifyLunch => "Send a notification with meal info";
 }

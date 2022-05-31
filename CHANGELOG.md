@@ -1,3 +1,6 @@
+# 1.3.0
+- Odstranit connectivity_plus
+- Přidat možnost oznámení s info o obědu v daný čas
 # 1.2.0
 - Přidat možnost zobrazení oznámení v případě neobjednaného jídla na příští týden
 - Přidat oznámení o rozbitých uložených údajích
