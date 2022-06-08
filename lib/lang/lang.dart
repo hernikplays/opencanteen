@@ -156,4 +156,8 @@ abstract class Languages {
 
   // Oznámit před obědem
   String get lunchNotif;
+
+  String get error;
+
+  String get needRemember;
 }

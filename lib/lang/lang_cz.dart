@@ -217,4 +217,11 @@ class LanguageCz extends Languages {
 
   @override
   String get lunchNotif => "Dnes máte objednáno";
+
+  @override
+  String get error => "Chyba";
+
+  @override
+  String get needRemember =>
+      "Musíte své přihlašovací údaje uložit na přihlašovací obrazovce";
 }

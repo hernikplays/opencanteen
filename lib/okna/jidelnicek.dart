@@ -428,16 +428,23 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                       child: Text(
                           "${den.day}. ${den.month}. ${den.year} - $denTydne")),
                   IconButton(
-                      onPressed: () {
-                        setState(() {
-                          den = den.add(const Duration(days: 1));
-                          if (den.weekday == 6 && _skipWeekend) {
-                            den = den.add(const Duration(days: 2));
-                          }
-                          nactiJidlo();
-                        });
-                      },
-                      icon: const Icon(Icons.arrow_right)),
+                    onPressed: () {
+                      setState(() {
+                        den = den.add(const Duration(days: 1));
+                        if (den.weekday == 6 && _skipWeekend) {
+                          den = den.add(const Duration(days: 2));
+                        }
+                        nactiJidlo();
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_right),
+                  ),
+                  IconButton(
+                      onPressed: () => setState(() {
+                            den = DateTime.now();
+                            nactiJidlo();
+                          }),
+                      icon: const Icon(Icons.calendar_today))
                 ]),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
