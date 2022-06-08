@@ -15,6 +15,7 @@ import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
@@ -40,6 +41,54 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+void oznamitPredem(SharedPreferences prefs, {Languages? l}) async {
+  String title;
+  if (l == null) {
+    String locale = Intl.getCurrentLocale();
+    switch (locale) {
+      case "cs_CZ":
+        title = LanguageCz().lunchNotif;
+        break;
+      default:
+        title = LanguageEn().lunchNotif;
+    }
+  } else {
+    title = l.lunchNotif;
+  }
+  if (prefs.getBool("offline") ?? false) {
+    // TODO možnost brát z offline dat
+  } else {
+    // bere online
+    var d = await LoginManager.getDetails(); // získat údaje
+    if (d != null) {
+      var c = Canteen(d["url"]!);
+      if (await c.login(d["user"]!, d["pass"]!)) {
+        var jidla = await c.jidelnicekDen();
+        try {
+          var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
+          var ted = TimeOfDay.now();
+          var kdy = prefs.getString("oznameni_cas");
+          var cas = TimeOfDay.fromDateTime(DateTime.parse(kdy!));
+          if (ted.hour == cas.hour && ted.minute == cas.minute) {
+            const AndroidNotificationDetails androidPlatformChannelSpecifics =
+              AndroidNotificationDetails('opencanteen', 'predobjedem',
+                  channelDescription: 'Oznámení o dnešním jídle',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'today meal');
+          const NotificationDetails platformChannelSpecifics =
+              NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+              0, title, "${jidlo.nazev} - ${jidlo.varianta}", platformChannelSpecifics);
+          }
+        } on StateError catch (_) {
+          // nenalezeno
+        }
+      }
+    }
+  }
+}
+
 // Pouze pro Android
 void backgroundFetchHeadlessTask(HeadlessTask task) async {
   String taskId = task.taskId;
@@ -55,15 +104,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
   if (prefs.getBool("oznamit") ?? false) {
     // Oznámení před obědem
-    if (prefs.getBool("offline") ?? false) {
-      // TODO možnost brát z offline dat
-    } else {
-      // bere online
-      var d = await LoginManager.getDetails(); // získat údaje
-      if (d != null) {
-        // TODO
-      }
-    }
+    oznamitPredem(prefs);
   }
   BackgroundFetch.finish(taskId);
 }

@@ -153,4 +153,7 @@ abstract class Languages {
   String get offline;
 
   String get mustLogout;
+
+  // Oznámit před obědem
+  String get lunchNotif;
 }

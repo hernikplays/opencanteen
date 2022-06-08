@@ -214,4 +214,7 @@ class LanguageCz extends Languages {
   @override
   String get notifyLunch =>
       "V určený čas odeslat notifikaci s informacemi o obědě";
+
+  @override
+  String get lunchNotif => "Dnes máte objednáno";
 }

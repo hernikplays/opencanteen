@@ -212,4 +212,7 @@ class LanguageEn extends Languages {
 
   @override
   String get notifyLunch => "Send a notification with meal info";
+  
+  @override
+  String get lunchNotif => "Today's ordered meal";
 }
