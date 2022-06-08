@@ -145,8 +145,19 @@ abstract class Languages {
 
   String get checkOrdered;
 
+  String get notifyLunch;
+
+  String get notifyAt;
+
   // Offline
   String get offline;
 
   String get mustLogout;
+
+  // Oznámit před obědem
+  String get lunchNotif;
+
+  String get error;
+
+  String get needRemember;
 }

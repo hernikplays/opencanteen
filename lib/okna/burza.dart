@@ -1,13 +1,16 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:opencanteen/util.dart';
 
 import '../lang/lang.dart';
 import '../main.dart';
 
 class BurzaPage extends StatefulWidget {
-  const BurzaPage({Key? key, required this.canteen}) : super(key: key);
+  const BurzaPage({Key? key, required this.canteen, required this.n})
+      : super(key: key);
   final Canteen canteen;
+  final FlutterLocalNotificationsPlugin n;
   @override
   State<BurzaPage> createState() => _BurzaPageState();
 }
@@ -112,7 +115,7 @@ class _BurzaPageState extends State<BurzaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, 3),
+      drawer: drawerGenerator(context, widget.canteen, 3, widget.n),
       appBar: AppBar(
         title: Text(Languages.of(context)!.exchange),
       ),

@@ -207,4 +207,21 @@ class LanguageCz extends Languages {
   @override
   String get corrupted =>
       "Nastal problém s dešifrováním uložených údajů, prosím zkuste vyčistit veškerá data této aplikace.";
+
+  @override
+  String get notifyAt => "Odeslat v";
+
+  @override
+  String get notifyLunch =>
+      "V určený čas odeslat notifikaci s informacemi o obědě";
+
+  @override
+  String get lunchNotif => "Dnes máte objednáno";
+
+  @override
+  String get error => "Chyba";
+
+  @override
+  String get needRemember =>
+      "Musíte své přihlašovací údaje uložit na přihlašovací obrazovce";
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -87,9 +86,6 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
     } else if (value == Languages.of(context)!.about) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
-    } else if (value == Languages.of(context)!.settings) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const Nastaveni()));
     }
   }
 
@@ -111,7 +107,6 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
-                Languages.of(context)!.settings,
                 Languages.of(context)!.about,
                 Languages.of(context)!.signOut
               }.map((String choice) {

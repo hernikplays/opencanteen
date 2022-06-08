@@ -44,11 +44,6 @@ class _AboutPageState extends State<AboutPage> {
                   "https://github.com/mogol/flutter_secure_storage/blob/develop/flutter_secure_storage/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
-                  "connectivity_plus",
-                  "Copyright 2017 The Chromium Authors. All rights reserved, licence BSD 3-Clause",
-                  "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/LICENSE"),
-              const SizedBox(height: 10),
-              cudlik(
                   "url_launcher",
                   "Copyright 2013 The Flutter Authors. All rights reserved, licence BSD 3-Clause",
                   "https://github.com/flutter/plugins/blob/main/packages/url_launcher/url_launcher/LICENSE"),
@@ -60,18 +55,33 @@ class _AboutPageState extends State<AboutPage> {
               const SizedBox(height: 10),
               cudlik(
                   "path_provider",
-                  "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
+                  "Copyright 2013 The Flutter Authors. All rights reserved, licence BSD-3-Clause",
                   "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
                   "shared_preferences",
-                  "Copyright 2013 The Flutter Authors. All rights reserved., licence BSD-3-Clause",
+                  "Copyright 2013 The Flutter Authors. All rights reserved, licence BSD-3-Clause",
                   "https://github.com/flutter/plugins/blob/main/packages/path_provider/path_provider/LICENSE"),
               const SizedBox(height: 10),
               cudlik(
                   "introduction_screen",
                   "Copyright 2019 Jean-Charles Moussé, licence MIT",
-                  "https://github.com/Pyozer/introduction_screen/blob/master/LICENSE")
+                  "https://github.com/Pyozer/introduction_screen/blob/master/LICENSE"),
+              const SizedBox(height: 10),
+              cudlik(
+                  "flutter_local_notifications",
+                  "Copyright 2018 Michael Bui. All rights reserved, licence BSD-3-Clause",
+                  "https://github.com/MaikuB/flutter_local_notifications/blob/master/flutter_local_notifications/LICENSE"),
+              const SizedBox(height: 10),
+              cudlik(
+                  "timezone",
+                  "Copyright 2014, timezone project authors, licence BSD-2-Clause",
+                  "https://github.com/srawlins/timezone/blob/master/LICENSE"),
+              const SizedBox(height: 10),
+              cudlik(
+                  "flutter_native_timezone",
+                  "Copyright 2019 pinkfish, licence Apache 2.0",
+                  "https://github.com/pinkfish/flutter_native_timezone/blob/master/LICENSE"),
             ]),
           ),
         ),

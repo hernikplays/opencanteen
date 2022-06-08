@@ -3,16 +3,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:opencanteen/okna/offline_jidelnicek.dart';
 import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
@@ -35,14 +40,102 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
+  String title;
+
+  String locale = Intl.getCurrentLocale();
+  switch (locale) {
+    case "cs_CZ":
+      title = LanguageCz().lunchNotif;
+      break;
+    default:
+      title = LanguageEn().lunchNotif;
+  }
+
+  if (prefs.getBool("offline") ?? false) {
+    // TODO možnost brát z offline dat
+  } else {
+    // bere online
+    var d = await LoginManager.getDetails(); // získat údaje
+    if (d != null) {
+      var c = Canteen(d["url"]!);
+      if (await c.login(d["user"]!, d["pass"]!)) {
+        var jidla = await c.jidelnicekDen();
+        try {
+          var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
+          var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
+          const AndroidNotificationDetails androidSpec =
+              AndroidNotificationDetails('opencanteen', 'predobjedem',
+                  channelDescription: 'Oznámení o dnešním jídle',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'today meal');
+          const IOSNotificationDetails iOSpec =
+              IOSNotificationDetails(presentAlert: true, presentBadge: true);
+          await flutterLocalNotificationsPlugin.zonedSchedule(
+              0,
+              title,
+              "${jidlo.nazev} - ${jidlo.varianta}",
+              tz.TZDateTime.from(
+                  casNaDate(
+                    TimeOfDay(hour: kdy.hour, minute: kdy.minute),
+                  ),
+                  l),
+              const NotificationDetails(android: androidSpec, iOS: iOSpec),
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation:
+                  UILocalNotificationDateInterpretation.absoluteTime);
+        } on StateError catch (_) {
+          // nenalezeno
+        }
+      }
+    }
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  var l = tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
+  tz.setLocalLocation(l);
+
+  var prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool("oznamit") ?? false) {
+    oznamitPredem(prefs, l);
+  }
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('notif_icon');
+
+  final IOSInitializationSettings initializationSettingsIOS =
+      IOSInitializationSettings(onDidReceiveLocalNotification: (
+    int id,
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
+    debugPrint(body);
+  });
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String? payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+  });
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -82,18 +175,19 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     LoginManager.getDetails().then((r) async {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(Languages.of(context)!.errorContacting),
-          ),
-        );
-        goOffline();
+      if (Platform.isIOS) {
+        // žádat o oprávnění na iOS
+        await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin>()
+            ?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
       }
-
       if (r != null) {
+        // Automaticky přihlásit
         showDialog(
             context: context,
             barrierDismissible: false,
@@ -127,14 +221,14 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (c) => WelcomeScreen(canteen: canteen)));
+                    builder: (c) => WelcomeScreen(
+                        canteen: canteen, n: flutterLocalNotificationsPlugin)));
           } else {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => JidelnicekPage(
-                        canteen: canteen,
-                      )),
+                      canteen: canteen, n: flutterLocalNotificationsPlugin)),
             );
           }
         } on PlatformException {
@@ -268,15 +362,16 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (c) =>
-                                        WelcomeScreen(canteen: canteen)));
+                                    builder: (c) => WelcomeScreen(
+                                        canteen: canteen,
+                                        n: flutterLocalNotificationsPlugin)));
                           } else {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => JidelnicekPage(
-                                        canteen: canteen,
-                                      )),
+                                      canteen: canteen,
+                                      n: flutterLocalNotificationsPlugin)),
                             );
                           }
                         } on PlatformException {
