@@ -1,14 +1,17 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:opencanteen/lang/lang.dart';
 import 'package:opencanteen/okna/jidelnicek.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key, required this.canteen}) : super(key: key);
+  const WelcomeScreen({Key? key, required this.canteen, required this.n})
+      : super(key: key);
 
   final Canteen canteen;
+  final FlutterLocalNotificationsPlugin n;
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
@@ -67,7 +70,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           const storage = FlutterSecureStorage();
           await storage.write(key: "oc_souhlas", value: "ano");
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (c) => JidelnicekPage(canteen: widget.canteen)));
+              builder: (c) =>
+                  JidelnicekPage(canteen: widget.canteen, n: widget.n)));
         },
       ),
     );

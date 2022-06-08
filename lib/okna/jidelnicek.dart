@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/util.dart';
@@ -15,8 +16,10 @@ import '../main.dart';
 import 'about.dart';
 
 class JidelnicekPage extends StatefulWidget {
-  const JidelnicekPage({Key? key, required this.canteen}) : super(key: key);
+  const JidelnicekPage({Key? key, required this.canteen, required this.n})
+      : super(key: key);
   final Canteen canteen;
+  final FlutterLocalNotificationsPlugin n;
   @override
   State<JidelnicekPage> createState() => _JidelnicekPageState();
 }
@@ -301,7 +304,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     });
   }
 
-  void kliknuti(String value, BuildContext context) {
+  void kliknuti(
+      String value, BuildContext context, FlutterLocalNotificationsPlugin n) {
     if (value == Languages.of(context)!.signOut) {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
@@ -314,7 +318,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
     } else if (value == Languages.of(context)!.settings) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const Nastaveni()));
+          context, MaterialPageRoute(builder: (c) => Nastaveni(n: n)));
     }
   }
 
@@ -365,12 +369,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, 1),
+      drawer: drawerGenerator(context, widget.canteen, 1, widget.n),
       appBar: AppBar(
         title: Text(Languages.of(context)!.menu),
         actions: [
           PopupMenuButton(
-            onSelected: ((String value) => kliknuti(value, context)),
+            onSelected: ((String value) => kliknuti(value, context, widget.n)),
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,

@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
@@ -16,6 +16,8 @@ import 'package:opencanteen/util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
@@ -41,20 +43,18 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-void oznamitPredem(SharedPreferences prefs, {Languages? l}) async {
+void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
   String title;
-  if (l == null) {
-    String locale = Intl.getCurrentLocale();
-    switch (locale) {
-      case "cs_CZ":
-        title = LanguageCz().lunchNotif;
-        break;
-      default:
-        title = LanguageEn().lunchNotif;
-    }
-  } else {
-    title = l.lunchNotif;
+
+  String locale = Intl.getCurrentLocale();
+  switch (locale) {
+    case "cs_CZ":
+      title = LanguageCz().lunchNotif;
+      break;
+    default:
+      title = LanguageEn().lunchNotif;
   }
+
   if (prefs.getBool("offline") ?? false) {
     // TODO možnost brát z offline dat
   } else {
@@ -66,21 +66,28 @@ void oznamitPredem(SharedPreferences prefs, {Languages? l}) async {
         var jidla = await c.jidelnicekDen();
         try {
           var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
-          var ted = TimeOfDay.now();
-          var kdy = prefs.getString("oznameni_cas");
-          var cas = TimeOfDay.fromDateTime(DateTime.parse(kdy!));
-          if (ted.hour == cas.hour && ted.minute == cas.minute) {
-            const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
+          const AndroidNotificationDetails androidSpec =
               AndroidNotificationDetails('opencanteen', 'predobjedem',
                   channelDescription: 'Oznámení o dnešním jídle',
                   importance: Importance.max,
                   priority: Priority.high,
                   ticker: 'today meal');
-          const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          await flutterLocalNotificationsPlugin.show(
-              0, title, "${jidlo.nazev} - ${jidlo.varianta}", platformChannelSpecifics);
-          }
+          const IOSNotificationDetails iOSpec =
+              IOSNotificationDetails(presentAlert: true, presentBadge: true);
+          await flutterLocalNotificationsPlugin.zonedSchedule(
+              0,
+              title,
+              "${jidlo.nazev} - ${jidlo.varianta}",
+              tz.TZDateTime.from(
+                  casNaDate(
+                    TimeOfDay(hour: kdy.hour, minute: kdy.minute),
+                  ),
+                  l),
+              const NotificationDetails(android: androidSpec, iOS: iOSpec),
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation:
+                  UILocalNotificationDateInterpretation.absoluteTime);
         } on StateError catch (_) {
           // nenalezeno
         }
@@ -89,46 +96,29 @@ void oznamitPredem(SharedPreferences prefs, {Languages? l}) async {
   }
 }
 
-// Pouze pro Android
-void backgroundFetchHeadlessTask(HeadlessTask task) async {
-  String taskId = task.taskId;
-  bool isTimeout = task.timeout;
-  if (isTimeout) {
-    // Timeout
-    debugPrint("[BackgroundFetch] Headless task má time-out: $taskId");
-    BackgroundFetch.finish(taskId);
-    return;
-  }
-  var prefs = await SharedPreferences.getInstance();
-  debugPrint('[BackgroundFetch] Přišel headless event.');
-
-  if (prefs.getBool("oznamit") ?? false) {
-    // Oznámení před obědem
-    oznamitPredem(prefs);
-  }
-  BackgroundFetch.finish(taskId);
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  var l = tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
+  tz.setLocalLocation(l);
+
+  var prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool("oznamit") ?? false) {
+    oznamitPredem(prefs, l);
+  }
+
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('notif_icon');
 
-  /// Note: permissions aren't requested here just to demonstrate that can be
-  /// done later
   final IOSInitializationSettings initializationSettingsIOS =
-      IOSInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-          onDidReceiveLocalNotification: (
-            int id,
-            String? title,
-            String? body,
-            String? payload,
-          ) async {
-            debugPrint(body);
-          });
+      IOSInitializationSettings(onDidReceiveLocalNotification: (
+    int id,
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
+    debugPrint(body);
+  });
 
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
@@ -141,7 +131,6 @@ void main() async {
     }
   });
   runApp(const MyApp());
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatelessWidget {
@@ -181,32 +170,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passControl = TextEditingController();
   TextEditingController canteenControl = TextEditingController();
   bool rememberMe = false;
-
-  void nastavitPozadi() async {
-    // Configure BackgroundFetch.
-    int status = await BackgroundFetch.configure(
-        BackgroundFetchConfig(
-            minimumFetchInterval: 15,
-            stopOnTerminate: false,
-            enableHeadless: true,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresStorageNotLow: false,
-            requiresDeviceIdle: false,
-            requiredNetworkType: NetworkType.ANY), (String taskId) async {
-      // Callback
-      debugPrint("[BackgroundFetch] Event získán $taskId");
-      var d = await LoginManager.getDetails();
-      if (d != null) {
-        // TODO
-      }
-      BackgroundFetch.finish(taskId);
-    }, (String taskId) async {
-      debugPrint("[BackgroundFetch] TASK TIMEOUT taskId: $taskId");
-      BackgroundFetch.finish(taskId);
-    });
-    debugPrint('[BackgroundFetch] úspěšně nakonfigurováno: $status');
-  }
 
   @override
   void initState() {
@@ -254,19 +217,18 @@ class _LoginPageState extends State<LoginPage> {
           }
           const storage = FlutterSecureStorage();
           var odsouhlasil = await storage.read(key: "oc_souhlas");
-          nastavitPozadi();
           if (odsouhlasil == null || odsouhlasil != "ano") {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (c) => WelcomeScreen(canteen: canteen)));
+                    builder: (c) => WelcomeScreen(
+                        canteen: canteen, n: flutterLocalNotificationsPlugin)));
           } else {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => JidelnicekPage(
-                        canteen: canteen,
-                      )),
+                      canteen: canteen, n: flutterLocalNotificationsPlugin)),
             );
           }
         } on PlatformException {
@@ -392,7 +354,6 @@ class _LoginPageState extends State<LoginPage> {
                             LoginManager.setDetails(userControl.text,
                                 passControl.text, canteenControl.text);
                           }
-                          nastavitPozadi();
                           // souhlas
                           const storage = FlutterSecureStorage();
                           var odsouhlasil =
@@ -401,15 +362,16 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (c) =>
-                                        WelcomeScreen(canteen: canteen)));
+                                    builder: (c) => WelcomeScreen(
+                                        canteen: canteen,
+                                        n: flutterLocalNotificationsPlugin)));
                           } else {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => JidelnicekPage(
-                                        canteen: canteen,
-                                      )),
+                                      canteen: canteen,
+                                      n: flutterLocalNotificationsPlugin)),
                             );
                           }
                         } on PlatformException {

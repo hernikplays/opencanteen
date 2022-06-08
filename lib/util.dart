@@ -1,11 +1,13 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:opencanteen/okna/burza.dart';
 
 import 'lang/lang.dart';
 import 'okna/jidelnicek.dart';
 
-Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
+Drawer drawerGenerator(BuildContext context, Canteen canteen, int p,
+    FlutterLocalNotificationsPlugin n) {
   Drawer drawer = const Drawer();
   switch (p) {
     case 1:
@@ -28,7 +30,7 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BurzaPage(canteen: canteen),
+                  builder: (context) => BurzaPage(canteen: canteen, n: n),
                 ),
               ),
             ),
@@ -50,7 +52,7 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (c) => JidelnicekPage(canteen: canteen))),
+                      builder: (c) => JidelnicekPage(canteen: canteen, n: n))),
             ),
             ListTile(
               leading: const Icon(Icons.store),
@@ -80,4 +82,11 @@ class OfflineJidlo {
       required this.cena,
       required this.naBurze,
       required this.den});
+}
+
+/// Vytvoří [DateTime] z [TimeOfDay]
+DateTime casNaDate(TimeOfDay c) {
+  var now = DateTime.now();
+  return DateTime.parse(
+      "${now.year}-${(now.month < 10 ? "0" : "") + now.month.toString()}-${(now.day < 10 ? "0" : "") + now.day.toString()} ${(c.hour < 10 ? "0" : "") + c.hour.toString()}:${(c.minute < 10 ? "0" : "") + c.minute.toString()}:00");
 }

@@ -87,9 +87,6 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
     } else if (value == Languages.of(context)!.about) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
-    } else if (value == Languages.of(context)!.settings) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const Nastaveni()));
     }
   }
 
@@ -111,7 +108,6 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
-                Languages.of(context)!.settings,
                 Languages.of(context)!.about,
                 Languages.of(context)!.signOut
               }.map((String choice) {
