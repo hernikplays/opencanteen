@@ -1,3 +1,7 @@
+# 1.3.1
+- Odstranit zbytečné podmínky
+- Přidat oznámení o optimalizaci baterie
+- Změnit ID kanálu pro android oznámení
 # 1.3.0
 - Odstranit connectivity_plus
 - Přidat možnost oznámení s info o obědu v daný čas

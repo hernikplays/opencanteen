@@ -68,7 +68,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
         var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
         var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
         const AndroidNotificationDetails androidSpec =
-            AndroidNotificationDetails('opencanteen', 'predobjedem',
+            AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
                 channelDescription: 'Oznámení o dnešním jídle',
                 importance: Importance.max,
                 priority: Priority.high,
