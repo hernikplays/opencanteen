@@ -143,6 +143,23 @@ class _NastaveniState extends State<Nastaveni> {
                         setState(() {
                           _oznameniObed = value;
                           if (_oznameniObed) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title:
+                                          Text(Languages.of(context)!.warning),
+                                      content: Text(
+                                          Languages.of(context)!.notifyWarning),
+                                      actions: [
+                                        TextButton(
+                                          child:
+                                              Text(Languages.of(context)!.ok),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    ));
                             vytvoritOznameni(casNaDate(_oznameniCas));
                           }
                           zmenitNastaveni("oznamit", value);

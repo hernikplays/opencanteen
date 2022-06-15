@@ -149,6 +149,8 @@ abstract class Languages {
 
   String get notifyAt;
 
+  String get notifyWarning;
+
   // Offline
   String get offline;
 

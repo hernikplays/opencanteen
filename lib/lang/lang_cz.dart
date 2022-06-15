@@ -224,4 +224,8 @@ class LanguageCz extends Languages {
   @override
   String get needRemember =>
       "Musíte své přihlašovací údaje uložit na přihlašovací obrazovce";
+
+  @override
+  String get notifyWarning =>
+      "Vaše zařízení může mít povolenou optimalizaci baterie, což může způsobovat neodesílání oznámení. Zkontrolujte nastavení ve vašem zařízení.";
 }

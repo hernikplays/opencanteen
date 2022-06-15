@@ -55,44 +55,44 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
       title = LanguageEn().lunchNotif;
   }
 
-  if (prefs.getBool("offline") ?? false) {
+  /*if (prefs.getBool("offline") ?? false) {
     // TODO možnost brát z offline dat
-  } else {
-    // bere online
-    var d = await LoginManager.getDetails(); // získat údaje
-    if (d != null) {
-      var c = Canteen(d["url"]!);
-      if (await c.login(d["user"]!, d["pass"]!)) {
-        var jidla = await c.jidelnicekDen();
-        try {
-          var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
-          var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
-          const AndroidNotificationDetails androidSpec =
-              AndroidNotificationDetails('opencanteen', 'predobjedem',
-                  channelDescription: 'Oznámení o dnešním jídle',
-                  importance: Importance.max,
-                  priority: Priority.high,
-                  ticker: 'today meal');
-          const IOSNotificationDetails iOSpec =
-              IOSNotificationDetails(presentAlert: true, presentBadge: true);
-          await flutterLocalNotificationsPlugin.zonedSchedule(
-              0,
-              title,
-              "${jidlo.nazev} - ${jidlo.varianta}",
-              tz.TZDateTime.from(
-                  casNaDate(
-                    TimeOfDay(hour: kdy.hour, minute: kdy.minute),
-                  ),
-                  l),
-              const NotificationDetails(android: androidSpec, iOS: iOSpec),
-              androidAllowWhileIdle: true,
-              uiLocalNotificationDateInterpretation:
-                  UILocalNotificationDateInterpretation.absoluteTime);
-        } on StateError catch (_) {
-          // nenalezeno
-        }
+  } else {*/
+  // bere online
+  var d = await LoginManager.getDetails(); // získat údaje
+  if (d != null) {
+    var c = Canteen(d["url"]!);
+    if (await c.login(d["user"]!, d["pass"]!)) {
+      var jidla = await c.jidelnicekDen();
+      try {
+        var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
+        var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
+        const AndroidNotificationDetails androidSpec =
+            AndroidNotificationDetails('opencanteen', 'predobjedem',
+                channelDescription: 'Oznámení o dnešním jídle',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: 'today meal');
+        const IOSNotificationDetails iOSpec =
+            IOSNotificationDetails(presentAlert: true, presentBadge: true);
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+            0,
+            title,
+            "${jidlo.nazev} - ${jidlo.varianta}",
+            tz.TZDateTime.from(
+                casNaDate(
+                  TimeOfDay(hour: kdy.hour, minute: kdy.minute),
+                ),
+                l),
+            const NotificationDetails(android: androidSpec, iOS: iOSpec),
+            androidAllowWhileIdle: true,
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime);
+      } on StateError catch (_) {
+        // nenalezeno
       }
     }
+    // }
   }
 }
 
