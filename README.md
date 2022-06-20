@@ -26,4 +26,4 @@ Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/op
 </div>
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen.svg?type=large)](https://app.fossa.com/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_large)
