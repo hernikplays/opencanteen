@@ -65,8 +65,12 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
     if (await c.login(d["user"]!, d["pass"]!)) {
       var jidla = await c.jidelnicekDen();
       try {
-        var jidlo = jidla.jidla.singleWhere((element) => element.objednano);
-        var kdy = DateTime.parse(prefs.getString("oznameni_cas")!);
+        var jidlo = jidla.jidla.singleWhere(
+            (element) => element.objednano); // získá objednané jídlo
+        var kdy = DateTime.parse(prefs.getString(
+            "oznameni_cas")!); // uložíme čas, kdy se má odeslat oznámení
+
+        // data o oznámení
         const AndroidNotificationDetails androidSpec =
             AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
                 channelDescription: 'Oznámení o dnešním jídle',
@@ -75,6 +79,8 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
                 ticker: 'today meal');
         const IOSNotificationDetails iOSpec =
             IOSNotificationDetails(presentAlert: true, presentBadge: true);
+
+        // naplánovat
         await flutterLocalNotificationsPlugin.zonedSchedule(
             0,
             title,
@@ -107,6 +113,7 @@ void main() async {
     oznamitPredem(prefs, l);
   }
 
+  // nastavit oznámení
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('notif_icon');
 
@@ -130,6 +137,8 @@ void main() async {
       debugPrint('notification payload: $payload');
     }
   });
+
+  // spustit aplikaci
   runApp(const MyApp());
 }
 
@@ -400,6 +409,7 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
+  /// Získá offline soubor a zobrazí údaje
   void goOffline() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     var den = DateTime.now();
