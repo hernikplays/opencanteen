@@ -89,6 +89,8 @@ abstract class Languages {
 
   String get noOrder;
 
+  String get signOutWarn;
+
   // Uvítací obrazovka
 
   String get welcome;

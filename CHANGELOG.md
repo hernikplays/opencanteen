@@ -2,6 +2,8 @@
 - Odstranit zbytečné podmínky
 - Přidat oznámení o optimalizaci baterie
 - Změnit ID kanálu pro android oznámení
+- Změnit ikonu pro přesunutí na aktuální den
+- Přidat varování před odhlášením
 # 1.3.0
 - Odstranit connectivity_plus
 - Přidat možnost oznámení s info o obědu v daný čas

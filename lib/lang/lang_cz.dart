@@ -228,4 +228,7 @@ class LanguageCz extends Languages {
   @override
   String get notifyWarning =>
       "Vaše zařízení může mít povolenou optimalizaci baterie, což může způsobovat neodesílání oznámení. Zkontrolujte nastavení ve vašem zařízení.";
+
+  @override
+  String get signOutWarn => "Opravdu se chcete odhlásit?";
 }

@@ -226,4 +226,7 @@ class LanguageEn extends Languages {
   @override
   String get notifyWarning =>
       "Your device may have battery optimization enabled. This may cause notifications to not be sent. Check the application info in your device's settings.";
+
+  @override
+  String get signOutWarn => "Do you really want to sign out?";
 }
