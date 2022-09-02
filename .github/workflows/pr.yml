@@ -25,9 +25,9 @@ jobs:
   branch:
     name: Uzavřít PRy mimo dev větev
     needs: main
-    if: github.base_ref != 'dev' && github.actor != 'hernikplays'
+    if: github.base_ref == 'main' && github.actor != 'hernikplays'
     runs-on: ubuntu-latest
     steps:
       - uses: superbrothers/close-pull-request@v3
         with:
-          comment: "Všechny pull requesty by měly směřovat na `dev` větev. Pokud je tohle chyba, napište správci repozitáře."
+          comment: "Všechny pull requesty by měly směřovat na jinou větev, než `main`. Pokud je tohle chyba, napište správci repozitáře."

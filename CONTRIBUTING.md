@@ -29,7 +29,7 @@ Budete-li chtít nahrát změny zpět do vašeho GitHub repozitáře, buďto je 
 #### Přidání kódu zpět do repozitáře
 Jakmile máte přidáno všechno, je na čase otevřít [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) v našem repozitáři.
 
-Všechny pull requesty **musí** být směřovány na větev `dev` a jejích název musí odpovídat [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) formátu, jinak budou automaticky zamítnuty.
+Všechny pull requesty **musí** být směřovány na **jinou větev, než `main`** a jejích název musí odpovídat [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) formátu, jinak budou automaticky zamítnuty.
 
 Pokuste se v těle pull requestu popsat jaké funkce přidáváte nebo opravujete, případně přidejte odkaz na otevřený problém, pokud s ním souvisí.
 
