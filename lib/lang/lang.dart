@@ -89,6 +89,8 @@ abstract class Languages {
 
   String get noOrder;
 
+  String get signOutWarn;
+
   // Uvítací obrazovka
 
   String get welcome;
@@ -148,6 +150,8 @@ abstract class Languages {
   String get notifyLunch;
 
   String get notifyAt;
+
+  String get notifyWarning;
 
   // Offline
   String get offline;

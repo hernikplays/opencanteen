@@ -1,3 +1,11 @@
+# 1.3.1
+- Odstranit zbytečné podmínky
+- Přidat oznámení o optimalizaci baterie
+- Změnit ID kanálu pro android oznámení
+- Změnit ikonu pro přesunutí na aktuální den
+- Přidat varování před odhlášením
+- Při prvním zapnutí nastavovat výchozí čas pro oznámení o hodinu dopředu
+- V oznámení zobrazit nejdřív variantu a pak název jídla
 # 1.3.0
 - Odstranit connectivity_plus
 - Přidat možnost oznámení s info o obědu v daný čas

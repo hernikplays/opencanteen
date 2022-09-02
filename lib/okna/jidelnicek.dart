@@ -304,13 +304,29 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     });
   }
 
-  void kliknuti(
-      String value, BuildContext context, FlutterLocalNotificationsPlugin n) {
+  Future<void> kliknuti(String value, BuildContext context,
+      FlutterLocalNotificationsPlugin n) async {
     if (value == Languages.of(context)!.signOut) {
-      const storage = FlutterSecureStorage();
-      storage.deleteAll();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (c) => const LoginPage()));
+      await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text(Languages.of(context)!.warning),
+          content: Text(Languages.of(context)!.signOutWarn),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(Languages.of(context)!.yes)),
+            TextButton(
+                onPressed: () {
+                  const storage = FlutterSecureStorage();
+                  storage.deleteAll();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (c) => const LoginPage()));
+                },
+                child: Text(Languages.of(context)!.no))
+          ],
+        ),
+      );
     } else if (value == Languages.of(context)!.reportBugs) {
       launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
     } else if (value == Languages.of(context)!.about) {
@@ -444,7 +460,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                             den = DateTime.now();
                             nactiJidlo();
                           }),
-                      icon: const Icon(Icons.calendar_today))
+                      icon: const Icon(Icons.today))
                 ]),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

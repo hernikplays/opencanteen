@@ -40,7 +40,8 @@ class _NastaveniState extends State<Nastaveni> {
       var _casStr = preferences.getString("oznameni_cas");
       if (_casStr == null) {
         var now = DateTime.now();
-        _oznameniCas = TimeOfDay.fromDateTime(DateTime.now());
+        _oznameniCas = TimeOfDay.fromDateTime(
+            DateTime.now().add(const Duration(hours: 1)));
         preferences.setString("oznameni_cas", now.toString());
       } else {
         _oznameniCas = TimeOfDay.fromDateTime(DateTime.parse(_casStr));
@@ -143,6 +144,23 @@ class _NastaveniState extends State<Nastaveni> {
                         setState(() {
                           _oznameniObed = value;
                           if (_oznameniObed) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      title:
+                                          Text(Languages.of(context)!.warning),
+                                      content: Text(
+                                          Languages.of(context)!.notifyWarning),
+                                      actions: [
+                                        TextButton(
+                                          child:
+                                              Text(Languages.of(context)!.ok),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    ));
                             vytvoritOznameni(casNaDate(_oznameniCas));
                           }
                           zmenitNastaveni("oznamit", value);
@@ -222,7 +240,7 @@ class _NastaveniState extends State<Nastaveni> {
               // Vytvoří nové oznámení pro daný čas a datum
               0,
               Languages.of(context)!.lunchNotif,
-              "${jidlo.nazev} - ${jidlo.varianta}",
+              "${jidlo.varianta} - ${jidlo.nazev}",
               tz.TZDateTime.from(den, l),
               const NotificationDetails(android: androidSpec, iOS: iOSpec),
               androidAllowWhileIdle: true,
