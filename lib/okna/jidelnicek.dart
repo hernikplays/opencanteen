@@ -314,15 +314,15 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           content: Text(Languages.of(context)!.signOutWarn),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(Languages.of(context)!.yes)),
-            TextButton(
                 onPressed: () {
                   const storage = FlutterSecureStorage();
                   storage.deleteAll();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (c) => const LoginPage()));
                 },
+                child: Text(Languages.of(context)!.yes)),
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
                 child: Text(Languages.of(context)!.no))
           ],
         ),
