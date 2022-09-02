@@ -84,7 +84,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
         await flutterLocalNotificationsPlugin.zonedSchedule(
             0,
             title,
-            "${jidlo.nazev} - ${jidlo.varianta}",
+            "${jidlo.varianta} - ${jidlo.nazev}",
             tz.TZDateTime.from(
                 casNaDate(
                   TimeOfDay(hour: kdy.hour, minute: kdy.minute),
