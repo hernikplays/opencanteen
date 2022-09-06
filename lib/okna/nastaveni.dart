@@ -37,14 +37,14 @@ class _NastaveniState extends State<Nastaveni> {
       _preskakovatVikend = preferences.getBool("skip") ?? false;
       _kontrolovatTyden = preferences.getBool("tyden") ?? false;
       _oznameniObed = preferences.getBool("oznamit") ?? false;
-      var _casStr = preferences.getString("oznameni_cas");
-      if (_casStr == null) {
+      var casStr = preferences.getString("oznameni_cas");
+      if (casStr == null) {
         var now = DateTime.now();
         _oznameniCas = TimeOfDay.fromDateTime(
             DateTime.now().add(const Duration(hours: 1)));
         preferences.setString("oznameni_cas", now.toString());
       } else {
-        _oznameniCas = TimeOfDay.fromDateTime(DateTime.parse(_casStr));
+        _oznameniCas = TimeOfDay.fromDateTime(DateTime.parse(casStr));
       }
     });
   }
@@ -236,6 +236,7 @@ class _NastaveniState extends State<Nastaveni> {
               IOSNotificationDetails(presentAlert: true, presentBadge: true);
           var l =
               tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
+          if (!mounted) return;
           await widget.n.zonedSchedule(
               // Vytvoří nové oznámení pro daný čas a datum
               0,

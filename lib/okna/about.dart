@@ -26,8 +26,8 @@ class _AboutPageState extends State<AboutPage> {
               const Text("OpenCanteen", style: TextStyle(fontSize: 30)),
               Text(Languages.of(context)!.copyright),
               InkWell(
-                  onTap: () => launch(
-                      "https://github.com/hernikplays/opencanteen/blob/main/LICENSE"),
+                  onTap: () => launchUrl(Uri.parse(
+                      "https://github.com/hernikplays/opencanteen/blob/main/LICENSE")),
                   child: Text(Languages.of(context)!.license)),
               const SizedBox(height: 15),
               Text(Languages.of(context)!.usedLibs,
@@ -91,7 +91,7 @@ class _AboutPageState extends State<AboutPage> {
 
   Widget cudlik(String nazev, String copyright, String licence) {
     return InkWell(
-      onTap: () => launch(licence),
+      onTap: () => launchUrl(Uri.parse(licence)),
       child: Column(children: [
         Text(
           nazev,

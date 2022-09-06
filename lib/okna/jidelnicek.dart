@@ -39,6 +39,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
       var jidelnicek = await widget.canteen.jidelnicekDen(den: pristi);
       if (jidelnicek.jidla.isNotEmpty &&
           !jidelnicek.jidla.any((element) => element.objednano == true)) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -328,7 +329,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
         ),
       );
     } else if (value == Languages.of(context)!.reportBugs) {
-      launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
+      launchUrl(Uri.parse(
+          "https://github.com/hernikplays/opencanteen/issues/new/choose"));
     } else if (value == Languages.of(context)!.about) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
@@ -356,8 +358,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
       }
       // Uložíme nová data
       var j = await widget.canteen.jidelnicekDen();
-      var soubor = File(appDocDir.path +
-          "/jidelnicek_${den.year}-${den.month}-${den.day}.json");
+      var soubor = File(
+          "${appDocDir.path}/jidelnicek_${den.year}-${den.month}-${den.day}.json");
       soubor.createSync();
       var jidla = [];
       for (var jidlo in j.jidla) {
@@ -408,8 +410,10 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
         ],
       ),
       body: RefreshIndicator(
+        onRefresh: nactiJidlo,
         child: Center(
           child: SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
             child: Column(
               children: [
                 const SizedBox(height: 10),
@@ -470,8 +474,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                           .colorScheme
                           .onPrimary
                           .withOpacity(0),
-                      child: Column(children: obsah),
                       height: MediaQuery.of(context).size.height / 1.3,
+                      child: Column(children: obsah),
                     ),
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity?.compareTo(0) == -1) {
@@ -496,10 +500,8 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                 )
               ],
             ),
-            width: MediaQuery.of(context).size.width - 50,
           ),
         ),
-        onRefresh: nactiJidlo,
       ),
     );
   }

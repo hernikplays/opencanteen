@@ -69,6 +69,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         onDone: () async {
           const storage = FlutterSecureStorage();
           await storage.write(key: "oc_souhlas", value: "ano");
+          if (!mounted) return;
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (c) =>
                   JidelnicekPage(canteen: widget.canteen, n: widget.n)));

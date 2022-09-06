@@ -216,6 +216,7 @@ class _LoginPageState extends State<LoginPage> {
         try {
           var l = await canteen.login(r["user"]!, r["pass"]!);
           if (!l) {
+            if (!mounted) return;
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -226,6 +227,7 @@ class _LoginPageState extends State<LoginPage> {
           }
           const storage = FlutterSecureStorage();
           var odsouhlasil = await storage.read(key: "oc_souhlas");
+          if (!mounted) return;
           if (odsouhlasil == null || odsouhlasil != "ano") {
             Navigator.pushReplacement(
                 context,
@@ -241,6 +243,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           }
         } on PlatformException {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -248,6 +251,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         } catch (_) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -343,13 +347,14 @@ class _LoginPageState extends State<LoginPage> {
                         if (!canteenControl.text.startsWith("https://") &&
                             !canteenControl.text.startsWith("http://")) {
                           canteenControl.text =
-                              "https://" + canteenControl.text;
+                              "https://${canteenControl.text}";
                         }
                         var canteen = Canteen(canteenControl.text);
                         try {
                           var l = await canteen.login(
                               userControl.text, passControl.text);
                           if (!l) {
+                            if (!mounted) return;
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -367,6 +372,7 @@ class _LoginPageState extends State<LoginPage> {
                           const storage = FlutterSecureStorage();
                           var odsouhlasil =
                               await storage.read(key: "oc_souhlas");
+                          if (!mounted) return;
                           if (odsouhlasil == null || odsouhlasil != "ano") {
                             Navigator.pushReplacement(
                                 context,
@@ -384,6 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           }
                         } on PlatformException {
+                          if (!mounted) return;
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -391,6 +398,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           );
                         } on Exception catch (_) {
+                          if (!mounted) return;
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -413,8 +421,8 @@ class _LoginPageState extends State<LoginPage> {
   void goOffline() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     var den = DateTime.now();
-    var soubor = File(appDocDir.path +
-        "/jidelnicek_${den.year}-${den.month}-${den.day}.json");
+    var soubor = File(
+        "${appDocDir.path}/jidelnicek_${den.year}-${den.month}-${den.day}.json");
     if (soubor.existsSync()) {
       // načteme offline jídelníček
       var input = await soubor.readAsString();
@@ -429,6 +437,7 @@ class _LoginPageState extends State<LoginPage> {
             naBurze: j["naBurze"],
             den: DateTime.parse(j["den"])));
       }
+      if (!mounted) return;
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

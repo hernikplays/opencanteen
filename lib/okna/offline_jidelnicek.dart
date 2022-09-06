@@ -82,7 +82,8 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (c) => const LoginPage()));
     } else if (value == Languages.of(context)!.reportBugs) {
-      launch("https://github.com/hernikplays/opencanteen/issues/new/choose");
+      launchUrl(Uri.parse(
+          "https://github.com/hernikplays/opencanteen/issues/new/choose"));
     } else if (value == Languages.of(context)!.about) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AboutPage()));
@@ -122,6 +123,7 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
       body: RefreshIndicator(
         child: Center(
           child: SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
             child: Column(
               children: [
                 const SizedBox(height: 10),
@@ -144,7 +146,6 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
                 ),
               ],
             ),
-            width: MediaQuery.of(context).size.width - 50,
           ),
         ),
         onRefresh: () => Navigator.pushReplacement(context,
