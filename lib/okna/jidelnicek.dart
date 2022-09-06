@@ -356,8 +356,18 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           f.deleteSync();
         }
       }
+
       // Uložíme nová data
-      var j = await widget.canteen.jidelnicekDen();
+      Jidelnicek j = Jidelnicek(DateTime.now(), []);
+      try {
+        j = await widget.canteen.jidelnicekDen();
+      } catch (e) {
+        if (!widget.canteen.prihlasen) {
+          if (!mounted) return; // ! Přidat chybu, pokud není mounted
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (c) => const LoginPage()));
+        }
+      }
       var soubor = File(
           "${appDocDir.path}/jidelnicek_${den.year}-${den.month}-${den.day}.json");
       soubor.createSync();
