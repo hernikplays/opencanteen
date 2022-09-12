@@ -231,4 +231,7 @@ class LanguageCz extends Languages {
 
   @override
   String get signOutWarn => "Opravdu se chcete odhlásit?";
+
+  @override
+  String get jump => "Přeskočit";
 }
