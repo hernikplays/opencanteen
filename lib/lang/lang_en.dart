@@ -229,4 +229,7 @@ class LanguageEn extends Languages {
 
   @override
   String get signOutWarn => "Do you really want to sign out?";
+
+  @override
+  String get jump => "Jump";
 }

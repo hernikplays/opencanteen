@@ -91,6 +91,8 @@ abstract class Languages {
 
   String get signOutWarn;
 
+  String get jump;
+
   // Uvítací obrazovka
 
   String get welcome;

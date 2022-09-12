@@ -35,18 +35,31 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("tyden") ?? false) {
       // Zjistit jestli je objednáno na přístí týden
-      var pristi = den.add(const Duration(days: 7));
-      var jidelnicek = await widget.canteen.jidelnicekDen(den: pristi);
-      if (jidelnicek.jidla.isNotEmpty &&
-          !jidelnicek.jidla.any((element) => element.objednano == true)) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(Languages.of(context)!.noOrder),
-            duration: const Duration(seconds: 5),
-          ),
-        );
+      var pristi = den.add(const Duration(days: 6));
+      for (var i = 0; i < 5; i++) {
+        var jidelnicek = await widget.canteen
+            .jidelnicekDen(den: pristi.add(Duration(days: i + 1)));
+        if (jidelnicek.jidla.isNotEmpty &&
+            !jidelnicek.jidla.any((element) => element.objednano == true)) {
+          if (!mounted) break;
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(Languages.of(context)!.noOrder),
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                onPressed: () => setState(
+                  () {
+                    den = pristi.add(Duration(days: i + 1));
+                    nactiJidlo();
+                  },
+                ),
+                label: Languages.of(context)!.jump,
+              ),
+            ),
+          );
+          break;
+        }
       }
     }
   }
@@ -294,7 +307,6 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
               );
             }
           }
-          kontrolaTyden(context);
         });
       });
     }).catchError((o) {
@@ -343,6 +355,9 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   void nactiNastaveni() async {
     var prefs = await SharedPreferences.getInstance();
     _skipWeekend = prefs.getBool("skip") ?? false;
+    print(mounted);
+    if (!mounted) return;
+    kontrolaTyden(context);
   }
 
   /// uložení jídelníčku pro dnešek offline
