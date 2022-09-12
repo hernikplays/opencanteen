@@ -90,3 +90,8 @@ DateTime casNaDate(TimeOfDay c) {
   return DateTime.parse(
       "${now.year}-${(now.month < 10 ? "0" : "") + now.month.toString()}-${(now.day < 10 ? "0" : "") + now.day.toString()} ${(c.hour < 10 ? "0" : "") + c.hour.toString()}:${(c.minute < 10 ? "0" : "") + c.minute.toString()}:00");
 }
+
+List<Map<String, String>> instance = [
+  {"name": "SŠTE Brno, Olomoucká", "url": "https://stravovani.sstebrno.cz"},
+  {"name": "Jiné", "url": ""}
+];

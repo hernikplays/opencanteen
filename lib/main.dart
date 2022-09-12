@@ -179,6 +179,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passControl = TextEditingController();
   TextEditingController canteenControl = TextEditingController();
   bool rememberMe = false;
+  bool _showUrl = false;
+  String dropdownUrl = instance.first["url"] ?? "";
 
   @override
   void initState() {
@@ -301,12 +303,39 @@ class _LoginPageState extends State<LoginPage> {
                     controller: passControl,
                     obscureText: true,
                   ),
-                  TextField(
-                    autofillHints: const [AutofillHints.url],
-                    decoration: InputDecoration(
-                        labelText: Languages.of(context)!.iCanteenUrl),
-                    keyboardType: TextInputType.url,
-                    controller: canteenControl,
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownButton(
+                    isExpanded: true,
+                    value: dropdownUrl,
+                    items: instance.map<DropdownMenuItem<String>>((e) {
+                      return DropdownMenuItem<String>(
+                        value: e["url"],
+                        child: Text(e["name"]!),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        if (value == "") {
+                          _showUrl = true;
+                        } else {
+                          _showUrl = false;
+                        }
+                        dropdownUrl = value!;
+                      });
+                    },
+                  ),
+                  AnimatedOpacity(
+                    opacity: _showUrl ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: TextField(
+                      autofillHints: const [AutofillHints.url],
+                      decoration: InputDecoration(
+                          labelText: Languages.of(context)!.iCanteenUrl),
+                      keyboardType: TextInputType.url,
+                      controller: canteenControl,
+                    ),
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Switch(
@@ -320,36 +349,14 @@ class _LoginPageState extends State<LoginPage> {
                   ]),
                   TextButton(
                       onPressed: () async {
-                        if (canteenControl.text.contains("http://")) {
-                          // kontrolujeme šifrované spojení
-                          var d = await showDialog<bool>(
-                              context: context,
-                              builder: (c) => AlertDialog(
-                                    title: Text(Languages.of(context)!.warning),
-                                    content: SingleChildScrollView(
-                                        child: Text(
-                                            Languages.of(context)!.httpLogin)),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, true),
-                                          child:
-                                              Text(Languages.of(context)!.yes)),
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(c, false),
-                                          child: Text(
-                                              Languages.of(context)!.noChange))
-                                    ],
-                                  ));
-                          if (!d!) return;
+                        var canteenUrl = (dropdownUrl == "")
+                            ? canteenControl.text
+                            : dropdownUrl;
+                        if (!canteenUrl.startsWith("https://") &&
+                            !canteenUrl.startsWith("http://")) {
+                          canteenUrl = "https://$canteenUrl";
                         }
-                        if (!canteenControl.text.startsWith("https://") &&
-                            !canteenControl.text.startsWith("http://")) {
-                          canteenControl.text =
-                              "https://${canteenControl.text}";
-                        }
-                        var canteen = Canteen(canteenControl.text);
+                        var canteen = Canteen(canteenUrl);
                         try {
                           var l = await canteen.login(
                               userControl.text, passControl.text);
@@ -365,8 +372,8 @@ class _LoginPageState extends State<LoginPage> {
                             return;
                           }
                           if (rememberMe) {
-                            LoginManager.setDetails(userControl.text,
-                                passControl.text, canteenControl.text);
+                            LoginManager.setDetails(
+                                userControl.text, passControl.text, canteenUrl);
                           }
                           // souhlas
                           const storage = FlutterSecureStorage();
