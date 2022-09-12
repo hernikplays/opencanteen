@@ -59,46 +59,48 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
     // TODO možnost brát z offline dat
   } else {*/
   // bere online
-  var d = await LoginManager.getDetails(); // získat údaje
-  if (d != null) {
-    var c = Canteen(d["url"]!);
-    if (await c.login(d["user"]!, d["pass"]!)) {
-      var jidla = await c.jidelnicekDen();
-      try {
-        var jidlo = jidla.jidla.singleWhere(
-            (element) => element.objednano); // získá objednané jídlo
-        var kdy = DateTime.parse(prefs.getString(
-            "oznameni_cas")!); // uložíme čas, kdy se má odeslat oznámení
+  if ((await LoginManager.ziskatVsechnyUlozene()).isNotEmpty) {
+    var d = await LoginManager.getDetails("0s"); // získat údaje
+    if (d != null) {
+      var c = Canteen(d["url"]!);
+      if (await c.login(d["user"]!, d["pass"]!)) {
+        var jidla = await c.jidelnicekDen();
+        try {
+          var jidlo = jidla.jidla.singleWhere(
+              (element) => element.objednano); // získá objednané jídlo
+          var kdy = DateTime.parse(prefs.getString(
+              "oznameni_cas")!); // uložíme čas, kdy se má odeslat oznámení
 
-        // data o oznámení
-        const AndroidNotificationDetails androidSpec =
-            AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
-                channelDescription: 'Oznámení o dnešním jídle',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'today meal');
-        const IOSNotificationDetails iOSpec =
-            IOSNotificationDetails(presentAlert: true, presentBadge: true);
+          // data o oznámení
+          const AndroidNotificationDetails androidSpec =
+              AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
+                  channelDescription: 'Oznámení o dnešním jídle',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'today meal');
+          const IOSNotificationDetails iOSpec =
+              IOSNotificationDetails(presentAlert: true, presentBadge: true);
 
-        // naplánovat
-        await flutterLocalNotificationsPlugin.zonedSchedule(
-            0,
-            title,
-            "${jidlo.varianta} - ${jidlo.nazev}",
-            tz.TZDateTime.from(
-                casNaDate(
-                  TimeOfDay(hour: kdy.hour, minute: kdy.minute),
-                ),
-                l),
-            const NotificationDetails(android: androidSpec, iOS: iOSpec),
-            androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
-      } on StateError catch (_) {
-        // nenalezeno
+          // naplánovat
+          await flutterLocalNotificationsPlugin.zonedSchedule(
+              0,
+              title,
+              "${jidlo.varianta} - ${jidlo.nazev}",
+              tz.TZDateTime.from(
+                  casNaDate(
+                    TimeOfDay(hour: kdy.hour, minute: kdy.minute),
+                  ),
+                  l),
+              const NotificationDetails(android: androidSpec, iOS: iOSpec),
+              androidAllowWhileIdle: true,
+              uiLocalNotificationDateInterpretation:
+                  UILocalNotificationDateInterpretation.absoluteTime);
+        } on StateError catch (_) {
+          // nenalezeno
+        }
       }
+      // }
     }
-    // }
   }
 }
 
@@ -183,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    LoginManager.getDetails().then((r) async {
+    LoginManager.ziskatVsechnyUlozene().then((j) async {
       if (Platform.isIOS) {
         // žádat o oprávnění na iOS
         await flutterLocalNotificationsPlugin
@@ -194,6 +196,11 @@ class _LoginPageState extends State<LoginPage> {
               badge: true,
               sound: true,
             );
+      }
+      Map<String, String>? r;
+      if (j.isNotEmpty) {
+        r = await LoginManager.getDetails(
+            "0"); // TODO: změnit, aby šlo vybírat účet, který se použije
       }
       if (r != null) {
         // Automaticky přihlásit
@@ -410,6 +417,9 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       child: Text(Languages.of(context)!.logIn)),
+                  const Divider(
+                    height: 5,
+                  )
                 ],
               ),
             ),

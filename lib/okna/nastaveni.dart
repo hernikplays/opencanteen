@@ -217,7 +217,7 @@ class _NastaveniState extends State<Nastaveni> {
 
   void vytvoritOznameni(DateTime den) async {
     await widget.n.cancelAll();
-    var d = await LoginManager.getDetails(); // získat údaje
+    var d = await LoginManager.getDetails("0"); // získat údaje TODO: změnit
     if (d != null) {
       // Nové oznámení
       var c = Canteen(d["url"]!);
