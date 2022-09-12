@@ -355,7 +355,6 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   void nactiNastaveni() async {
     var prefs = await SharedPreferences.getInstance();
     _skipWeekend = prefs.getBool("skip") ?? false;
-    print(mounted);
     if (!mounted) return;
     kontrolaTyden(context);
   }
