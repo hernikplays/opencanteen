@@ -70,9 +70,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           const storage = FlutterSecureStorage();
           await storage.write(key: "oc_souhlas", value: "ano");
           if (!mounted) return;
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (c) =>
-                  JidelnicekPage(canteen: widget.canteen, n: widget.n)));
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (c) =>
+                      JidelnicekPage(canteen: widget.canteen, n: widget.n)),
+              (route) => false);
         },
       ),
     );

@@ -231,18 +231,21 @@ class _LoginPageState extends State<LoginPage> {
           var odsouhlasil = await storage.read(key: "oc_souhlas");
           if (!mounted) return;
           if (odsouhlasil == null || odsouhlasil != "ano") {
-            Navigator.pushReplacement(
+            Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (c) => WelcomeScreen(
-                        canteen: canteen, n: flutterLocalNotificationsPlugin)));
+                  builder: (c) => WelcomeScreen(
+                      canteen: canteen, n: flutterLocalNotificationsPlugin),
+                ),
+                (route) => false);
           } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
                   builder: (context) => JidelnicekPage(
-                      canteen: canteen, n: flutterLocalNotificationsPlugin)),
-            );
+                      canteen: canteen, n: flutterLocalNotificationsPlugin),
+                ),
+                (route) => false);
           }
         } on PlatformException {
           if (!mounted) return;
@@ -381,20 +384,21 @@ class _LoginPageState extends State<LoginPage> {
                               await storage.read(key: "oc_souhlas");
                           if (!mounted) return;
                           if (odsouhlasil == null || odsouhlasil != "ano") {
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (c) => WelcomeScreen(
                                         canteen: canteen,
-                                        n: flutterLocalNotificationsPlugin)));
+                                        n: flutterLocalNotificationsPlugin)),
+                                (route) => false);
                           } else {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => JidelnicekPage(
-                                      canteen: canteen,
-                                      n: flutterLocalNotificationsPlugin)),
-                            );
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JidelnicekPage(
+                                        canteen: canteen,
+                                        n: flutterLocalNotificationsPlugin)),
+                                (route) => false);
                           }
                         } on PlatformException {
                           if (!mounted) return;
@@ -445,10 +449,11 @@ class _LoginPageState extends State<LoginPage> {
             den: DateTime.parse(j["den"])));
       }
       if (!mounted) return;
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: ((context) => OfflineJidelnicek(jidla: jidla))));
+              builder: ((context) => OfflineJidelnicek(jidla: jidla))),
+          (route) => false);
     }
   }
 }

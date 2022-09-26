@@ -330,8 +330,10 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                 onPressed: () {
                   const storage = FlutterSecureStorage();
                   storage.deleteAll();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (c) => const LoginPage()));
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (c) => const LoginPage()),
+                      (route) => false);
                 },
                 child: Text(Languages.of(context)!.yes)),
             TextButton(
