@@ -149,9 +149,6 @@ class LanguageCz extends Languages {
   String get tuesday => "Úterý";
 
   @override
-  String get usedLibs => "Použité knihovny:";
-
-  @override
   String get username => "Uživatelské jméno";
 
   @override
@@ -234,4 +231,7 @@ class LanguageCz extends Languages {
 
   @override
   String get jump => "Přeskočit";
+
+  @override
+  String get source => "Zdrojový kód";
 }

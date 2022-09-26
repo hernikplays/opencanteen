@@ -133,11 +133,11 @@ abstract class Languages {
 
   // About
 
-  String get usedLibs;
-
   String get license;
 
   String get copyright;
+
+  String get source;
 
   // Nastavení
 
