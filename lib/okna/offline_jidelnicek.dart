@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../lang/lang.dart';
 import '../main.dart';
-import 'about.dart';
 
 class OfflineJidelnicek extends StatefulWidget {
   const OfflineJidelnicek({Key? key, required this.jidla}) : super(key: key);
@@ -75,7 +75,7 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
     setState(() {});
   }
 
-  void kliknuti(String value, BuildContext context) {
+  void kliknuti(String value, BuildContext context) async {
     if (value == Languages.of(context)!.signOut) {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
@@ -85,8 +85,20 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
       launchUrl(Uri.parse(
           "https://github.com/hernikplays/opencanteen/issues/new/choose"));
     } else if (value == Languages.of(context)!.about) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const AboutPage()));
+      var packageInfo = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      showAboutDialog(
+          context: context,
+          applicationName: "OpenCanteen",
+          applicationLegalese:
+              "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
+          applicationVersion: packageInfo.version,
+          children: [
+            TextButton(
+                onPressed: (() => launchUrl(
+                    Uri.parse("https://github.com/hernikplays/opencanteen"))),
+                child: Text(Languages.of(context)!.source))
+          ]);
     }
   }
 

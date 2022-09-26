@@ -55,7 +55,7 @@ class LanguageEn extends Languages {
   String get inExchange => "ON EXCHANGE";
 
   @override
-  String get license => "Released under GNU GPLv3";
+  String get license => "Released under the GNU GPLv3";
 
   @override
   String get loading => "Loading...";
@@ -149,9 +149,6 @@ class LanguageEn extends Languages {
   String get tuesday => "Tuesday";
 
   @override
-  String get usedLibs => "Used libraries:";
-
-  @override
   String get username => "Username";
 
   @override
@@ -232,4 +229,7 @@ class LanguageEn extends Languages {
 
   @override
   String get jump => "Jump";
+
+  @override
+  String get source => "Source code";
 }

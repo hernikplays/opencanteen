@@ -7,13 +7,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/util.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../lang/lang.dart';
 import '../main.dart';
-import 'about.dart';
 
 class JidelnicekPage extends StatefulWidget {
   const JidelnicekPage({Key? key, required this.canteen, required this.n})
@@ -344,8 +344,20 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
       launchUrl(Uri.parse(
           "https://github.com/hernikplays/opencanteen/issues/new/choose"));
     } else if (value == Languages.of(context)!.about) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const AboutPage()));
+      var packageInfo = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      showAboutDialog(
+          context: context,
+          applicationName: "OpenCanteen",
+          applicationLegalese:
+              "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
+          applicationVersion: packageInfo.version,
+          children: [
+            TextButton(
+                onPressed: (() => launchUrl(
+                    Uri.parse("https://github.com/hernikplays/opencanteen"))),
+                child: Text(Languages.of(context)!.source))
+          ]);
     } else if (value == Languages.of(context)!.settings) {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => Nastaveni(n: n)));
