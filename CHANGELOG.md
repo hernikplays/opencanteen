@@ -1,3 +1,8 @@
+# 1.4.0
+- Opravit chybu, kdy po stisknutí tlačítka zpět na hlavní stránce byl uživatel vrácen na přihlašovací obrazovku
+- Přidat výběr z instancí (aktuálně pouze SŠTE Olomoucká)
+- Vylepšit oznámení o neobjednaném jídle
+- Nahradit info stránku info dialogem
 # 1.3.1
 - Odstranit zbytečné podmínky
 - Přidat oznámení o optimalizaci baterie
