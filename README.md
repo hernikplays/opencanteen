@@ -5,12 +5,7 @@ Open-Source **neoficiální** aplikace pro přístup do iCanteen
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_shield) [![Codemagic build status](https://api.codemagic.io/apps/62863e4c96304ce0518a1694/62863e4c96304ce0518a1693/status_badge.svg)](https://codemagic.io/apps/62863e4c96304ce0518a1694/62863e4c96304ce0518a1693/latest_build) [![Commit Style: Conventional Commits](https://img.shields.io/badge/commit%20style-conventional%20commits-pink)](https://www.conventionalcommits.org/en/v1.0.0/)
 
 ## Co umí
-Aplikace vás přihlásí do vaší iCanteen ***pokud ji podporuje [canteenlib](https://github.com/hernikplays/canteenlib/blob/main/COMPATIBILITY.md), jinak experimentálně***, a umožní vám zobrazit, objednávat obědy, objednávat nebo přidávat jídlo na burzu<sup>beta</sup>.
-
-## Co se plánuje
-- Offline ukládání jídelníčku a zakoupených jídel
-- Burza
-- Sledovač burzy
+Aplikace vás přihlásí do vaší iCanteen ***pokud ji podporuje [canteenlib](https://github.com/hernikplays/canteenlib/blob/main/COMPATIBILITY.md), jinak experimentálně***, a umožní vám zobrazit, objednávat obědy, objednávat nebo přidávat jídlo na burzu.
 
 ## Jak používat
 Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/opencanteen/wiki/Pou%C5%BE%C3%ADv%C3%A1n%C3%AD-aplikace)
@@ -25,5 +20,14 @@ Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/op
   <a href="https://play.google.com/apps/testing/cz.hernikplays.opencanteen" target="_blank">Google Play</a>
 </div>
 
-## License
+## Statistiky
+<div align="center">
+<img src="https://repobeats.axiom.co/api/embed/ce91f6018ce5523dc8d655df771f4f504c2c6664.svg" alt="repobeats stats">
+</div>
+
+## Licence
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen.svg?type=large)](https://app.fossa.com/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_large)
+
+**Copyright (c) 2022 Matyáš Caras a přispěvatelé**
+
+Tento program je svobodný software. Kde není uvedeno jinak je tento program a zdrojový kód šířen pod licencí GNU General Public License verze 3 nebo pozdější. Všechny detaily licence najdete [zde](https://github.com/hernikplays/opencanteen/blob/main/LICENSE)
