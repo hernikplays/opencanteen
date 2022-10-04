@@ -349,7 +349,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
               mode: LaunchMode.externalApplication)
           : launchUrl(
               Uri.parse(
-                  "https://apps.apple.com/cs/app/opencanteen/id1621124445"),
+                  "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
               mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
