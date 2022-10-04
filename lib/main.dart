@@ -69,7 +69,10 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
             (element) => element.objednano); // získá objednané jídlo
         var kdy = DateTime.parse(prefs.getString(
             "oznameni_cas")!); // uložíme čas, kdy se má odeslat oznámení
-
+        var cas = casNaDate(
+          TimeOfDay(hour: kdy.hour, minute: kdy.minute),
+        );
+        if (cas.isBefore(DateTime.now())) return;
         // data o oznámení
         const AndroidNotificationDetails androidSpec =
             AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
@@ -85,11 +88,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
             0,
             title,
             "${jidlo.varianta} - ${jidlo.nazev}",
-            tz.TZDateTime.from(
-                casNaDate(
-                  TimeOfDay(hour: kdy.hour, minute: kdy.minute),
-                ),
-                l),
+            tz.TZDateTime.from(cas, l),
             const NotificationDetails(android: androidSpec, iOS: iOSpec),
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation:

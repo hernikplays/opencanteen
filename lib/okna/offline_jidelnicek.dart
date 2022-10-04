@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
@@ -81,9 +83,18 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
       storage.deleteAll();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (c) => const LoginPage()));
+    } else if (value == Languages.of(context)!.review) {
+      (Platform.isAndroid)
+          ? launchUrl(
+              Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
+              mode: LaunchMode.externalApplication)
+          : launchUrl(
+              Uri.parse(
+                  "https://apps.apple.com/cs/app/opencanteen/id1621124445"),
+              mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
-      launchUrl(Uri.parse(
-          "https://github.com/hernikplays/opencanteen/issues/new/choose"));
+      launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
+          mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.about) {
       var packageInfo = await PackageInfo.fromPlatform();
       if (!mounted) return;
@@ -120,6 +131,7 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
+                Languages.of(context)!.review,
                 Languages.of(context)!.about,
                 Languages.of(context)!.signOut
               }.map((String choice) {

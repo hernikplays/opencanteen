@@ -122,7 +122,7 @@ class LanguageEn extends Languages {
   String get rememberMe => "Remember me";
 
   @override
-  String get reportBugs => "Report bug";
+  String get reportBugs => "Feedback";
 
   @override
   String get saturday => "Saturday";
@@ -232,4 +232,7 @@ class LanguageEn extends Languages {
 
   @override
   String get source => "Source code";
+
+  @override
+  String get review => "Review the app";
 }

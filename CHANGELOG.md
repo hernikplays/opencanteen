@@ -1,3 +1,8 @@
+# 1.4.1
+- aktualizovat knihovnu canteenlib
+- změnit odkaz na odeslání zpětné vazby
+- přidat odkaz na hodnocení v obchodu s aplikacemi
+- opravit chybu s vytvářením notifikace
 # 1.4.0
 - Opravit chybu, kdy po stisknutí tlačítka zpět na hlavní stránce byl uživatel vrácen na přihlašovací obrazovku
 - Přidat výběr z instancí (aktuálně pouze SŠTE Olomoucká)

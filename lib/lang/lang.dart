@@ -81,6 +81,8 @@ abstract class Languages {
 
   String get reportBugs;
 
+  String get review;
+
   String get about;
 
   String get menu;

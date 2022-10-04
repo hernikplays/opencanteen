@@ -122,7 +122,7 @@ class LanguageCz extends Languages {
   String get rememberMe => "Zapamatovat si mě";
 
   @override
-  String get reportBugs => "Nahlásit chybu";
+  String get reportBugs => "Zpětná vazba";
 
   @override
   String get saturday => "Sobota";
@@ -234,4 +234,7 @@ class LanguageCz extends Languages {
 
   @override
   String get source => "Zdrojový kód";
+
+  @override
+  String get review => "Ohodnotit aplikaci";
 }
