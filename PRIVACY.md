@@ -24,7 +24,7 @@ Některé informace se mohou vztahovat pro oficiálně nevydané funkce.
 ### Kontakt
 Preferovaná forma komunikace je skrze Diskuze nebo Issues.
 
-V případech nejvyšší nutnosti je můj e-mail `contact zavináč hernikplays.cz`
+V případech nejvyšší nutnosti je můj e-mail `matyas zavináč caras.cafe`
 
 ## Terms of use and privacy policy of OpenCanteen
 In effect from 15. 5. 2022
@@ -51,4 +51,4 @@ Some information may refer to unreleased functions of the app.
 ### Contact
 Prefered way of communication is through the Issues system
 
-If it is important, my e-mail address is `contact AT hernikplays.cz`
+If it is important, my e-mail address is `matyas AT caras.cafe`
