@@ -235,4 +235,8 @@ class LanguageEn extends Languages {
 
   @override
   String get review => "Review the app";
+
+  @override
+  String get autoburzaSetting =>
+      "Automatically order food from exchange when available";
 }

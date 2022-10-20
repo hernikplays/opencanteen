@@ -157,6 +157,8 @@ abstract class Languages {
 
   String get notifyWarning;
 
+  String get autoburzaSetting;
+
   // Offline
   String get offline;
 

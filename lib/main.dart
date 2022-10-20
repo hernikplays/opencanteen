@@ -102,7 +102,6 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   var l = tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
   tz.setLocalLocation(l);
@@ -136,6 +135,8 @@ void main() async {
       debugPrint('notification payload: $payload');
     }
   });
+
+  WidgetsFlutterBinding.ensureInitialized();
 
   // spustit aplikaci
   runApp(const MyApp());

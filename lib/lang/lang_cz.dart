@@ -237,4 +237,8 @@ class LanguageCz extends Languages {
 
   @override
   String get review => "Ohodnotit aplikaci";
+
+  @override
+  String get autoburzaSetting =>
+      "Automaticky objednat jídlo z burzy když bude dostupné";
 }

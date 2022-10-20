@@ -27,6 +27,7 @@ class _NastaveniState extends State<Nastaveni> {
   bool _kontrolovatTyden = false;
   bool _oznameniObed = false;
   bool _zapamatovany = false;
+  bool _autoburza = false;
   TimeOfDay _oznameniCas = TimeOfDay.now();
 
   void najitNastaveni() async {
@@ -37,6 +38,7 @@ class _NastaveniState extends State<Nastaveni> {
       _preskakovatVikend = preferences.getBool("skip") ?? false;
       _kontrolovatTyden = preferences.getBool("tyden") ?? false;
       _oznameniObed = preferences.getBool("oznamit") ?? false;
+      _autoburza = preferences.getBool("autoburza") ?? false;
       var casStr = preferences.getString("oznameni_cas");
       if (casStr == null) {
         var now = DateTime.now();
@@ -110,6 +112,20 @@ class _NastaveniState extends State<Nastaveni> {
                       setState(() {
                         _kontrolovatTyden = value;
                         zmenitNastaveni("tyden", value);
+                      });
+                    })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(child: Text(Languages.of(context)!.autoburzaSetting)),
+                Switch(
+                    value: _autoburza,
+                    onChanged: (value) {
+                      setState(() {
+                        _kontrolovatTyden = value;
+                        zmenitNastaveni("autoburza", value);
                       });
                     })
               ],
