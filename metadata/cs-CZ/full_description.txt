@@ -1,0 +1,9 @@
+OpenCanteen je open-source alternativní klient pro obědový systém iCanteen
+
+Aplikace nyní umožňuje:
+- prohlížet jídelníček
+- objednávat či rušit obědy
+- přidávat do nebo objednávat z burzy
+- zobrazit oznámení ve vybraný čas obsahující objednané jídlo v daný den
+
+Aplikace nemusí na všech instancích fungovat, v případě problémů vytvořte issue v repu nebo zanechte zpětnou vazbu skrz tlačítko v aplikaci.
