@@ -4,7 +4,7 @@
    <application
         android:label="OpenCanteen"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:allowBackup="false" 
         android:fullBackupContent="false">
         <activity

@@ -79,9 +79,8 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
                 channelDescription: 'Oznámení o dnešním jídle',
                 importance: Importance.max,
                 priority: Priority.high,
+                styleInformation: BigTextStyleInformation(''),
                 ticker: 'today meal');
-        const IOSNotificationDetails iOSpec =
-            IOSNotificationDetails(presentAlert: true, presentBadge: true);
 
         // naplánovat
         await flutterLocalNotificationsPlugin.zonedSchedule(
@@ -89,7 +88,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
             title,
             "${jidlo.varianta} - ${jidlo.nazev}",
             tz.TZDateTime.from(cas, l),
-            const NotificationDetails(android: androidSpec, iOS: iOSpec),
+            const NotificationDetails(android: androidSpec),
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime);
@@ -116,26 +115,10 @@ void main() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('notif_icon');
 
-  final IOSInitializationSettings initializationSettingsIOS =
-      IOSInitializationSettings(onDidReceiveLocalNotification: (
-    int id,
-    String? title,
-    String? body,
-    String? payload,
-  ) async {
-    debugPrint(body);
-  });
-
-  final InitializationSettings initializationSettings = InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
   );
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String? payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: $payload');
-    }
-  });
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   // spustit aplikaci
   runApp(const MyApp());
@@ -195,6 +178,12 @@ class _LoginPageState extends State<LoginPage> {
               badge: true,
               sound: true,
             );
+      } else if (Platform.isAndroid) {
+        // žádat o oprávnění na android
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.requestPermission();
       }
       if (r != null) {
         // Automaticky přihlásit

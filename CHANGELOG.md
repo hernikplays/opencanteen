@@ -1,3 +1,7 @@
+# 1.4.2
+- aktualizace knihovny flutter_local_notifications
+- lepší podpora pro Android 13
+- změna na adaptivní ikony na Androidu
 # 1.4.1
 - aktualizovat knihovnu canteenlib
 - změnit odkaz na odeslání zpětné vazby
