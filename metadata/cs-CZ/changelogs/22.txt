@@ -1,0 +1,2 @@
+- lepší podpora pro Android 13
+- změna na adaptivní ikony na Androidu
