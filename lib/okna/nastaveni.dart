@@ -232,8 +232,6 @@ class _NastaveniState extends State<Nastaveni> {
                   importance: Importance.max,
                   priority: Priority.high,
                   ticker: 'today meal');
-          const IOSNotificationDetails iOSpec =
-              IOSNotificationDetails(presentAlert: true, presentBadge: true);
           var l =
               tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
           if (!mounted) return;
@@ -243,7 +241,7 @@ class _NastaveniState extends State<Nastaveni> {
               Languages.of(context)!.lunchNotif,
               "${jidlo.varianta} - ${jidlo.nazev}",
               tz.TZDateTime.from(den, l),
-              const NotificationDetails(android: androidSpec, iOS: iOSpec),
+              const NotificationDetails(android: androidSpec),
               androidAllowWhileIdle: true,
               uiLocalNotificationDateInterpretation:
                   UILocalNotificationDateInterpretation.absoluteTime);
