@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:path_provider/path_provider.dart';
@@ -235,9 +236,23 @@ class _NastaveniState extends State<Nastaveni> {
           var l =
               tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
           if (!mounted) return;
+          if (Platform.isAndroid) {
+            // ! TODO: OTESTOVAT, JESTLI FUNGUJE IMPORT NA IOSu
+            var androidConfig = FlutterBackgroundAndroidConfig(
+                notificationTitle: "OpenCanteen",
+                notificationText: Languages.of(context)!.wakeLock,
+                notificationImportance: AndroidNotificationImportance.Default,
+                notificationIcon: const AndroidResource(
+                    name: 'notif_icon', defType: 'drawable'),
+                enableWifiLock: true);
+            bool success = await FlutterBackground.initialize(
+                androidConfig: androidConfig);
+            if (success) await FlutterBackground.enableBackgroundExecution();
+          }
           await widget.n.zonedSchedule(
               // Vytvoří nové oznámení pro daný čas a datum
               0,
+              // ignore: use_build_context_synchronously
               Languages.of(context)!.lunchNotif,
               "${jidlo.varianta} - ${jidlo.nazev}",
               tz.TZDateTime.from(den, l),

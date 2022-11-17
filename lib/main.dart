@@ -47,12 +47,14 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
   String title;
 
   String locale = Intl.getCurrentLocale();
+  debugPrint(locale);
   switch (locale) {
     case "cs_CZ":
       title = LanguageCz().lunchNotif;
       break;
     default:
       title = LanguageEn().lunchNotif;
+      break;
   }
 
   /*if (prefs.getBool("offline") ?? false) {
@@ -73,6 +75,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
           TimeOfDay(hour: kdy.hour, minute: kdy.minute),
         );
         if (cas.isBefore(DateTime.now())) return;
+
         // data o oznámení
         const AndroidNotificationDetails androidSpec =
             AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
@@ -94,6 +97,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
                 UILocalNotificationDateInterpretation.absoluteTime);
       } on StateError catch (_) {
         // nenalezeno
+        debugPrint("Nenalezeno");
       }
     }
     // }

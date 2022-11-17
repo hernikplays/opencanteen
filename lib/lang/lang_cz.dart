@@ -237,4 +237,8 @@ class LanguageCz extends Languages {
 
   @override
   String get review => "Ohodnotit aplikaci";
+
+  @override
+  String get wakeLock =>
+      "Toto oznámení slouží k tomu, aby nebyl proces spontánně ukončen.";
 }

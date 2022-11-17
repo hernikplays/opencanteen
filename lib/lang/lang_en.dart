@@ -235,4 +235,8 @@ class LanguageEn extends Languages {
 
   @override
   String get review => "Review the app";
+
+  @override
+  String get wakeLock =>
+      "This notification is used to hopefully block unexpected process kill.";
 }

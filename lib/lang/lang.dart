@@ -168,4 +168,6 @@ abstract class Languages {
   String get error;
 
   String get needRemember;
+
+  String get wakeLock;
 }

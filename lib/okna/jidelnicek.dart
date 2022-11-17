@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/okna/nastaveni.dart';
@@ -378,6 +379,22 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   void nactiNastaveni() async {
     var prefs = await SharedPreferences.getInstance();
     _skipWeekend = prefs.getBool("skip") ?? false;
+    if (prefs.getBool("oznamit") ?? false) {
+      if (!mounted) return;
+      if (Platform.isAndroid) {
+        // ! TODO: OTESTOVAT, JESTLI FUNGUJE IMPORT NA IOSu
+        var androidConfig = FlutterBackgroundAndroidConfig(
+            notificationTitle: "OpenCanteen",
+            notificationText: Languages.of(context)!.wakeLock,
+            notificationImportance: AndroidNotificationImportance.Default,
+            notificationIcon:
+                const AndroidResource(name: 'notif_icon', defType: 'drawable'),
+            enableWifiLock: true);
+        bool success =
+            await FlutterBackground.initialize(androidConfig: androidConfig);
+        if (success) await FlutterBackground.enableBackgroundExecution();
+      }
+    }
     if (!mounted) return;
     kontrolaTyden(context);
   }
