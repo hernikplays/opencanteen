@@ -1,0 +1,9 @@
+OpenCanteen is an alternative free open-source client for the iCanteen food ordering system.
+
+Using this app, you can:
+- browse the menu of your iCanteen instance
+- order or cancel meals
+- place food into or the exchange
+- have a notification displayed at a defined time with info about the ordered meal
+
+The app may not work on every iCanteen instance, so in case of any bugs, make sure to open an issue in the repo.
