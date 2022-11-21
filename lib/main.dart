@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
@@ -45,14 +46,16 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
   String title;
-
+  String notif;
   String locale = Intl.getCurrentLocale();
   debugPrint(locale);
   switch (locale) {
     case "cs_CZ":
       title = LanguageCz().lunchNotif;
+      notif = LanguageCz().wakeLock;
       break;
     default:
+      notif = LanguageEn().wakeLock;
       title = LanguageEn().lunchNotif;
       break;
   }
@@ -85,6 +88,21 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
                 styleInformation: BigTextStyleInformation(''),
                 ticker: 'today meal');
 
+        // blokovat vypnutí
+        if (Platform.isAndroid) {
+          // ! TODO: OTESTOVAT, JESTLI FUNGUJE IMPORT NA IOSu
+          var androidConfig = FlutterBackgroundAndroidConfig(
+              notificationTitle: "OpenCanteen",
+              notificationText: notif,
+              notificationImportance: AndroidNotificationImportance.Default,
+              notificationIcon: const AndroidResource(
+                  name: 'notif_icon', defType: 'drawable'),
+              enableWifiLock: true);
+          bool success =
+              await FlutterBackground.initialize(androidConfig: androidConfig);
+          if (success) await FlutterBackground.enableBackgroundExecution();
+        }
+
         // naplánovat
         await flutterLocalNotificationsPlugin.zonedSchedule(
             0,
@@ -110,11 +128,6 @@ void main() async {
   var l = tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
   tz.setLocalLocation(l);
 
-  var prefs = await SharedPreferences.getInstance();
-  if (prefs.getBool("oznamit") ?? false) {
-    oznamitPredem(prefs, l);
-  }
-
   // nastavit oznámení
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('notif_icon');
@@ -123,6 +136,11 @@ void main() async {
     android: initializationSettingsAndroid,
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  var prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool("oznamit") ?? false) {
+    oznamitPredem(prefs, l);
+  }
 
   // spustit aplikaci
   runApp(const MyApp());

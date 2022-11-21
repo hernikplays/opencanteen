@@ -1,5 +1,6 @@
-# 1.4.3
-- Android: přidat permanentní oznámení
+# 1.5.0
+- Android: přidat permanentní oznámení pro zabránění ukončení procesu
+- přejít na flutter wrapper
 # 1.4.2
 - aktualizace knihovny flutter_local_notifications
 - lepší podpora pro Android 13
