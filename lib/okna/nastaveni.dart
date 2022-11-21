@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,21 +29,25 @@ class _NastaveniState extends State<Nastaveni> {
   bool _oznameniObed = false;
   bool _zapamatovany = false;
   TimeOfDay _oznameniCas = TimeOfDay.now();
-
+  final TextEditingController _countController =
+      TextEditingController(text: "1");
+  SharedPreferences? preferences;
   void najitNastaveni() async {
-    var preferences = await SharedPreferences.getInstance();
+    preferences = await SharedPreferences.getInstance();
     _zapamatovany = await LoginManager.zapamatovat();
     setState(() {
-      _ukladatOffline = preferences.getBool("offline") ?? false;
-      _preskakovatVikend = preferences.getBool("skip") ?? false;
-      _kontrolovatTyden = preferences.getBool("tyden") ?? false;
-      _oznameniObed = preferences.getBool("oznamit") ?? false;
-      var casStr = preferences.getString("oznameni_cas");
+      _ukladatOffline = preferences!.getBool("offline") ?? false;
+      _preskakovatVikend = preferences!.getBool("skip") ?? false;
+      _kontrolovatTyden = preferences!.getBool("tyden") ?? false;
+      _oznameniObed = preferences!.getBool("oznamit") ?? false;
+      _countController.text =
+          (preferences!.getInt("offline_pocet") ?? 1).toString();
+      var casStr = preferences!.getString("oznameni_cas");
       if (casStr == null) {
         var now = DateTime.now();
         _oznameniCas = TimeOfDay.fromDateTime(
             DateTime.now().add(const Duration(hours: 1)));
-        preferences.setString("oznameni_cas", now.toString());
+        preferences!.setString("oznameni_cas", now.toString());
       } else {
         _oznameniCas = TimeOfDay.fromDateTime(DateTime.parse(casStr));
       }
@@ -50,8 +55,7 @@ class _NastaveniState extends State<Nastaveni> {
   }
 
   void zmenitNastaveni(String key, bool value) async {
-    var preferences = await SharedPreferences.getInstance();
-    preferences.setBool(key, value);
+    preferences!.setBool(key, value);
   }
 
   @override
@@ -84,6 +88,27 @@ class _NastaveniState extends State<Nastaveni> {
                         zmenitNastaveni("offline", value);
                       });
                     })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(Languages.of(context)!.saveCount),
+                SizedBox(
+                  width: 35,
+                  child: TextField(
+                    controller: _countController,
+                    enabled: _ukladatOffline,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (c) {
+                      var cislo = int.tryParse(c);
+                      if (cislo != null) {
+                        preferences!.setInt("offline_pocet", cislo);
+                      }
+                    },
+                  ),
+                )
               ],
             ),
             Row(

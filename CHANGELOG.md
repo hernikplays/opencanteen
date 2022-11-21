@@ -1,3 +1,7 @@
+# 1.5.0
+- umožnit ukládat více dnů offline
+- chyba při ukládání offline vás nyní již nevyhodí ale zobrazí pouze zprávu
+- "Přihlašování" pop-up zmizí, když není přihlášení úspěšné
 # 1.4.2
 - aktualizace knihovny flutter_local_notifications
 - lepší podpora pro Android 13

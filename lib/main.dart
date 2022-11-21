@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:canteenlib/canteenlib.dart';
 import 'package:opencanteen/okna/offline_jidelnicek.dart';
 import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/util.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -237,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         } on PlatformException {
           if (!mounted) return;
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -245,6 +244,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         } catch (_) {
           if (!mounted) return;
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -418,31 +418,11 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Získá offline soubor a zobrazí údaje
   void goOffline() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    var den = DateTime.now();
-    var soubor = File(
-        "${appDocDir.path}/jidelnicek_${den.year}-${den.month}-${den.day}.json");
-    if (soubor.existsSync()) {
-      // načteme offline jídelníček
-      var input = await soubor.readAsString();
-      var r = jsonDecode(input);
-      List<OfflineJidlo> jidla = [];
-      for (var j in r) {
-        jidla.add(OfflineJidlo(
-            nazev: j["nazev"],
-            varianta: j["varianta"],
-            objednano: j["objednano"],
-            cena: j["cena"],
-            naBurze: j["naBurze"],
-            den: DateTime.parse(j["den"])));
-      }
-      if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: ((context) => OfflineJidelnicek(jidla: jidla))),
-          (route) => false);
-    }
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: ((context) => const OfflineJidelnicek())),
+        (route) => false);
   }
 }
 

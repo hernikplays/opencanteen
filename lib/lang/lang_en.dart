@@ -235,4 +235,11 @@ class LanguageEn extends Languages {
 
   @override
   String get review => "Review the app";
+
+  @override
+  String get saveCount => "Number of days to save offline (Current limit is 7)";
+
+  @override
+  String get errorSaving =>
+      "An error occured while trying to save menu offline, try again later.";
 }
