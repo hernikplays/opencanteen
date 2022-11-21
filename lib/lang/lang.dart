@@ -147,6 +147,8 @@ abstract class Languages {
 
   String get saveOffline;
 
+  String get saveCount;
+
   String get skipWeekend;
 
   String get checkOrdered;
@@ -161,6 +163,8 @@ abstract class Languages {
   String get offline;
 
   String get mustLogout;
+
+  String get errorSaving;
 
   // Oznámit před obědem
   String get lunchNotif;

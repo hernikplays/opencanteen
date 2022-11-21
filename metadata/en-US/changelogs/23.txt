@@ -1,0 +1,3 @@
+- Support downloading multiple days of meal lists offline
+- "Signing in" pop-up disappears when not signed in succesfully
+- Error while saving menu offline no longer throws you to the log-in screen, but shows just an error message

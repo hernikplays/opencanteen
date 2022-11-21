@@ -1,0 +1,3 @@
+- Umožnit ukládat více dnů offline
+- Pop-up "Přihlašování" nyní zmizí v případě neúspěšného přihlášení
+- chyba při ukládání offline vás nyní již nevyhodí ale zobrazí pouze zprávu

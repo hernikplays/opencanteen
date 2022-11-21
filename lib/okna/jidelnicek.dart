@@ -382,44 +382,52 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     kontrolaTyden(context);
   }
 
-  /// uložení jídelníčku pro dnešek offline
-  void ulozitDnesekOffline() async {
+  void ulozitDoOffline() async {
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("offline") != null && prefs.getBool("offline")!) {
+    if (prefs.getBool("offline") ?? false) {
+      // vyčistit offline
       Directory appDocDir = await getApplicationDocumentsDirectory();
       for (var f in appDocDir.listSync()) {
-        // Vymažeme obsah
         if (f.path.contains("jidelnicek")) {
           f.deleteSync();
         }
       }
 
-      // Uložíme nová data
-      Jidelnicek j = Jidelnicek(DateTime.now(), []);
-      try {
-        j = await widget.canteen.jidelnicekDen();
-      } catch (e) {
-        if (!widget.canteen.prihlasen) {
-          if (!mounted) return; // ! Přidat chybu, pokud není mounted
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (c) => const LoginPage()));
+      // uložit *pocet* jídelníčků pro offline použití
+      var pocet = prefs.getInt("offline_pocet") ?? 1;
+      if (pocet > 7) pocet = 7;
+      for (var i = 0; i < pocet; i++) {
+        var d = den.add(Duration(days: i));
+        Jidelnicek? j;
+        try {
+          j = await widget.canteen.jidelnicekDen(den: d);
+        } catch (e) {
+          if (!widget.canteen.prihlasen) {
+            if (!mounted) return; // ! Přidat chybu, pokud není mounted
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(Languages.of(context)!.errorSaving),
+              duration: const Duration(seconds: 5),
+            ));
+            break;
+          }
         }
+        var soubor = File(
+            "${appDocDir.path}/jidelnicek_${d.year}-${d.month}-${d.day}.json");
+        soubor.createSync();
+        var jidla = [];
+        for (var jidlo in j!.jidla) {
+          jidla.add({
+            "nazev": jidlo.nazev,
+            "varianta": jidlo.varianta,
+            "objednano": jidlo.objednano,
+            "cena": jidlo.cena,
+            "naBurze": jidlo.naBurze,
+            "den": d.toString()
+          });
+        }
+        await soubor.writeAsString(json.encode(jidla));
       }
-      var soubor = File(
-          "${appDocDir.path}/jidelnicek_${den.year}-${den.month}-${den.day}.json");
-      soubor.createSync();
-      var jidla = [];
-      for (var jidlo in j.jidla) {
-        jidla.add({
-          "nazev": jidlo.nazev,
-          "varianta": jidlo.varianta,
-          "objednano": jidlo.objednano,
-          "cena": jidlo.cena,
-          "naBurze": jidlo.naBurze,
-          "den": den.toString()
-        });
-      }
-      await soubor.writeAsString(json.encode(jidla));
     }
   }
 
@@ -427,7 +435,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     nactiNastaveni();
-    ulozitDnesekOffline();
+    ulozitDoOffline();
     nactiJidlo();
   }
 

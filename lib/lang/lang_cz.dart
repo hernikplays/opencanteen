@@ -237,4 +237,11 @@ class LanguageCz extends Languages {
 
   @override
   String get review => "Ohodnotit aplikaci";
+
+  @override
+  String get saveCount => "Počet dnů dostupných offline (Akt. limit je 7)";
+
+  @override
+  String get errorSaving =>
+      "Při ukládání offline nastala chyba, zkuste to znovu později.";
 }

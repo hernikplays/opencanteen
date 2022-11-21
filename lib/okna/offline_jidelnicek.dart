@@ -1,27 +1,57 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../lang/lang.dart';
 import '../main.dart';
 
 class OfflineJidelnicek extends StatefulWidget {
-  const OfflineJidelnicek({Key? key, required this.jidla}) : super(key: key);
-  final List<OfflineJidlo> jidla;
+  const OfflineJidelnicek({Key? key}) : super(key: key);
   @override
   State<OfflineJidelnicek> createState() => _OfflineJidelnicekState();
 }
 
 class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
   List<Widget> obsah = [const CircularProgressIndicator()];
+  var _skipWeekend = false;
   DateTime den = DateTime.now();
   String denTydne = "";
+  List<List<OfflineJidlo>> data = [];
+  var jidloIndex = 0;
+
+  void nactiZeSouboru() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    for (var f in appDocDir.listSync()) {
+      if (f.path.contains("jidelnicek")) {
+        var soubor = File(f.path);
+        var input = await soubor.readAsString();
+        var r = jsonDecode(input);
+        List<OfflineJidlo> jidla = [];
+        for (var j in r) {
+          jidla.add(OfflineJidlo(
+              nazev: j["nazev"],
+              varianta: j["varianta"],
+              objednano: j["objednano"],
+              cena: j["cena"],
+              naBurze: j["naBurze"],
+              den: DateTime.parse(j["den"])));
+        }
+        data.add(jidla);
+      }
+    }
+    nactiJidlo();
+  }
+
   Future<void> nactiJidlo() async {
-    den = widget.jidla[0].den;
+    var jidelnicek = data[jidloIndex];
+    den = jidelnicek[0].den;
     switch (den.weekday) {
       case 2:
         denTydne = Languages.of(context)!.tuesday;
@@ -45,32 +75,33 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
         denTydne = Languages.of(context)!.monday;
     }
     obsah = [];
-    for (OfflineJidlo j in widget.jidla) {
+    for (OfflineJidlo j in jidelnicek) {
       obsah.add(
         Padding(
           padding: const EdgeInsets.only(top: 15),
           child: InkWell(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(j.varianta),
-              const SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  j.nazev,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(j.varianta),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    j.nazev,
+                  ),
                 ),
-              ),
-              Text((j.naBurze)
-                  ? Languages.of(context)!.inExchange
-                  : "${j.cena} Kč"),
-              Checkbox(
-                  value: j.objednano,
-                  fillColor: MaterialStateProperty.all(Colors.grey),
-                  onChanged: (v) async {
-                    return;
-                  })
-            ],
-          )),
+                Text((j.naBurze)
+                    ? Languages.of(context)!.inExchange
+                    : "${j.cena} Kč"),
+                Checkbox(
+                    value: j.objednano,
+                    fillColor: MaterialStateProperty.all(Colors.grey),
+                    onChanged: (v) async {
+                      return;
+                    })
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -116,7 +147,14 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nactiJidlo();
+    nactiNastaveni();
+  }
+
+  void nactiNastaveni() async {
+    var prefs = await SharedPreferences.getInstance();
+    _skipWeekend = prefs.getBool("skip") ?? false;
+    if (!mounted) return;
+    nactiZeSouboru();
   }
 
   @override
@@ -157,11 +195,61 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
                 ),
                 Text(Languages.of(context)!.mustLogout),
                 const SizedBox(height: 10),
-                TextButton(
-                  child:
-                      Text("${den.day}. ${den.month}. ${den.year} - $denTydne"),
-                  onPressed: () => {},
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  IconButton(
+                      onPressed: () {
+                        if (data.length <= 1) return;
+                        obsah = [const CircularProgressIndicator()];
+                        setState(() {
+                          if (den.weekday == 1 && _skipWeekend) {
+                            // pokud je pondělí a chceme přeskočit víkend
+                            if (jidloIndex - 2 >= 0) {
+                              jidloIndex -= data.length - 3;
+                            } else {
+                              jidloIndex = data.length - 1;
+                            }
+                          } else if (jidloIndex == 0) {
+                            jidloIndex = data.length - 1;
+                          } else {
+                            jidloIndex -= 1;
+                          }
+
+                          nactiJidlo();
+                        });
+                      },
+                      icon: const Icon(Icons.arrow_left)),
+                  TextButton(
+                      onPressed: () async {},
+                      child: Text(
+                          "${den.day}. ${den.month}. ${den.year} - $denTydne")),
+                  IconButton(
+                    onPressed: () {
+                      if (data.length <= 1) return;
+                      obsah = [const CircularProgressIndicator()];
+                      setState(() {
+                        if (den.weekday == 5 && _skipWeekend) {
+                          // pokud je pondělí a chceme přeskočit víkend
+                          if (jidloIndex + 2 <= data.length - 1) {
+                            jidloIndex += 2;
+                          } else {
+                            jidloIndex = 0;
+                          }
+                        } else if (jidloIndex == data.length) {
+                          jidloIndex = 0;
+                        } else {
+                          jidloIndex += 1;
+                        }
+                        nactiJidlo();
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_right),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        jidloIndex = 0;
+                      },
+                      icon: const Icon(Icons.today))
+                ]),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
