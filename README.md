@@ -25,9 +25,14 @@ Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/op
 <img src="https://repobeats.axiom.co/api/embed/ce91f6018ce5523dc8d655df771f4f504c2c6664.svg" alt="repobeats stats">
 </div>
 
-## Licence
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen.svg?type=large)](https://app.fossa.com/projects/custom%2B12838%2Fgithub.com%2Fhernikplays%2Fopencanteen?ref=badge_large)
+## Přispět
+Přispět na vývoj můžete skrz
+- Liberapay: https://liberapay.com/hernikplays
+- Monero: `49uzFSxAsT92sXUsCEgh11VX7pmNZcoeKi4fEWbLGc2oWGMUVNcDDqGVB97ak96LqEBqsMXLS752bjgyVzbFcVwLNke4pNd`
+- Bitcoin: `3NzqkBZgWgjj1NYj2JwmBBptPWw6wt7dHS`
+- Kód: viz CONTRIBUTING
 
+## Licence
 **Copyright (c) 2022 Matyáš Caras a přispěvatelé**
 
 Tento program je svobodný software. Kde není uvedeno jinak je tento program a zdrojový kód šířen pod licencí GNU General Public License verze 3 nebo pozdější. Všechny detaily licence najdete [zde](https://github.com/hernikplays/opencanteen/blob/main/LICENSE)
