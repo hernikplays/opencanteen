@@ -1,3 +1,6 @@
+# 1.5.1
+- aktualizovat knihovnu canteenlib
+- přidat podporu pro splitování APK podle ABI
 # 1.5.0
 - umožnit ukládat více dnů offline
 - chyba při ukládání offline vás nyní již nevyhodí ale zobrazí pouze zprávu
