@@ -1,0 +1,2 @@
+- updated canteenlib library
+- added support for APK splitting

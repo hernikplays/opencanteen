@@ -1,0 +1,2 @@
+- aktualizace knihovny canteenlib
+- splitování APK
