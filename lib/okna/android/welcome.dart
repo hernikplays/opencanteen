@@ -1,23 +1,20 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:opencanteen/lang/lang.dart';
-import 'package:opencanteen/okna/jidelnicek.dart';
+import 'package:opencanteen/okna/android/jidelnicek.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key, required this.canteen, required this.n})
-      : super(key: key);
+class AndroidWelcome extends StatefulWidget {
+  const AndroidWelcome({Key? key, required this.canteen}) : super(key: key);
 
   final Canteen canteen;
-  final FlutterLocalNotificationsPlugin n;
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<AndroidWelcome> createState() => _AndroidWelcomeState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _AndroidWelcomeState extends State<AndroidWelcome> {
   @override
   Widget build(BuildContext context) {
     var listPagesViewModel = [
@@ -72,8 +69,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           if (!mounted) return;
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                  builder: (c) =>
-                      JidelnicekPage(canteen: widget.canteen, n: widget.n)),
+                  builder: (c) => AndroidJidelnicek(canteen: widget.canteen)),
               (route) => false);
         },
       ),

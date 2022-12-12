@@ -3,28 +3,25 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/nastaveni.dart';
+import 'package:opencanteen/okna/android/login.dart';
+import 'package:opencanteen/okna/android/nastaveni.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../lang/lang.dart';
-import '../main.dart';
+import '../../lang/lang.dart';
 
-class JidelnicekPage extends StatefulWidget {
-  const JidelnicekPage({Key? key, required this.canteen, required this.n})
-      : super(key: key);
+class AndroidJidelnicek extends StatefulWidget {
+  const AndroidJidelnicek({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
-  final FlutterLocalNotificationsPlugin n;
   @override
-  State<JidelnicekPage> createState() => _JidelnicekPageState();
+  State<AndroidJidelnicek> createState() => _AndroidJidelnicekState();
 }
 
-class _JidelnicekPageState extends State<JidelnicekPage> {
+class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
   List<Widget> obsah = [const CircularProgressIndicator()];
   DateTime den = DateTime.now();
   String denTydne = "";
@@ -120,7 +117,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                         Checkbox(
                             value: j.objednano,
                             fillColor: (j.lzeObjednat)
-                                ? MaterialStateProperty.all(Colors.blue)
+                                ? MaterialStateProperty.all(Colors.purple)
                                 : MaterialStateProperty.all(Colors.grey),
                             onChanged: (v) async {
                               if (!j.lzeObjednat) {
@@ -312,13 +309,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
     }).catchError((o) {
       if (!widget.canteen.prihlasen) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginPage()));
+            context, MaterialPageRoute(builder: (c) => const AndroidLogin()));
       }
     });
   }
 
-  Future<void> kliknuti(String value, BuildContext context,
-      FlutterLocalNotificationsPlugin n) async {
+  Future<void> kliknuti(String value, BuildContext context) async {
     if (value == Languages.of(context)!.signOut) {
       await showDialog<bool>(
         context: context,
@@ -332,7 +328,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
                   storage.deleteAll();
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (c) => const LoginPage()),
+                      MaterialPageRoute(builder: (c) => const AndroidLogin()),
                       (route) => false);
                 },
                 child: Text(Languages.of(context)!.yes)),
@@ -366,12 +362,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           children: [
             TextButton(
                 onPressed: (() => launchUrl(
-                    Uri.parse("https://github.com/hernikplays/opencanteen"))),
+                    Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
                 child: Text(Languages.of(context)!.source))
           ]);
     } else if (value == Languages.of(context)!.settings) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (c) => Nastaveni(n: n)));
+          context, MaterialPageRoute(builder: (c) => const AndroidNastaveni()));
     }
   }
 
@@ -403,7 +399,7 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
           j = await widget.canteen.jidelnicekDen(den: d);
         } catch (e) {
           if (!widget.canteen.prihlasen) {
-            if (!mounted) return; // ! Přidat chybu, pokud není mounted
+            if (!mounted) return;
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(Languages.of(context)!.errorSaving),
@@ -442,12 +438,12 @@ class _JidelnicekPageState extends State<JidelnicekPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, 1, widget.n),
+      drawer: drawerGenerator(context, widget.canteen, 1),
       appBar: AppBar(
         title: Text(Languages.of(context)!.menu),
         actions: [
           PopupMenuButton(
-            onSelected: ((String value) => kliknuti(value, context, widget.n)),
+            onSelected: ((String value) => kliknuti(value, context)),
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
