@@ -1,13 +1,14 @@
+import 'dart:io';
+
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:opencanteen/okna/burza.dart';
-
+import 'package:opencanteen/okna/android/burza.dart';
+import 'package:opencanteen/okna/android/jidelnicek.dart';
+import 'package:opencanteen/okna/ios/burza.dart';
+import 'package:opencanteen/okna/ios/jidelnicek.dart';
 import 'lang/lang.dart';
-import 'okna/jidelnicek.dart';
 
-Drawer drawerGenerator(BuildContext context, Canteen canteen, int p,
-    FlutterLocalNotificationsPlugin n) {
+Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
   Drawer drawer = const Drawer();
   switch (p) {
     case 1:
@@ -30,7 +31,9 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p,
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BurzaPage(canteen: canteen, n: n),
+                  builder: (context) => (Platform.isAndroid)
+                      ? AndroidBurza(canteen: canteen)
+                      : IOSBurza(canteen: canteen),
                 ),
               ),
             ),
@@ -52,7 +55,9 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p,
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (c) => JidelnicekPage(canteen: canteen, n: n))),
+                      builder: (c) => (Platform.isAndroid)
+                          ? AndroidJidelnicek(canteen: canteen)
+                          : IOSJidelnicek(canteen: canteen))),
             ),
             ListTile(
               leading: const Icon(Icons.store),

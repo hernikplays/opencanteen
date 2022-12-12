@@ -9,20 +9,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../lang/lang.dart';
-import '../loginmanager.dart';
-import '../util.dart';
+import '../../lang/lang.dart';
+import '../../loginmanager.dart';
+import '../../main.dart';
+import '../../util.dart';
 
-class Nastaveni extends StatefulWidget {
-  const Nastaveni({Key? key, required this.n}) : super(key: key);
-
-  final FlutterLocalNotificationsPlugin n;
+class AndroidNastaveni extends StatefulWidget {
+  const AndroidNastaveni({Key? key}) : super(key: key);
 
   @override
-  State<Nastaveni> createState() => _NastaveniState();
+  State<AndroidNastaveni> createState() => _AndroidNastaveniState();
 }
 
-class _NastaveniState extends State<Nastaveni> {
+class _AndroidNastaveniState extends State<AndroidNastaveni> {
   bool _ukladatOffline = false;
   bool _preskakovatVikend = false;
   bool _kontrolovatTyden = false;
@@ -81,6 +80,7 @@ class _NastaveniState extends State<Nastaveni> {
                 Text(Languages.of(context)!.saveOffline),
                 Switch(
                     value: _ukladatOffline,
+                    activeColor: Colors.purple,
                     onChanged: (value) {
                       setState(() {
                         _ukladatOffline = value;
@@ -116,6 +116,7 @@ class _NastaveniState extends State<Nastaveni> {
               children: [
                 Text(Languages.of(context)!.skipWeekend),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _preskakovatVikend,
                     onChanged: (value) {
                       setState(() {
@@ -130,6 +131,7 @@ class _NastaveniState extends State<Nastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.checkOrdered)),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _kontrolovatTyden,
                     onChanged: (value) {
                       setState(() {
@@ -144,6 +146,7 @@ class _NastaveniState extends State<Nastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.notifyLunch)),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _oznameniObed,
                     thumbColor: (!_zapamatovany
                         ? MaterialStateProperty.all(Colors.grey)
@@ -241,7 +244,7 @@ class _NastaveniState extends State<Nastaveni> {
   }
 
   void vytvoritOznameni(DateTime den) async {
-    await widget.n.cancelAll();
+    await flutterLocalNotificationsPlugin.cancelAll();
     var d = await LoginManager.getDetails(); // získat údaje
     if (d != null) {
       // Nové oznámení
@@ -260,7 +263,7 @@ class _NastaveniState extends State<Nastaveni> {
           var l =
               tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
           if (!mounted) return;
-          await widget.n.zonedSchedule(
+          await flutterLocalNotificationsPlugin.zonedSchedule(
               // Vytvoří nové oznámení pro daný čas a datum
               0,
               Languages.of(context)!.lunchNotif,

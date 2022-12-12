@@ -1,24 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:opencanteen/okna/ios/login.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../lang/lang.dart';
-import '../main.dart';
+import '../../lang/lang.dart';
 
-class OfflineJidelnicek extends StatefulWidget {
-  const OfflineJidelnicek({Key? key}) : super(key: key);
+class IOSOfflineJidelnicek extends StatefulWidget {
+  const IOSOfflineJidelnicek({Key? key}) : super(key: key);
   @override
-  State<OfflineJidelnicek> createState() => _OfflineJidelnicekState();
+  State<IOSOfflineJidelnicek> createState() => _IOSOfflineJidelnicekState();
 }
 
-class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
+class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
   List<Widget> obsah = [const CircularProgressIndicator()];
   var _skipWeekend = false;
   DateTime den = DateTime.now();
@@ -94,11 +95,12 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
                     ? Languages.of(context)!.inExchange
                     : "${j.cena} Kč"),
                 Checkbox(
-                    value: j.objednano,
-                    fillColor: MaterialStateProperty.all(Colors.grey),
-                    onChanged: (v) async {
-                      return;
-                    })
+                  value: j.objednano,
+                  fillColor: MaterialStateProperty.all(Colors.grey),
+                  onChanged: (v) async {
+                    return;
+                  },
+                )
               ],
             ),
           ),
@@ -113,16 +115,11 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (c) => const LoginPage()));
+          context, MaterialPageRoute(builder: (c) => const IOSLogin()));
     } else if (value == Languages.of(context)!.review) {
-      (Platform.isAndroid)
-          ? launchUrl(
-              Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
-              mode: LaunchMode.externalApplication)
-          : launchUrl(
-              Uri.parse(
-                  "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
-              mode: LaunchMode.externalApplication);
+      launchUrl(
+          Uri.parse("https://apps.apple.com/cz/app/opencanteen/id1621124445"),
+          mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
           mode: LaunchMode.externalApplication);
@@ -136,9 +133,9 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
               "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
           applicationVersion: packageInfo.version,
           children: [
-            TextButton(
+            CupertinoButton(
                 onPressed: (() => launchUrl(
-                    Uri.parse("https://github.com/hernikplays/opencanteen"))),
+                    Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
                 child: Text(Languages.of(context)!.source))
           ]);
     }
@@ -218,7 +215,7 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
                         });
                       },
                       icon: const Icon(Icons.arrow_left)),
-                  TextButton(
+                  CupertinoButton(
                       onPressed: () async {},
                       child: Text(
                           "${den.day}. ${den.month}. ${den.year} - $denTydne")),
@@ -261,7 +258,7 @@ class _OfflineJidelnicekState extends State<OfflineJidelnicek> {
           ),
         ),
         onRefresh: () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: ((context) => const LoginPage()))),
+            MaterialPageRoute(builder: ((context) => const IOSLogin()))),
       ),
     );
   }

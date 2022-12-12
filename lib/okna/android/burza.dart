@@ -1,21 +1,18 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:opencanteen/okna/android/login.dart';
 import 'package:opencanteen/util.dart';
 
-import '../lang/lang.dart';
-import '../main.dart';
+import '../../lang/lang.dart';
 
-class BurzaPage extends StatefulWidget {
-  const BurzaPage({Key? key, required this.canteen, required this.n})
-      : super(key: key);
+class AndroidBurza extends StatefulWidget {
+  const AndroidBurza({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
-  final FlutterLocalNotificationsPlugin n;
   @override
-  State<BurzaPage> createState() => _BurzaPageState();
+  State<AndroidBurza> createState() => _AndroidBurzaState();
 }
 
-class _BurzaPageState extends State<BurzaPage> {
+class _AndroidBurzaState extends State<AndroidBurza> {
   List<Widget> obsah = [];
   double kredit = 0.0;
   Future<void> nactiBurzu(BuildContext context) async {
@@ -101,7 +98,7 @@ class _BurzaPageState extends State<BurzaPage> {
     }).catchError((o) {
       if (!widget.canteen.prihlasen) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginPage()));
+            context, MaterialPageRoute(builder: (c) => const AndroidLogin()));
       }
     });
   }
@@ -115,7 +112,7 @@ class _BurzaPageState extends State<BurzaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawerGenerator(context, widget.canteen, 3, widget.n),
+      drawer: drawerGenerator(context, widget.canteen, 3),
       appBar: AppBar(
         title: Text(Languages.of(context)!.exchange),
       ),

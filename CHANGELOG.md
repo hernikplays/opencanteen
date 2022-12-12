@@ -1,3 +1,7 @@
+# 1.6.0
+- rozdělit iOS a Android UI zvlášť pro možnost využití Cupertino knihovny
+- opravit chybu s FlutterLocalNotifications na iOS
+- upravit vzhled
 # 1.5.1
 - aktualizovat knihovnu canteenlib
 - přidat podporu pro splitování APK podle ABI
