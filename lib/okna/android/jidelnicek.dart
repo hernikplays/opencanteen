@@ -339,14 +339,8 @@ class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
         ),
       );
     } else if (value == Languages.of(context)!.review) {
-      (Platform.isAndroid)
-          ? launchUrl(
-              Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
-              mode: LaunchMode.externalApplication)
-          : launchUrl(
-              Uri.parse(
-                  "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
-              mode: LaunchMode.externalApplication);
+      launchUrl(Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
+          mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
           mode: LaunchMode.externalApplication);

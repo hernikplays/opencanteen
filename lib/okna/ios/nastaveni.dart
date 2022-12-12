@@ -80,6 +80,7 @@ class _IOSNastaveniState extends State<IOSNastaveni> {
               children: [
                 Text(Languages.of(context)!.saveOffline),
                 CupertinoSwitch(
+                    activeColor: Colors.purple,
                     value: _ukladatOffline,
                     onChanged: (value) {
                       setState(() {
@@ -116,6 +117,7 @@ class _IOSNastaveniState extends State<IOSNastaveni> {
               children: [
                 Text(Languages.of(context)!.skipWeekend),
                 CupertinoSwitch(
+                    activeColor: Colors.purple,
                     value: _preskakovatVikend,
                     onChanged: (value) {
                       setState(() {
@@ -130,6 +132,7 @@ class _IOSNastaveniState extends State<IOSNastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.checkOrdered)),
                 CupertinoSwitch(
+                    activeColor: Colors.purple,
                     value: _kontrolovatTyden,
                     onChanged: (value) {
                       setState(() {
@@ -144,8 +147,8 @@ class _IOSNastaveniState extends State<IOSNastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.notifyLunch)),
                 CupertinoSwitch(
+                    activeColor: Colors.purple,
                     value: _oznameniObed,
-                    thumbColor: (Colors.grey),
                     onChanged: (value) {
                       if (!_zapamatovany) {
                         showDialog(

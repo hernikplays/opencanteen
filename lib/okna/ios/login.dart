@@ -33,23 +33,16 @@ class _IOSLoginState extends State<IOSLogin> {
   void initState() {
     super.initState();
     LoginManager.getDetails().then((r) async {
-      if (Platform.isIOS) {
-        // žádat o oprávnění na iOS
-        await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                IOSFlutterLocalNotificationsPlugin>()
-            ?.requestPermissions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
-      } else if (Platform.isAndroid) {
-        // žádat o oprávnění na android
-        flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.requestPermission();
-      }
+      // žádat o oprávnění na iOS
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+
       if (r != null) {
         // Automaticky přihlásit
         showDialog(
@@ -146,16 +139,14 @@ class _IOSLoginState extends State<IOSLogin> {
                     Languages.of(context)!.logIn,
                     textAlign: TextAlign.center,
                   ),
-                  TextField(
+                  CupertinoTextField(
                     controller: userControl,
                     autofillHints: const [AutofillHints.username],
-                    decoration: InputDecoration(
-                        labelText: Languages.of(context)!.username),
+                    prefix: Text(Languages.of(context)!.username),
                   ),
-                  TextField(
+                  CupertinoTextField(
                     autofillHints: const [AutofillHints.password],
-                    decoration: InputDecoration(
-                        labelText: Languages.of(context)!.password),
+                    prefix: Text(Languages.of(context)!.password),
                     controller: passControl,
                     obscureText: true,
                   ),
@@ -283,12 +274,9 @@ class _IOSLoginState extends State<IOSLogin> {
   /// Získá offline soubor a zobrazí údaje
   void goOffline() async {
     if (!mounted) return;
-    if (Platform.isAndroid) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: ((context) => const IOSOfflineJidelnicek())),
-          (route) => false);
-    }
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: ((context) => const IOSOfflineJidelnicek())),
+        (route) => false);
   }
 }

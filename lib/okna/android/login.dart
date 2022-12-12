@@ -272,12 +272,10 @@ class _AndroidLoginState extends State<AndroidLogin> {
   /// Získá offline soubor a zobrazí údaje
   void goOffline() async {
     if (!mounted) return;
-    if (Platform.isAndroid) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: ((context) => const AndroidOfflineJidelnicek())),
-          (route) => false);
-    }
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => const AndroidOfflineJidelnicek())),
+        (route) => false);
   }
 }

@@ -1,1 +1,2 @@
 - Optimalizace ze strany kodu
+- Úpravy vzhledu

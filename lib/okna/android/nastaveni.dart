@@ -80,6 +80,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
                 Text(Languages.of(context)!.saveOffline),
                 Switch(
                     value: _ukladatOffline,
+                    activeColor: Colors.purple,
                     onChanged: (value) {
                       setState(() {
                         _ukladatOffline = value;
@@ -115,6 +116,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               children: [
                 Text(Languages.of(context)!.skipWeekend),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _preskakovatVikend,
                     onChanged: (value) {
                       setState(() {
@@ -129,6 +131,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.checkOrdered)),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _kontrolovatTyden,
                     onChanged: (value) {
                       setState(() {
@@ -143,6 +146,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               children: [
                 Flexible(child: Text(Languages.of(context)!.notifyLunch)),
                 Switch(
+                    activeColor: Colors.purple,
                     value: _oznameniObed,
                     thumbColor: (!_zapamatovany
                         ? MaterialStateProperty.all(Colors.grey)
