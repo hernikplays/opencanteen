@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:opencanteen/okna/android/burza.dart';
-import 'package:opencanteen/okna/android/jidelnicek.dart';
-import 'package:opencanteen/okna/ios/burza.dart';
-import 'package:opencanteen/okna/ios/jidelnicek.dart';
+import 'package:opencanteen/okna/burza.dart';
+import 'package:opencanteen/okna/jidelnicek.dart';
 import 'lang/lang.dart';
 
 Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
@@ -31,10 +29,7 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => (Platform.isAndroid)
-                      ? AndroidBurza(canteen: canteen)
-                      : IOSBurza(canteen: canteen),
-                ),
+                    builder: (context) => BurzaView(canteen: canteen)),
               ),
             ),
           ],
@@ -53,11 +48,10 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
               leading: const Icon(Icons.home),
               title: Text(Languages.of(context)!.home),
               onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (c) => (Platform.isAndroid)
-                          ? AndroidJidelnicek(canteen: canteen)
-                          : IOSJidelnicek(canteen: canteen))),
+                context,
+                MaterialPageRoute(
+                    builder: (c) => JidelnicekView(canteen: canteen)),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.store),

@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/android/login.dart';
-import 'package:opencanteen/okna/android/nastaveni.dart';
+import 'package:opencanteen/okna/login.dart';
+import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,14 +14,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../lang/lang.dart';
 
-class AndroidJidelnicek extends StatefulWidget {
-  const AndroidJidelnicek({Key? key, required this.canteen}) : super(key: key);
+class JidelnicekView extends StatefulWidget {
+  const JidelnicekView({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
   @override
-  State<AndroidJidelnicek> createState() => _AndroidJidelnicekState();
+  State<JidelnicekView> createState() => _JidelnicekViewState();
 }
 
-class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
+class _JidelnicekViewState extends State<JidelnicekView> {
   List<Widget> obsah = [const CircularProgressIndicator()];
   DateTime den = DateTime.now();
   String denTydne = "";
@@ -312,7 +312,7 @@ class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
     }).catchError((o) {
       if (!widget.canteen.prihlasen) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const AndroidLogin()));
+            context, MaterialPageRoute(builder: (c) => const LoginPage()));
       }
     });
   }
@@ -331,7 +331,7 @@ class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
                   storage.deleteAll();
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (c) => const AndroidLogin()),
+                      MaterialPageRoute(builder: (c) => const LoginPage()),
                       (route) => false);
                 },
                 child: Text(Languages.of(context)!.yes)),

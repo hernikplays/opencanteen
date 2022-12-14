@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/android/welcome.dart';
+import 'package:opencanteen/okna/welcome.dart';
 
 import '../../lang/lang.dart';
 import '../../loginmanager.dart';
@@ -14,13 +14,13 @@ import '../../util.dart';
 import 'jidelnicek.dart';
 import 'offline_jidelnicek.dart';
 
-class AndroidLogin extends StatefulWidget {
-  const AndroidLogin({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
   @override
-  State<AndroidLogin> createState() => _AndroidLoginState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _AndroidLoginState extends State<AndroidLogin> {
+class _LoginPageState extends State<LoginPage> {
   TextEditingController userControl = TextEditingController();
   TextEditingController passControl = TextEditingController();
   TextEditingController canteenControl = TextEditingController();
@@ -75,14 +75,14 @@ class _AndroidLoginState extends State<AndroidLogin> {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (c) => AndroidWelcome(canteen: canteen),
+                  builder: (c) => WelcomePage(canteen: canteen),
                 ),
                 (route) => false);
           } else {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AndroidJidelnicek(canteen: canteen),
+                  builder: (context) => JidelnicekView(canteen: canteen),
                 ),
                 (route) => false);
           }
@@ -228,7 +228,7 @@ class _AndroidLoginState extends State<AndroidLogin> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (c) => AndroidWelcome(
+                                    builder: (c) => WelcomePage(
                                           canteen: canteen,
                                         )),
                                 (route) => false);
@@ -236,7 +236,7 @@ class _AndroidLoginState extends State<AndroidLogin> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AndroidJidelnicek(
+                                    builder: (context) => JidelnicekView(
                                           canteen: canteen,
                                         )),
                                 (route) => false);

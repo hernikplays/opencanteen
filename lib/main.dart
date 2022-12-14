@@ -7,8 +7,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:opencanteen/lang/lang_cz.dart';
 import 'package:opencanteen/loginmanager.dart';
 import 'package:canteenlib/canteenlib.dart';
-import 'package:opencanteen/okna/android/login.dart';
-import 'package:opencanteen/okna/ios/login.dart';
+import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -140,7 +139,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primarySwatch: Colors.purple,
       ),
-      home: (Platform.isAndroid) ? const AndroidLogin() : const IOSLogin(),
+      home: const LoginPage(),
     );
   }
 }

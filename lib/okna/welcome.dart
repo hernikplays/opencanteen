@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:opencanteen/lang/lang.dart';
-import 'package:opencanteen/okna/android/jidelnicek.dart';
+import 'package:opencanteen/okna/jidelnicek.dart';
 
-class AndroidWelcome extends StatefulWidget {
-  const AndroidWelcome({Key? key, required this.canteen}) : super(key: key);
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({Key? key, required this.canteen}) : super(key: key);
 
   final Canteen canteen;
 
   @override
-  State<AndroidWelcome> createState() => _AndroidWelcomeState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _AndroidWelcomeState extends State<AndroidWelcome> {
+class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     var listPagesViewModel = [
@@ -69,7 +69,7 @@ class _AndroidWelcomeState extends State<AndroidWelcome> {
           if (!mounted) return;
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                  builder: (c) => AndroidJidelnicek(canteen: widget.canteen)),
+                  builder: (c) => JidelnicekView(canteen: widget.canteen)),
               (route) => false);
         },
       ),

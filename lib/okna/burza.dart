@@ -1,18 +1,18 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
-import 'package:opencanteen/okna/android/login.dart';
+import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/util.dart';
 
 import '../../lang/lang.dart';
 
-class AndroidBurza extends StatefulWidget {
-  const AndroidBurza({Key? key, required this.canteen}) : super(key: key);
+class BurzaView extends StatefulWidget {
+  const BurzaView({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
   @override
-  State<AndroidBurza> createState() => _AndroidBurzaState();
+  State<BurzaView> createState() => _BurzaViewState();
 }
 
-class _AndroidBurzaState extends State<AndroidBurza> {
+class _BurzaViewState extends State<BurzaView> {
   List<Widget> obsah = [];
   double kredit = 0.0;
   Future<void> nactiBurzu(BuildContext context) async {
@@ -98,7 +98,7 @@ class _AndroidBurzaState extends State<AndroidBurza> {
     }).catchError((o) {
       if (!widget.canteen.prihlasen) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const AndroidLogin()));
+            context, MaterialPageRoute(builder: (c) => const LoginPage()));
       }
     });
   }

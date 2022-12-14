@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/ios/login.dart';
+import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,13 +12,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../lang/lang.dart';
 
-class IOSOfflineJidelnicek extends StatefulWidget {
-  const IOSOfflineJidelnicek({Key? key}) : super(key: key);
+class AndroidOfflineJidelnicek extends StatefulWidget {
+  const AndroidOfflineJidelnicek({Key? key}) : super(key: key);
   @override
-  State<IOSOfflineJidelnicek> createState() => _IOSOfflineJidelnicekState();
+  State<AndroidOfflineJidelnicek> createState() =>
+      _AndroidOfflineJidelnicekState();
 }
 
-class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
+class _AndroidOfflineJidelnicekState extends State<AndroidOfflineJidelnicek> {
   List<Widget> obsah = [const CircularProgressIndicator()];
   var _skipWeekend = false;
   DateTime den = DateTime.now();
@@ -115,10 +115,9 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (c) => const IOSLogin()));
+          context, MaterialPageRoute(builder: (c) => const LoginPage()));
     } else if (value == Languages.of(context)!.review) {
-      launchUrl(
-          Uri.parse("https://apps.apple.com/cz/app/opencanteen/id1621124445"),
+      launchUrl(Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
           mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
@@ -133,7 +132,7 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
               "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
           applicationVersion: packageInfo.version,
           children: [
-            CupertinoButton(
+            TextButton(
                 onPressed: (() => launchUrl(
                     Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
                 child: Text(Languages.of(context)!.source))
@@ -215,7 +214,7 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
                         });
                       },
                       icon: const Icon(Icons.arrow_left)),
-                  CupertinoButton(
+                  TextButton(
                       onPressed: () async {},
                       child: Text(
                           "${den.day}. ${den.month}. ${den.year} - $denTydne")),
@@ -258,7 +257,7 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
           ),
         ),
         onRefresh: () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: ((context) => const IOSLogin()))),
+            MaterialPageRoute(builder: ((context) => const LoginPage()))),
       ),
     );
   }
