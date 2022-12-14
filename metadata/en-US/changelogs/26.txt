@@ -1,0 +1,1 @@
+- Fix issue with adding food to the exchange

@@ -6,7 +6,7 @@ publish_to: 'none'
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
-version: 1.6.0+25
+version: 1.6.1+26
 
 environment:
   sdk: ">=2.16.1 <3.0.0"
@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   flutter_localizations: 
     sdk: flutter
-  canteenlib: ^1.1.0-alpha.1
+  canteenlib: ^1.1.1
   flutter_secure_storage: 5.0.2
   url_launcher: ^6.0.20
   path_provider: ^2.0.9

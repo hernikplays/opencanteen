@@ -226,25 +226,27 @@ class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
                         widget.canteen.objednat(j).then((_) {
                           Navigator.of(context, rootNavigator: true).pop();
                           nactiJidlo();
-                        }).catchError((o) {
-                          Navigator.of(context, rootNavigator: true).pop();
-                          showDialog(
+                        }).catchError(
+                          (o) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            showDialog(
                               context: context,
                               builder: (bc) => AlertDialog(
-                                    title: Text(
-                                        Languages.of(context)!.errorOrdering),
-                                    content: Text(o.toString()),
-                                    actions: [
-                                      TextButton(
-                                        child:
-                                            Text(Languages.of(context)!.close),
-                                        onPressed: () {
-                                          Navigator.pop(bc);
-                                        },
-                                      )
-                                    ],
-                                  ));
-                        });
+                                title:
+                                    Text(Languages.of(context)!.errorOrdering),
+                                content: Text(o.toString()),
+                                actions: [
+                                  TextButton(
+                                    child: Text(Languages.of(context)!.close),
+                                    onPressed: () {
+                                      Navigator.pop(bc);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       }
                     },
                     onLongPress: () async {
@@ -277,21 +279,22 @@ class _AndroidJidelnicekState extends State<AndroidJidelnicek> {
                               .then((_) => nactiJidlo())
                               .catchError((o) {
                             showDialog(
-                                context: context,
-                                builder: (bc) => AlertDialog(
-                                      title: Text(
-                                          Languages.of(context)!.exchangeError),
-                                      content: Text(o.toString()),
-                                      actions: [
-                                        TextButton(
-                                          child: Text(
-                                              Languages.of(context)!.close),
-                                          onPressed: () {
-                                            Navigator.pop(bc);
-                                          },
-                                        )
-                                      ],
-                                    ));
+                              context: context,
+                              builder: (bc) => AlertDialog(
+                                title:
+                                    Text(Languages.of(context)!.exchangeError),
+                                content: SingleChildScrollView(
+                                    child: Text(o.toString())),
+                                actions: [
+                                  TextButton(
+                                    child: Text(Languages.of(context)!.close),
+                                    onPressed: () {
+                                      Navigator.pop(bc);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
                           });
                         }
                       } else {
