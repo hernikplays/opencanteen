@@ -1,3 +1,5 @@
+# 1.6.1
+- opravit chybu s přidáváním do burzy aktualizací knihovny
 # 1.6.0
 - rozdělit iOS a Android UI zvlášť pro možnost využití Cupertino knihovny
 - opravit chybu s FlutterLocalNotifications na iOS
