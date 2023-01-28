@@ -17,7 +17,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import 'lang/lang.dart';
 import 'lang/lang_en.dart';
-
+import 'color_schemes.g.dart';
 /*
 Copyright (C) 2022  Matyáš Caras a přispěvatelé
 
@@ -135,13 +135,11 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: const [Locale("cs", ""), Locale("en", "")],
             title: "OpenCanteen",
-            theme: ThemeData(
-              primarySwatch: Colors.purple,
-            ),
+            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
             darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              primarySwatch: Colors.purple,
-            ),
+                brightness: Brightness.dark,
+                useMaterial3: true,
+                colorScheme: darkColorScheme),
             home: const LoginPage(),
           )
         : const CupertinoApp(
