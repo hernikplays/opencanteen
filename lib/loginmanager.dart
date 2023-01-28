@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginManager {
   static Future<Map<String, String>?> getDetails() async {
-    // zkontrolovat secure storage pokud je něco uložené
+    // check secure storage for details
     const storage = FlutterSecureStorage();
     var user = await storage.read(key: "oc_user");
     var pass = await storage.read(key: "oc_pass");
@@ -18,7 +18,7 @@ class LoginManager {
     await storage.write(key: "oc_url", value: url);
   }
 
-  static Future<bool> zapamatovat() async {
+  static Future<bool> rememberme() async {
     const storage = FlutterSecureStorage();
     return await storage.containsKey(key: "oc_pass");
   }

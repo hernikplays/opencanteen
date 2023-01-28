@@ -1,6 +1,8 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:opencanteen/okna/login.dart';
+import 'package:opencanteen/pw/platformbutton.dart';
+import 'package:opencanteen/pw/platformdialog.dart';
 import 'package:opencanteen/util.dart';
 
 import '../../lang/lang.dart';
@@ -13,100 +15,101 @@ class BurzaView extends StatefulWidget {
 }
 
 class _BurzaViewState extends State<BurzaView> {
-  List<Widget> obsah = [];
-  double kredit = 0.0;
-  Future<void> nactiBurzu(BuildContext context) async {
-    obsah = [const CircularProgressIndicator()];
-    widget.canteen.ziskejUzivatele().then((kr) {
-      kredit = kr.kredit;
-      widget.canteen.ziskatBurzu().then((burza) {
-        setState(() {
-          obsah = [];
-          if (burza.isEmpty) {
-            obsah = [
-              Text(
-                Languages.of(context)!.noExchange,
-                style: const TextStyle(fontSize: 20),
-              ),
-              Text(Languages.of(context)!.pullToReload)
-            ];
-          } else {
-            for (var b in burza) {
-              obsah.add(
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("${b.den.day}. ${b.den.month}."),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          b.nazev,
-                        ),
-                      ),
-                      Text("${b.pocet}x"),
-                      TextButton(
-                          onPressed: () {
-                            widget.canteen.objednatZBurzy(b).then((a) {
-                              if (a) {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(Languages.of(context)!.ordered),
-                                    content: Text(
-                                        Languages.of(context)!.orderSuccess),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(Languages.of(context)!.ok),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(
-                                        Languages.of(context)!.cannotOrder),
-                                    content: Text(
-                                        Languages.of(context)!.errorOrdering),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(Languages.of(context)!.ok),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                              nactiBurzu(context);
-                            });
-                          },
-                          child: Text(Languages.of(context)!.order)),
-                    ],
-                  ),
-                ),
-              );
-            }
-          }
-        });
-      });
-    }).catchError((o) {
+  List<Widget> content = [];
+  double balance = 0.0;
+
+  Future<void> loadExchange(BuildContext context) async {
+    content = [const CircularProgressIndicator()];
+    var uzivatel = await widget.canteen.ziskejUzivatele().catchError((o) {
       if (!widget.canteen.prihlasen) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginPage()));
+            context, platformRouter((c) => const LoginPage()));
+      }
+      return Uzivatel(kredit: 0);
+    });
+    balance = uzivatel.kredit;
+    var burza = await widget.canteen.ziskatBurzu();
+    setState(() {
+      content = [];
+      if (burza.isEmpty) {
+        content = [
+          Text(
+            Languages.of(context)!.noExchange,
+            style: const TextStyle(fontSize: 20),
+          ),
+          Text(Languages.of(context)!.pullToReload)
+        ];
+      } else {
+        for (var b in burza) {
+          content.add(
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${b.den.day}. ${b.den.month}."),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(
+                      b.nazev,
+                    ),
+                  ),
+                  Text("${b.pocet}x"),
+                  PlatformButton(
+                    onPressed: () {
+                      widget.canteen.objednatZBurzy(b).then(
+                        (a) {
+                          if (a) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => PlatformDialog(
+                                title: Languages.of(context)!.ordered,
+                                content: Languages.of(context)!.orderSuccess,
+                                actions: [
+                                  PlatformButton(
+                                    text: Languages.of(context)!.ok,
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) => PlatformDialog(
+                                title: Languages.of(context)!.cannotOrder,
+                                content: Languages.of(context)!.errorOrdering,
+                                actions: [
+                                  PlatformButton(
+                                    text: Languages.of(context)!.ok,
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                          loadExchange(context);
+                        },
+                      );
+                    },
+                    text: Languages.of(context)!.order,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
       }
     });
+    return;
   }
 
   @override
   void initState() {
     super.initState();
-    nactiBurzu(context);
+    loadExchange(context);
   }
 
   @override
@@ -123,20 +126,20 @@ class _BurzaViewState extends State<BurzaView> {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  Text("${Languages.of(context)!.balance}$kredit Kč"),
+                  Text("${Languages.of(context)!.balance}$balance Kč"),
                   const SizedBox(height: 10),
                   SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height / 1.3,
-                      child: Column(children: obsah),
+                      child: Column(children: content),
                     ),
                   )
                 ],
               ),
             ),
           ),
-          onRefresh: () => nactiBurzu(context)),
+          onRefresh: () => loadExchange(context)),
     );
   }
 }

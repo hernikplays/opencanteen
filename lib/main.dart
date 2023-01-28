@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -37,7 +38,8 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
+/// Used to setup notifications about ordered food
+void setupNotification(SharedPreferences prefs, tz.Location l) async {
   String title;
 
   String locale = Intl.getCurrentLocale();
@@ -50,24 +52,24 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
   }
 
   /*if (prefs.getBool("offline") ?? false) {
-    // TODO možnost brát z offline dat
+    // TODO grab data from offline storage
   } else {*/
-  // bere online
-  var d = await LoginManager.getDetails(); // získat údaje
+  // data from the web
+  var d = await LoginManager.getDetails(); // grab login
   if (d != null) {
     var c = Canteen(d["url"]!);
     if (await c.login(d["user"]!, d["pass"]!)) {
       var jidla = await c.jidelnicekDen();
       try {
-        var jidlo = jidla.jidla.singleWhere(
-            (element) => element.objednano); // získá objednané jídlo
+        var jidlo = jidla.jidla
+            .singleWhere((element) => element.objednano); // grab ordered meal
         var kdy = DateTime.parse(prefs.getString(
-            "oznameni_cas")!); // uložíme čas, kdy se má odeslat oznámení
-        var cas = casNaDate(
+            "oznameni_cas")!); // save the time the notif should be sent
+        var cas = timeToDate(
           TimeOfDay(hour: kdy.hour, minute: kdy.minute),
         );
         if (cas.isBefore(DateTime.now())) return;
-        // data o oznámení
+        // notif data
         const AndroidNotificationDetails androidSpec =
             AndroidNotificationDetails('predobedem', 'Oznámení před obědem',
                 channelDescription: 'Oznámení o dnešním jídle',
@@ -76,7 +78,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
                 styleInformation: BigTextStyleInformation(''),
                 ticker: 'today meal');
 
-        // naplánovat
+        // plan through lib
         await flutterLocalNotificationsPlugin.zonedSchedule(
             0,
             title,
@@ -87,7 +89,7 @@ void oznamitPredem(SharedPreferences prefs, tz.Location l) async {
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime);
       } on StateError catch (_) {
-        // nenalezeno
+        // no ordered meal found
       }
     }
     // }
@@ -102,10 +104,10 @@ void main() async {
 
   var prefs = await SharedPreferences.getInstance();
   if (prefs.getBool("oznamit") ?? false) {
-    oznamitPredem(prefs, l);
+    setupNotification(prefs, l);
   }
 
-  // nastavit oznámení
+  // notif library setup
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('notif_icon');
 
@@ -115,7 +117,6 @@ void main() async {
       InitializationSettings(android: initializationSettingsAndroid, iOS: ios);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-  // spustit aplikaci
   runApp(const MyApp());
 }
 
@@ -124,23 +125,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        AppLocalizationsDelegate(),
-        ...GlobalMaterialLocalizations.delegates
-      ],
-      supportedLocales: const [Locale("cs", ""), Locale("en", "")],
-      title: "OpenCanteen",
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.purple,
-      ),
-      home: const LoginPage(),
-    );
+    return (Platform
+            .isAndroid) // run app based on current platform  to make use of the platform's respective UI lib
+        ? MaterialApp(
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: const [
+              AppLocalizationsDelegate(),
+              ...GlobalMaterialLocalizations.delegates
+            ],
+            supportedLocales: const [Locale("cs", ""), Locale("en", "")],
+            title: "OpenCanteen",
+            theme: ThemeData(
+              primarySwatch: Colors.purple,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              primarySwatch: Colors.purple,
+            ),
+            home: const LoginPage(),
+          )
+        : const CupertinoApp(
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              AppLocalizationsDelegate(),
+              ...GlobalMaterialLocalizations.delegates
+            ],
+            supportedLocales: [Locale("cs", ""), Locale("en", "")],
+            title: "OpenCanteen",
+            theme: CupertinoThemeData(
+              primaryColor: Colors.purple,
+            ),
+            home: LoginPage(),
+          );
   }
 }
 

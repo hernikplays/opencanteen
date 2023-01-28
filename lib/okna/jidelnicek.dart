@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/okna/nastaveni.dart';
+import 'package:opencanteen/pw/platformbutton.dart';
+import 'package:opencanteen/pw/platformdialog.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,25 +16,25 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../lang/lang.dart';
 
-class JidelnicekView extends StatefulWidget {
-  const JidelnicekView({Key? key, required this.canteen}) : super(key: key);
+class MealView extends StatefulWidget {
+  const MealView({Key? key, required this.canteen}) : super(key: key);
   final Canteen canteen;
   @override
-  State<JidelnicekView> createState() => _JidelnicekViewState();
+  State<MealView> createState() => _MealViewState();
 }
 
-class _JidelnicekViewState extends State<JidelnicekView> {
-  List<Widget> obsah = [const CircularProgressIndicator()];
-  DateTime den = DateTime.now();
-  String denTydne = "";
-  double kredit = 0.0;
+class _MealViewState extends State<MealView> {
+  List<Widget> content = [const CircularProgressIndicator()];
+  DateTime day = DateTime.now();
+  String dayOWeek = "";
+  double balance = 0.0;
   bool _skipWeekend = false;
 
-  void kontrolaTyden(BuildContext context) async {
+  void checkWeek(BuildContext context) async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("tyden") ?? false) {
-      // Zjistit jestli je objednáno na přístí týden
-      var pristi = den.add(const Duration(days: 6));
+      // Check if user has ordered a meal in the next week
+      var pristi = day.add(const Duration(days: 6));
       for (var i = 0; i < 5; i++) {
         var jidelnicek = await widget.canteen
             .jidelnicekDen(den: pristi.add(Duration(days: i + 1)));
@@ -47,8 +49,8 @@ class _JidelnicekViewState extends State<JidelnicekView> {
               action: SnackBarAction(
                 onPressed: () => setState(
                   () {
-                    den = pristi.add(Duration(days: i + 1));
-                    nactiJidlo();
+                    day = pristi.add(Duration(days: i + 1));
+                    loadMeals();
                   },
                 ),
                 label: Languages.of(context)!.jump,
@@ -61,288 +63,295 @@ class _JidelnicekViewState extends State<JidelnicekView> {
     }
   }
 
-  Future<void> nactiJidlo() async {
-    obsah = [const CircularProgressIndicator()];
-    switch (den.weekday) {
+  Future<void> loadMeals() async {
+    content = [const CircularProgressIndicator()];
+    switch (day.weekday) {
       case 2:
-        denTydne = Languages.of(context)!.tuesday;
+        dayOWeek = Languages.of(context)!.tuesday;
         break;
       case 3:
-        denTydne = Languages.of(context)!.wednesday;
+        dayOWeek = Languages.of(context)!.wednesday;
         break;
       case 4:
-        denTydne = Languages.of(context)!.thursday;
+        dayOWeek = Languages.of(context)!.thursday;
         break;
       case 5:
-        denTydne = Languages.of(context)!.friday;
+        dayOWeek = Languages.of(context)!.friday;
         break;
       case 6:
-        denTydne = Languages.of(context)!.saturday;
+        dayOWeek = Languages.of(context)!.saturday;
         break;
       case 7:
-        denTydne = Languages.of(context)!.sunday;
+        dayOWeek = Languages.of(context)!.sunday;
         break;
       default:
-        denTydne = Languages.of(context)!.monday;
+        dayOWeek = Languages.of(context)!.monday;
     }
-    widget.canteen.ziskejUzivatele().then((kr) {
-      kredit = kr.kredit;
-      widget.canteen.jidelnicekDen(den: den).then((jd) async {
-        setState(() {
-          obsah = [];
-          if (jd.jidla.isEmpty) {
-            obsah.add(Text(
-              Languages.of(context)!.noFood,
-              style: const TextStyle(fontSize: 15),
-            ));
-          } else {
-            for (var j in jd.jidla) {
-              obsah.add(
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: InkWell(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(j.varianta),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            j.nazev,
-                          ),
+    var uzivatel = await widget.canteen.ziskejUzivatele().catchError(
+      (o) {
+        if (!widget.canteen.prihlasen) {
+          Navigator.pushReplacement(
+              context, platformRouter((c) => const LoginPage()));
+        }
+        return Uzivatel(kredit: 0);
+      },
+    );
+    balance = uzivatel.kredit;
+    var jd = await widget.canteen.jidelnicekDen(den: day).catchError((_) {
+      showInfo(context, Languages.of(context)!.errorContacting);
+      return Jidelnicek(DateTime.now(), []);
+    });
+    setState(
+      () {
+        content = [];
+        if (jd.jidla.isEmpty) {
+          content.add(Text(
+            Languages.of(context)!.noFood,
+            style: const TextStyle(fontSize: 15),
+          ));
+        } else {
+          for (var j in jd.jidla) {
+            content.add(
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: InkWell(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(j.varianta),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          j.nazev,
                         ),
-                        Text((j.naBurze)
-                            ? Languages.of(context)!.inExchange
-                            : "${j.cena} Kč"),
-                        Checkbox(
-                            value: j.objednano,
-                            fillColor: (j.lzeObjednat)
-                                ? MaterialStateProperty.all(Colors.purple)
-                                : MaterialStateProperty.all(Colors.grey),
-                            onChanged: (v) async {
-                              if (!j.lzeObjednat) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text(Languages.of(context)!
-                                            .errorOrdering),
-                                        content: Text(
-                                            Languages.of(context)!.cannotOrder),
-                                        actions: [
-                                          TextButton(
-                                            child:
-                                                Text(Languages.of(context)!.ok),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    });
-                              } else {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) => Dialog(
-                                          child: SizedBox(
-                                            height: 100,
-                                            child: Row(children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                              Text(Languages.of(context)!
-                                                  .ordering)
-                                            ]),
-                                          ),
-                                        ));
-                                widget.canteen.objednat(j).then((_) {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  nactiJidlo();
-                                }).catchError((o) {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  showDialog(
-                                      context: context,
-                                      builder: (bc) => AlertDialog(
-                                            title: Text(Languages.of(context)!
-                                                .errorOrdering),
-                                            content: Text(o.toString()),
-                                            actions: [
-                                              TextButton(
-                                                child: Text(
-                                                    Languages.of(context)!
-                                                        .close),
-                                                onPressed: () {
-                                                  Navigator.pop(bc);
-                                                },
-                                              )
-                                            ],
-                                          ));
-                                });
-                              }
-                            })
-                      ],
-                    ),
-                    onTap: () async {
-                      if (!j.lzeObjednat) {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title:
-                                    Text(Languages.of(context)!.errorOrdering),
-                                content:
-                                    Text(Languages.of(context)!.cannotOrder),
-                                actions: [
-                                  TextButton(
-                                    child: Text(Languages.of(context)!.ok),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            });
-                      } else {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => Dialog(
-                                  child: SizedBox(
-                                    height: 100,
-                                    child: Row(children: [
+                      ),
+                      Text((j.naBurze)
+                          ? Languages.of(context)!.inExchange
+                          : "${j.cena} Kč"),
+                      Checkbox(
+                        value: j.objednano,
+                        fillColor: (j.lzeObjednat)
+                            ? MaterialStateProperty.all(Colors.purple)
+                            : MaterialStateProperty.all(Colors.grey),
+                        onChanged: (v) async {
+                          if (!j.lzeObjednat) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return PlatformDialog(
+                                  title: Languages.of(context)!.errorOrdering,
+                                  content: Languages.of(context)!.cannotOrder,
+                                  actions: [
+                                    PlatformButton(
+                                      text: Languages.of(context)!.ok,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => Dialog(
+                                child: SizedBox(
+                                  height: 100,
+                                  child: Row(
+                                    children: [
                                       const Padding(
                                         padding: EdgeInsets.all(10),
                                         child: CircularProgressIndicator(),
                                       ),
                                       Text(Languages.of(context)!.ordering)
-                                    ]),
+                                    ],
                                   ),
-                                ));
-                        widget.canteen.objednat(j).then((_) {
-                          Navigator.of(context, rootNavigator: true).pop();
-                          nactiJidlo();
-                        }).catchError(
-                          (o) {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            showDialog(
-                              context: context,
-                              builder: (bc) => AlertDialog(
-                                title:
-                                    Text(Languages.of(context)!.errorOrdering),
-                                content: Text(o.toString()),
-                                actions: [
-                                  TextButton(
-                                    child: Text(Languages.of(context)!.close),
-                                    onPressed: () {
-                                      Navigator.pop(bc);
-                                    },
-                                  )
-                                ],
+                                ),
                               ),
                             );
-                          },
-                        );
-                      }
-                    },
-                    onLongPress: () async {
-                      if (!j.objednano || j.burzaUrl == null) return;
-                      if (!j.naBurze) {
-                        // pokud není na burze, radši se zeptáme
-                        var d = await showDialog(
-                            context: context,
-                            builder: (bc) => SimpleDialog(
-                                  title: Text(
-                                      Languages.of(context)!.verifyExchange),
-                                  children: [
-                                    SimpleDialogOption(
-                                      onPressed: () {
-                                        Navigator.pop(bc, true);
-                                      },
-                                      child: Text(Languages.of(context)!.yes),
-                                    ),
-                                    SimpleDialogOption(
-                                      onPressed: () {
-                                        Navigator.pop(bc, false);
-                                      },
-                                      child: Text(Languages.of(context)!.no),
-                                    ),
-                                  ],
-                                ));
-                        if (d) {
-                          widget.canteen
-                              .doBurzy(j)
-                              .then((_) => nactiJidlo())
-                              .catchError((o) {
-                            showDialog(
-                              context: context,
-                              builder: (bc) => AlertDialog(
-                                title:
-                                    Text(Languages.of(context)!.exchangeError),
-                                content: SingleChildScrollView(
-                                    child: Text(o.toString())),
-                                actions: [
-                                  TextButton(
-                                    child: Text(Languages.of(context)!.close),
-                                    onPressed: () {
-                                      Navigator.pop(bc);
-                                    },
-                                  )
-                                ],
-                              ),
+                            widget.canteen.objednat(j).then((_) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              loadMeals();
+                            }).catchError(
+                              (o) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                showDialog(
+                                  context: context,
+                                  builder: (bc) => PlatformDialog(
+                                    title: Languages.of(context)!.errorOrdering,
+                                    content: o.toString(),
+                                    actions: [
+                                      PlatformButton(
+                                        text: Languages.of(context)!.close,
+                                        onPressed: () {
+                                          Navigator.pop(bc);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
                             );
-                          });
-                        }
-                      } else {
-                        // jinak ne
-                        widget.canteen.doBurzy(j).then((_) => nactiJidlo());
-                      }
-                    },
+                          }
+                        },
+                      )
+                    ],
                   ),
+                  onTap: () async {
+                    if (!j.lzeObjednat) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return PlatformDialog(
+                            title: Languages.of(context)!.errorOrdering,
+                            content: Languages.of(context)!.cannotOrder,
+                            actions: [
+                              PlatformButton(
+                                text: Languages.of(context)!.ok,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) => Dialog(
+                          child: SizedBox(
+                            height: 100,
+                            child: Row(children: [
+                              const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: CircularProgressIndicator(),
+                              ),
+                              Text(Languages.of(context)!.ordering)
+                            ]),
+                          ),
+                        ),
+                      );
+                      widget.canteen.objednat(j).then((_) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                        loadMeals();
+                      }).catchError(
+                        (o) {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          showDialog(
+                            context: context,
+                            builder: (bc) => PlatformDialog(
+                              title: Languages.of(context)!.errorOrdering,
+                              content: o.toString(),
+                              actions: [
+                                PlatformButton(
+                                  text: Languages.of(context)!.close,
+                                  onPressed: () {
+                                    Navigator.pop(bc);
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                  onLongPress: () async {
+                    if (!j.objednano || j.burzaUrl == null) return;
+                    if (!j.naBurze) {
+                      // if not in exchange, we ask
+                      var d = await showDialog(
+                        context: context,
+                        builder: (bc) => PlatformDialog(
+                          title: Languages.of(context)!.verifyExchange,
+                          actions: [
+                            PlatformButton(
+                              onPressed: () {
+                                Navigator.pop(bc, true);
+                              },
+                              text: Languages.of(context)!.yes,
+                            ),
+                            PlatformButton(
+                              onPressed: () {
+                                Navigator.pop(bc, false);
+                              },
+                              text: Languages.of(context)!.no,
+                            ),
+                          ],
+                        ),
+                      );
+                      if (d) {
+                        widget.canteen
+                            .doBurzy(j)
+                            .then((_) => loadMeals())
+                            .catchError((o) {
+                          showDialog(
+                            context: context,
+                            builder: (bc) => PlatformDialog(
+                              title: Languages.of(context)!.exchangeError,
+                              content: o.toString(),
+                              actions: [
+                                PlatformButton(
+                                  text: Languages.of(context)!.close,
+                                  onPressed: () {
+                                    Navigator.pop(bc);
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                      }
+                    } else {
+                      // else no
+                      widget.canteen.doBurzy(j).then((_) => loadMeals());
+                    }
+                  },
                 ),
-              );
-            }
+              ),
+            );
           }
-        });
-      });
-    }).catchError((o) {
-      if (!widget.canteen.prihlasen) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (c) => const LoginPage()));
-      }
-    });
+        }
+      },
+    );
+    return;
   }
 
-  Future<void> kliknuti(String value, BuildContext context) async {
+  Future<void> click(String value, BuildContext context) async {
     if (value == Languages.of(context)!.signOut) {
       await showDialog<bool>(
         context: context,
-        builder: (c) => AlertDialog(
-          title: Text(Languages.of(context)!.warning),
-          content: Text(Languages.of(context)!.signOutWarn),
+        builder: (c) => PlatformDialog(
+          title: Languages.of(context)!.warning,
+          content: Languages.of(context)!.signOutWarn,
           actions: [
-            TextButton(
+            PlatformButton(
                 onPressed: () {
                   const storage = FlutterSecureStorage();
                   storage.deleteAll();
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (c) => const LoginPage()),
+                      platformRouter((c) => const LoginPage()),
                       (route) => false);
                 },
-                child: Text(Languages.of(context)!.yes)),
-            TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(Languages.of(context)!.no))
+                text: Languages.of(context)!.yes),
+            PlatformButton(
+              onPressed: () => Navigator.of(context).pop(),
+              text: Languages.of(context)!.no,
+            )
           ],
         ),
       );
     } else if (value == Languages.of(context)!.review) {
-      launchUrl(Uri.parse("market://details?id=cz.hernikplays.opencanteen"),
+      launchUrl(
+          Uri.parse((Platform.isAndroid)
+              ? "market://details?id=cz.hernikplays.opencanteen"
+              : "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
           mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
@@ -357,28 +366,29 @@ class _JidelnicekViewState extends State<JidelnicekView> {
               "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
           applicationVersion: packageInfo.version,
           children: [
-            TextButton(
-                onPressed: (() => launchUrl(
-                    Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
-                child: Text(Languages.of(context)!.source))
+            PlatformButton(
+              onPressed: (() => launchUrl(
+                  Uri.parse("https://git.mnau.xyz/hernik/opencanteen"),
+                  mode: LaunchMode.externalApplication)),
+              text: Languages.of(context)!.source,
+            )
           ]);
     } else if (value == Languages.of(context)!.settings) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const AndroidNastaveni()));
+      Navigator.push(context, platformRouter((c) => const AndroidNastaveni()));
     }
   }
 
-  void nactiNastaveni() async {
+  void loadSettings() async {
     var prefs = await SharedPreferences.getInstance();
     _skipWeekend = prefs.getBool("skip") ?? false;
     if (!mounted) return;
-    kontrolaTyden(context);
+    checkWeek(context);
   }
 
-  void ulozitDoOffline() async {
+  void saveOffline() async {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("offline") ?? false) {
-      // vyčistit offline
+      // clear offline storage
       Directory appDocDir = await getApplicationDocumentsDirectory();
       for (var f in appDocDir.listSync()) {
         if (f.path.contains("jidelnicek")) {
@@ -386,11 +396,11 @@ class _JidelnicekViewState extends State<JidelnicekView> {
         }
       }
 
-      // uložit *pocet* jídelníčků pro offline použití
+      // save X meal lists
       var pocet = prefs.getInt("offline_pocet") ?? 1;
       if (pocet > 7) pocet = 7;
       for (var i = 0; i < pocet; i++) {
-        var d = den.add(Duration(days: i));
+        var d = day.add(Duration(days: i));
         Jidelnicek? j;
         try {
           j = await widget.canteen.jidelnicekDen(den: d);
@@ -427,9 +437,9 @@ class _JidelnicekViewState extends State<JidelnicekView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nactiNastaveni();
-    ulozitDoOffline();
-    nactiJidlo();
+    loadSettings();
+    saveOffline();
+    loadMeals();
   }
 
   @override
@@ -440,7 +450,7 @@ class _JidelnicekViewState extends State<JidelnicekView> {
         title: Text(Languages.of(context)!.menu),
         actions: [
           PopupMenuButton(
-            onSelected: ((String value) => kliknuti(value, context)),
+            onSelected: ((String value) => click(value, context)),
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
@@ -459,62 +469,71 @@ class _JidelnicekViewState extends State<JidelnicekView> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: nactiJidlo,
+        onRefresh: loadMeals,
         child: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width - 50,
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text("${Languages.of(context)!.balance}$kredit Kč"),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  IconButton(
-                      onPressed: () {
-                        setState(() {
-                          den = den.subtract(const Duration(days: 1));
-                          if (den.weekday == 7 && _skipWeekend) {
-                            den = den.subtract(const Duration(days: 2));
-                          }
-                          nactiJidlo();
-                        });
-                      },
-                      icon: const Icon(Icons.arrow_left)),
-                  TextButton(
+                Text("${Languages.of(context)!.balance}$balance Kč"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            day = day.subtract(const Duration(days: 1));
+                            if (day.weekday == 7 && _skipWeekend) {
+                              day = day.subtract(const Duration(days: 2));
+                            }
+                            loadMeals();
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_left)),
+                    PlatformButton(
                       onPressed: () async {
                         var datePicked = await showDatePicker(
                             context: context,
-                            initialDate: den,
-                            currentDate: den,
+                            initialDate: day,
+                            currentDate: day,
                             firstDate: DateTime(2019, 1, 1),
-                            lastDate: DateTime(den.year + 1, 12, 31),
+                            lastDate: DateTime(day.year + 1, 12, 31),
                             locale: Localizations.localeOf(context));
                         if (datePicked == null) return;
                         setState(() {
-                          den = datePicked;
-                          nactiJidlo();
+                          day = datePicked;
+                          loadMeals();
                         });
                       },
-                      child: Text(
-                          "${den.day}. ${den.month}. ${den.year} - $denTydne")),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        den = den.add(const Duration(days: 1));
-                        if (den.weekday == 6 && _skipWeekend) {
-                          den = den.add(const Duration(days: 2));
-                        }
-                        nactiJidlo();
-                      });
-                    },
-                    icon: const Icon(Icons.arrow_right),
-                  ),
-                  IconButton(
-                      onPressed: () => setState(() {
-                            den = DateTime.now();
-                            nactiJidlo();
-                          }),
-                      icon: const Icon(Icons.today))
-                ]),
+                      text: "${day.day}. ${day.month}. ${day.year} - $dayOWeek",
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          day = day.add(const Duration(days: 1));
+                          if (day.weekday == 6 && _skipWeekend) {
+                            day = day.add(const Duration(days: 2));
+                          }
+                          loadMeals();
+                        });
+                      },
+                      icon: const Icon(Icons.arrow_right),
+                    ),
+                    Tooltip(
+                      message: Languages.of(context)!.todayTooltip,
+                      child: IconButton(
+                        onPressed: () => setState(
+                          () {
+                            day = DateTime.now();
+                            loadMeals();
+                          },
+                        ),
+                        icon: const Icon(Icons.today),
+                      ),
+                    )
+                  ],
+                ),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: GestureDetector(
@@ -524,25 +543,27 @@ class _JidelnicekViewState extends State<JidelnicekView> {
                           .onPrimary
                           .withOpacity(0),
                       height: MediaQuery.of(context).size.height / 1.3,
-                      child: Column(children: obsah),
+                      child: Column(children: content),
                     ),
                     onHorizontalDragEnd: (details) {
                       if (details.primaryVelocity?.compareTo(0) == -1) {
                         setState(() {
-                          den = den.add(const Duration(days: 1));
-                          if (den.weekday == 6 && _skipWeekend) {
-                            den = den.add(const Duration(days: 2));
+                          day = day.add(const Duration(days: 1));
+                          if (day.weekday == 6 && _skipWeekend) {
+                            day = day.add(const Duration(days: 2));
                           }
-                          nactiJidlo();
+                          loadMeals();
                         });
                       } else {
-                        setState(() {
-                          den = den.subtract(const Duration(days: 1));
-                          if (den.weekday == 7 && _skipWeekend) {
-                            den = den.subtract(const Duration(days: 2));
-                          }
-                          nactiJidlo();
-                        });
+                        setState(
+                          () {
+                            day = day.subtract(const Duration(days: 1));
+                            if (day.weekday == 7 && _skipWeekend) {
+                              day = day.subtract(const Duration(days: 2));
+                            }
+                            loadMeals();
+                          },
+                        );
                       }
                     },
                   ),
