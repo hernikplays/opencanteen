@@ -17,7 +17,7 @@ dependencies:
   flutter_localizations: 
     sdk: flutter
   canteenlib: ^1.1.1
-  flutter_secure_storage: 5.0.2
+  flutter_secure_storage: ^7.0.1
   url_launcher: ^6.0.20
   path_provider: ^2.0.9
   shared_preferences: ^2.0.13
