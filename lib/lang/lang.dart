@@ -45,6 +45,8 @@ abstract class Languages {
 
   // Jídelníček
 
+  String get todayTooltip;
+
   String get loading;
 
   String get monday;

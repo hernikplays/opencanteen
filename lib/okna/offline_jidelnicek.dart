@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:opencanteen/okna/ios/login.dart';
+import 'package:opencanteen/okna/login.dart';
+import 'package:opencanteen/pw/platformbutton.dart';
 import 'package:opencanteen/util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,89 +13,90 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../lang/lang.dart';
 
-class IOSOfflineJidelnicek extends StatefulWidget {
-  const IOSOfflineJidelnicek({Key? key}) : super(key: key);
+class OfflineMealView extends StatefulWidget {
+  const OfflineMealView({Key? key}) : super(key: key);
   @override
-  State<IOSOfflineJidelnicek> createState() => _IOSOfflineJidelnicekState();
+  State<OfflineMealView> createState() => _OfflineMealViewState();
 }
 
-class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
-  List<Widget> obsah = [const CircularProgressIndicator()];
-  var _skipWeekend = false;
-  DateTime den = DateTime.now();
-  String denTydne = "";
-  List<List<OfflineJidlo>> data = [];
-  var jidloIndex = 0;
+class _OfflineMealViewState extends State<OfflineMealView> {
+  List<Widget> content = [const CircularProgressIndicator()]; // view content
+  var _skipWeekend = false; // skip weekend setting
+  DateTime currentDay = DateTime.now(); // the day we are supposed to show
+  String dayOWeek = ""; // the name of the day (to show to user)
+  List<List<OfflineMeal>> data = []; // meal data
+  var mealIndex = 0; // index of the currently shown day
 
-  void nactiZeSouboru() async {
+  /// Loads the offline data from local storage
+  void loadFromFile() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     for (var f in appDocDir.listSync()) {
       if (f.path.contains("jidelnicek")) {
         var soubor = File(f.path);
         var input = await soubor.readAsString();
         var r = jsonDecode(input);
-        List<OfflineJidlo> jidla = [];
+        List<OfflineMeal> jidla = [];
         for (var j in r) {
-          jidla.add(OfflineJidlo(
-              nazev: j["nazev"],
-              varianta: j["varianta"],
-              objednano: j["objednano"],
-              cena: j["cena"],
-              naBurze: j["naBurze"],
-              den: DateTime.parse(j["den"])));
+          jidla.add(OfflineMeal(
+              name: j["nazev"],
+              variant: j["varianta"],
+              ordered: j["objednano"],
+              price: j["cena"],
+              onExchange: j["naBurze"],
+              day: DateTime.parse(j["den"])));
         }
         data.add(jidla);
       }
     }
-    nactiJidlo();
+    loadFood();
   }
 
-  Future<void> nactiJidlo() async {
-    var jidelnicek = data[jidloIndex];
-    den = jidelnicek[0].den;
-    switch (den.weekday) {
+  Future<void> loadFood() async {
+    var jidelnicek = data[mealIndex];
+    currentDay = jidelnicek[0].day;
+    switch (currentDay.weekday) {
       case 2:
-        denTydne = Languages.of(context)!.tuesday;
+        dayOWeek = Languages.of(context)!.tuesday;
         break;
       case 3:
-        denTydne = Languages.of(context)!.wednesday;
+        dayOWeek = Languages.of(context)!.wednesday;
         break;
       case 4:
-        denTydne = Languages.of(context)!.thursday;
+        dayOWeek = Languages.of(context)!.thursday;
         break;
       case 5:
-        denTydne = Languages.of(context)!.friday;
+        dayOWeek = Languages.of(context)!.friday;
         break;
       case 6:
-        denTydne = Languages.of(context)!.saturday;
+        dayOWeek = Languages.of(context)!.saturday;
         break;
       case 7:
-        denTydne = Languages.of(context)!.sunday;
+        dayOWeek = Languages.of(context)!.sunday;
         break;
       default:
-        denTydne = Languages.of(context)!.monday;
+        dayOWeek = Languages.of(context)!.monday;
     }
-    obsah = [];
-    for (OfflineJidlo j in jidelnicek) {
-      obsah.add(
+    content = [];
+    for (OfflineMeal j in jidelnicek) {
+      content.add(
         Padding(
           padding: const EdgeInsets.only(top: 15),
           child: InkWell(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(j.varianta),
+                Text(j.variant),
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    j.nazev,
+                    j.name,
                   ),
                 ),
-                Text((j.naBurze)
+                Text((j.onExchange)
                     ? Languages.of(context)!.inExchange
-                    : "${j.cena} Kč"),
+                    : "${j.price} Kč"),
                 Checkbox(
-                  value: j.objednano,
+                  value: j.ordered,
                   fillColor: MaterialStateProperty.all(Colors.grey),
                   onChanged: (v) async {
                     return;
@@ -110,15 +111,17 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
     setState(() {});
   }
 
-  void kliknuti(String value, BuildContext context) async {
+  void click(String value, BuildContext context) async {
     if (value == Languages.of(context)!.signOut) {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (c) => const IOSLogin()));
+          context, platformRouter((c) => const LoginPage()));
     } else if (value == Languages.of(context)!.review) {
       launchUrl(
-          Uri.parse("https://apps.apple.com/cz/app/opencanteen/id1621124445"),
+          Uri.parse((Platform.isAndroid)
+              ? "market://details?id=cz.hernikplays.opencanteen"
+              : "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
           mode: LaunchMode.externalApplication);
     } else if (value == Languages.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
@@ -127,31 +130,33 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
       var packageInfo = await PackageInfo.fromPlatform();
       if (!mounted) return;
       showAboutDialog(
-          context: context,
-          applicationName: "OpenCanteen",
-          applicationLegalese:
-              "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
-          applicationVersion: packageInfo.version,
-          children: [
-            CupertinoButton(
-                onPressed: (() => launchUrl(
-                    Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
-                child: Text(Languages.of(context)!.source))
-          ]);
+        context: context,
+        applicationName: "OpenCanteen",
+        applicationLegalese:
+            "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
+        applicationVersion: packageInfo.version,
+        children: [
+          PlatformButton(
+            onPressed: (() => launchUrl(
+                Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
+            text: Languages.of(context)!.source,
+          )
+        ],
+      );
     }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nactiNastaveni();
+    loadSettings();
   }
 
-  void nactiNastaveni() async {
+  void loadSettings() async {
     var prefs = await SharedPreferences.getInstance();
     _skipWeekend = prefs.getBool("skip") ?? false;
     if (!mounted) return;
-    nactiZeSouboru();
+    loadFromFile();
   }
 
   @override
@@ -162,7 +167,7 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
         automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton(
-            onSelected: ((String value) => kliknuti(value, context)),
+            onSelected: ((String value) => click(value, context)),
             itemBuilder: (BuildContext context) {
               return {
                 Languages.of(context)!.reportBugs,
@@ -196,69 +201,69 @@ class _IOSOfflineJidelnicekState extends State<IOSOfflineJidelnicek> {
                   IconButton(
                       onPressed: () {
                         if (data.length <= 1) return;
-                        obsah = [const CircularProgressIndicator()];
+                        content = [const CircularProgressIndicator()];
                         setState(() {
-                          if (den.weekday == 1 && _skipWeekend) {
+                          if (currentDay.weekday == 1 && _skipWeekend) {
                             // pokud je pondělí a chceme přeskočit víkend
-                            if (jidloIndex - 2 >= 0) {
-                              jidloIndex -= data.length - 3;
+                            if (mealIndex - 2 >= 0) {
+                              mealIndex -= data.length - 3;
                             } else {
-                              jidloIndex = data.length - 1;
+                              mealIndex = data.length - 1;
                             }
-                          } else if (jidloIndex == 0) {
-                            jidloIndex = data.length - 1;
+                          } else if (mealIndex == 0) {
+                            mealIndex = data.length - 1;
                           } else {
-                            jidloIndex -= 1;
+                            mealIndex -= 1;
                           }
 
-                          nactiJidlo();
+                          loadFood();
                         });
                       },
                       icon: const Icon(Icons.arrow_left)),
-                  CupertinoButton(
+                  PlatformButton(
                       onPressed: () async {},
-                      child: Text(
-                          "${den.day}. ${den.month}. ${den.year} - $denTydne")),
+                      text:
+                          "${currentDay.day}. ${currentDay.month}. ${currentDay.year} - $dayOWeek"),
                   IconButton(
                     onPressed: () {
                       if (data.length <= 1) return;
-                      obsah = [const CircularProgressIndicator()];
+                      content = [const CircularProgressIndicator()];
                       setState(() {
-                        if (den.weekday == 5 && _skipWeekend) {
+                        if (currentDay.weekday == 5 && _skipWeekend) {
                           // pokud je pondělí a chceme přeskočit víkend
-                          if (jidloIndex + 2 <= data.length - 1) {
-                            jidloIndex += 2;
+                          if (mealIndex + 2 <= data.length - 1) {
+                            mealIndex += 2;
                           } else {
-                            jidloIndex = 0;
+                            mealIndex = 0;
                           }
-                        } else if (jidloIndex == data.length) {
-                          jidloIndex = 0;
+                        } else if (mealIndex == data.length) {
+                          mealIndex = 0;
                         } else {
-                          jidloIndex += 1;
+                          mealIndex += 1;
                         }
-                        nactiJidlo();
+                        loadFood();
                       });
                     },
                     icon: const Icon(Icons.arrow_right),
                   ),
                   IconButton(
                       onPressed: () {
-                        jidloIndex = 0;
+                        mealIndex = 0;
                       },
                       icon: const Icon(Icons.today))
                 ]),
                 SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
-                    children: obsah,
+                    children: content,
                   ),
                 ),
               ],
             ),
           ),
         ),
-        onRefresh: () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: ((context) => const IOSLogin()))),
+        onRefresh: () => Navigator.pushReplacement(
+            context, platformRouter((context) => const LoginPage())),
       ),
     );
   }

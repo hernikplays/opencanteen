@@ -242,4 +242,7 @@ class LanguageEn extends Languages {
   @override
   String get errorSaving =>
       "An error occured while trying to save menu offline, try again later.";
+
+  @override
+  String get todayTooltip => "Go to today's meal";
 }

@@ -244,4 +244,7 @@ class LanguageCz extends Languages {
   @override
   String get errorSaving =>
       "Při ukládání offline nastala chyba, zkuste to znovu později.";
+
+  @override
+  String get todayTooltip => "Přejít na dnešní jídelníček";
 }
