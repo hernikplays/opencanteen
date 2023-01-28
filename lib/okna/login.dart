@@ -7,7 +7,7 @@ import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/pw/platformbutton.dart';
 import 'package:opencanteen/pw/platformfield.dart';
 
-import '../../lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../loginmanager.dart';
 import '../../main.dart';
 import '../../util.dart';
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(10),
                         child: CircularProgressIndicator(),
                       ),
-                      Text(Languages.of(context)!.loggingIn)
+                      Text(AppLocalizations.of(context)!.loggingIn)
                     ]),
                   ),
                 ));
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(Languages.of(context)!.loginFailed),
+                content: Text(AppLocalizations.of(context)!.loginFailed),
               ),
             );
             return;
@@ -90,11 +90,11 @@ class _LoginPageState extends State<LoginPage> {
         } on PlatformException {
           if (!mounted) return;
           Navigator.of(context).pop();
-          showInfo(context, Languages.of(context)!.corrupted);
+          showInfo(context, AppLocalizations.of(context)!.corrupted);
         } catch (_) {
           if (!mounted) return;
           Navigator.of(context).pop();
-          showInfo(context, Languages.of(context)!.errorContacting);
+          showInfo(context, AppLocalizations.of(context)!.errorContacting);
           goOffline();
         }
       }
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Languages.of(context)!.logIn),
+        title: Text(AppLocalizations.of(context)!.logIn),
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -116,23 +116,23 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  Languages.of(context)!.appName,
+                  AppLocalizations.of(context)!.appName,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 40),
                 ),
                 Text(
-                  Languages.of(context)!.logIn,
+                  AppLocalizations.of(context)!.logIn,
                   textAlign: TextAlign.center,
                 ),
                 PlatformField(
                   controller: userControl,
                   autofillHints: const [AutofillHints.username],
-                  labelText: Languages.of(context)!.username,
+                  labelText: AppLocalizations.of(context)!.username,
                 ),
                 PlatformField(
                   autofillHints: const [AutofillHints.password],
-                  labelText: Languages.of(context)!.password,
+                  labelText: AppLocalizations.of(context)!.password,
                   controller: passControl,
                   obscureText: true,
                 ),
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                   duration: const Duration(milliseconds: 300),
                   child: PlatformField(
                     autofillHints: const [AutofillHints.url],
-                    labelText: Languages.of(context)!.iCanteenUrl,
+                    labelText: AppLocalizations.of(context)!.iCanteenUrl,
                     keyboardType: TextInputType.url,
                     controller: canteenControl,
                   ),
@@ -178,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     },
                   ),
-                  Text(Languages.of(context)!.rememberMe)
+                  Text(AppLocalizations.of(context)!.rememberMe)
                 ]),
                 PlatformButton(
                     onPressed: () async {
@@ -195,7 +195,8 @@ class _LoginPageState extends State<LoginPage> {
                             userControl.text, passControl.text);
                         if (!l) {
                           if (!mounted) return;
-                          showInfo(context, Languages.of(context)!.loginFailed);
+                          showInfo(context,
+                              AppLocalizations.of(context)!.loginFailed);
                           return;
                         }
                         if (rememberMe) {
@@ -227,15 +228,16 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       } on PlatformException {
                         if (!mounted) return;
-                        showInfo(context, Languages.of(context)!.corrupted);
+                        showInfo(
+                            context, AppLocalizations.of(context)!.corrupted);
                       } on Exception catch (_) {
                         if (!mounted) return;
-                        showInfo(
-                            context, Languages.of(context)!.errorContacting);
+                        showInfo(context,
+                            AppLocalizations.of(context)!.errorContacting);
                         //goOffline();
                       }
                     },
-                    text: Languages.of(context)!.logIn),
+                    text: AppLocalizations.of(context)!.logIn),
               ],
             ),
           ),

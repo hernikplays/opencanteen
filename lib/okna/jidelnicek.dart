@@ -14,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MealView extends StatefulWidget {
   const MealView({Key? key, required this.canteen}) : super(key: key);
@@ -44,7 +44,7 @@ class _MealViewState extends State<MealView> {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(Languages.of(context)!.noOrder),
+              content: Text(AppLocalizations.of(context)!.noOrder),
               duration: const Duration(seconds: 5),
               action: SnackBarAction(
                 onPressed: () => setState(
@@ -53,7 +53,7 @@ class _MealViewState extends State<MealView> {
                     loadMeals();
                   },
                 ),
-                label: Languages.of(context)!.jump,
+                label: AppLocalizations.of(context)!.jump,
               ),
             ),
           );
@@ -67,25 +67,25 @@ class _MealViewState extends State<MealView> {
     content = [const CircularProgressIndicator()];
     switch (day.weekday) {
       case 2:
-        dayOWeek = Languages.of(context)!.tuesday;
+        dayOWeek = AppLocalizations.of(context)!.tuesday;
         break;
       case 3:
-        dayOWeek = Languages.of(context)!.wednesday;
+        dayOWeek = AppLocalizations.of(context)!.wednesday;
         break;
       case 4:
-        dayOWeek = Languages.of(context)!.thursday;
+        dayOWeek = AppLocalizations.of(context)!.thursday;
         break;
       case 5:
-        dayOWeek = Languages.of(context)!.friday;
+        dayOWeek = AppLocalizations.of(context)!.friday;
         break;
       case 6:
-        dayOWeek = Languages.of(context)!.saturday;
+        dayOWeek = AppLocalizations.of(context)!.saturday;
         break;
       case 7:
-        dayOWeek = Languages.of(context)!.sunday;
+        dayOWeek = AppLocalizations.of(context)!.sunday;
         break;
       default:
-        dayOWeek = Languages.of(context)!.monday;
+        dayOWeek = AppLocalizations.of(context)!.monday;
     }
     var uzivatel = await widget.canteen.ziskejUzivatele().catchError(
       (o) {
@@ -98,7 +98,7 @@ class _MealViewState extends State<MealView> {
     );
     balance = uzivatel.kredit;
     var jd = await widget.canteen.jidelnicekDen(den: day).catchError((_) {
-      showInfo(context, Languages.of(context)!.errorContacting);
+      showInfo(context, AppLocalizations.of(context)!.errorContacting);
       return Jidelnicek(DateTime.now(), []);
     });
     setState(
@@ -106,7 +106,7 @@ class _MealViewState extends State<MealView> {
         content = [];
         if (jd.jidla.isEmpty) {
           content.add(Text(
-            Languages.of(context)!.noFood,
+            AppLocalizations.of(context)!.noFood,
             style: const TextStyle(fontSize: 15),
           ));
         } else {
@@ -126,7 +126,7 @@ class _MealViewState extends State<MealView> {
                         ),
                       ),
                       Text((j.naBurze)
-                          ? Languages.of(context)!.inExchange
+                          ? AppLocalizations.of(context)!.inExchange
                           : "${j.cena} Kč"),
                       Checkbox(
                         value: j.objednano,
@@ -139,11 +139,13 @@ class _MealViewState extends State<MealView> {
                               context: context,
                               builder: (context) {
                                 return PlatformDialog(
-                                  title: Languages.of(context)!.errorOrdering,
-                                  content: Languages.of(context)!.cannotOrder,
+                                  title: AppLocalizations.of(context)!
+                                      .errorOrdering,
+                                  content:
+                                      AppLocalizations.of(context)!.cannotOrder,
                                   actions: [
                                     PlatformButton(
-                                      text: Languages.of(context)!.ok,
+                                      text: AppLocalizations.of(context)!.ok,
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -165,7 +167,8 @@ class _MealViewState extends State<MealView> {
                                         padding: EdgeInsets.all(10),
                                         child: CircularProgressIndicator(),
                                       ),
-                                      Text(Languages.of(context)!.ordering)
+                                      Text(AppLocalizations.of(context)!
+                                          .ordering)
                                     ],
                                   ),
                                 ),
@@ -181,11 +184,13 @@ class _MealViewState extends State<MealView> {
                                 showDialog(
                                   context: context,
                                   builder: (bc) => PlatformDialog(
-                                    title: Languages.of(context)!.errorOrdering,
+                                    title: AppLocalizations.of(context)!
+                                        .errorOrdering,
                                     content: o.toString(),
                                     actions: [
                                       PlatformButton(
-                                        text: Languages.of(context)!.close,
+                                        text:
+                                            AppLocalizations.of(context)!.close,
                                         onPressed: () {
                                           Navigator.pop(bc);
                                         },
@@ -206,11 +211,11 @@ class _MealViewState extends State<MealView> {
                         context: context,
                         builder: (context) {
                           return PlatformDialog(
-                            title: Languages.of(context)!.errorOrdering,
-                            content: Languages.of(context)!.cannotOrder,
+                            title: AppLocalizations.of(context)!.errorOrdering,
+                            content: AppLocalizations.of(context)!.cannotOrder,
                             actions: [
                               PlatformButton(
-                                text: Languages.of(context)!.ok,
+                                text: AppLocalizations.of(context)!.ok,
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -231,7 +236,7 @@ class _MealViewState extends State<MealView> {
                                 padding: EdgeInsets.all(10),
                                 child: CircularProgressIndicator(),
                               ),
-                              Text(Languages.of(context)!.ordering)
+                              Text(AppLocalizations.of(context)!.ordering)
                             ]),
                           ),
                         ),
@@ -245,11 +250,12 @@ class _MealViewState extends State<MealView> {
                           showDialog(
                             context: context,
                             builder: (bc) => PlatformDialog(
-                              title: Languages.of(context)!.errorOrdering,
+                              title:
+                                  AppLocalizations.of(context)!.errorOrdering,
                               content: o.toString(),
                               actions: [
                                 PlatformButton(
-                                  text: Languages.of(context)!.close,
+                                  text: AppLocalizations.of(context)!.close,
                                   onPressed: () {
                                     Navigator.pop(bc);
                                   },
@@ -268,19 +274,19 @@ class _MealViewState extends State<MealView> {
                       var d = await showDialog(
                         context: context,
                         builder: (bc) => PlatformDialog(
-                          title: Languages.of(context)!.verifyExchange,
+                          title: AppLocalizations.of(context)!.verifyExchange,
                           actions: [
                             PlatformButton(
                               onPressed: () {
                                 Navigator.pop(bc, true);
                               },
-                              text: Languages.of(context)!.yes,
+                              text: AppLocalizations.of(context)!.yes,
                             ),
                             PlatformButton(
                               onPressed: () {
                                 Navigator.pop(bc, false);
                               },
-                              text: Languages.of(context)!.no,
+                              text: AppLocalizations.of(context)!.no,
                             ),
                           ],
                         ),
@@ -293,11 +299,12 @@ class _MealViewState extends State<MealView> {
                           showDialog(
                             context: context,
                             builder: (bc) => PlatformDialog(
-                              title: Languages.of(context)!.exchangeError,
+                              title:
+                                  AppLocalizations.of(context)!.exchangeError,
                               content: o.toString(),
                               actions: [
                                 PlatformButton(
-                                  text: Languages.of(context)!.close,
+                                  text: AppLocalizations.of(context)!.close,
                                   onPressed: () {
                                     Navigator.pop(bc);
                                   },
@@ -323,12 +330,12 @@ class _MealViewState extends State<MealView> {
   }
 
   Future<void> click(String value, BuildContext context) async {
-    if (value == Languages.of(context)!.signOut) {
+    if (value == AppLocalizations.of(context)!.signOut) {
       await showDialog<bool>(
         context: context,
         builder: (c) => PlatformDialog(
-          title: Languages.of(context)!.warning,
-          content: Languages.of(context)!.signOutWarn,
+          title: AppLocalizations.of(context)!.warning,
+          content: AppLocalizations.of(context)!.signOutWarn,
           actions: [
             PlatformButton(
                 onPressed: () {
@@ -339,41 +346,41 @@ class _MealViewState extends State<MealView> {
                       platformRouter((c) => const LoginPage()),
                       (route) => false);
                 },
-                text: Languages.of(context)!.yes),
+                text: AppLocalizations.of(context)!.yes),
             PlatformButton(
               onPressed: () => Navigator.of(context).pop(),
-              text: Languages.of(context)!.no,
+              text: AppLocalizations.of(context)!.no,
             )
           ],
         ),
       );
-    } else if (value == Languages.of(context)!.review) {
+    } else if (value == AppLocalizations.of(context)!.review) {
       launchUrl(
           Uri.parse((Platform.isAndroid)
               ? "market://details?id=cz.hernikplays.opencanteen"
               : "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
           mode: LaunchMode.externalApplication);
-    } else if (value == Languages.of(context)!.reportBugs) {
+    } else if (value == AppLocalizations.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
           mode: LaunchMode.externalApplication);
-    } else if (value == Languages.of(context)!.about) {
+    } else if (value == AppLocalizations.of(context)!.about) {
       var packageInfo = await PackageInfo.fromPlatform();
       if (!mounted) return;
       showAboutDialog(
           context: context,
           applicationName: "OpenCanteen",
           applicationLegalese:
-              "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
+              "${AppLocalizations.of(context)!.copyright}\n${AppLocalizations.of(context)!.license}",
           applicationVersion: packageInfo.version,
           children: [
             PlatformButton(
               onPressed: (() => launchUrl(
                   Uri.parse("https://git.mnau.xyz/hernik/opencanteen"),
                   mode: LaunchMode.externalApplication)),
-              text: Languages.of(context)!.source,
+              text: AppLocalizations.of(context)!.source,
             )
           ]);
-    } else if (value == Languages.of(context)!.settings) {
+    } else if (value == AppLocalizations.of(context)!.settings) {
       Navigator.push(context, platformRouter((c) => const AndroidNastaveni()));
     }
   }
@@ -409,7 +416,7 @@ class _MealViewState extends State<MealView> {
             if (!mounted) return;
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(Languages.of(context)!.errorSaving),
+              content: Text(AppLocalizations.of(context)!.errorSaving),
               duration: const Duration(seconds: 5),
             ));
             break;
@@ -447,17 +454,17 @@ class _MealViewState extends State<MealView> {
     return Scaffold(
       drawer: drawerGenerator(context, widget.canteen, 1),
       appBar: AppBar(
-        title: Text(Languages.of(context)!.menu),
+        title: Text(AppLocalizations.of(context)!.menu),
         actions: [
           PopupMenuButton(
             onSelected: ((String value) => click(value, context)),
             itemBuilder: (BuildContext context) {
               return {
-                Languages.of(context)!.reportBugs,
-                Languages.of(context)!.review,
-                Languages.of(context)!.settings,
-                Languages.of(context)!.about,
-                Languages.of(context)!.signOut
+                AppLocalizations.of(context)!.reportBugs,
+                AppLocalizations.of(context)!.review,
+                AppLocalizations.of(context)!.settings,
+                AppLocalizations.of(context)!.about,
+                AppLocalizations.of(context)!.signOut
               }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
@@ -476,7 +483,7 @@ class _MealViewState extends State<MealView> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text("${Languages.of(context)!.balance}$balance Kč"),
+                Text("${AppLocalizations.of(context)!.balance}$balance Kč"),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -521,7 +528,7 @@ class _MealViewState extends State<MealView> {
                       icon: const Icon(Icons.arrow_right),
                     ),
                     Tooltip(
-                      message: Languages.of(context)!.todayTooltip,
+                      message: AppLocalizations.of(context)!.todayTooltip,
                       child: IconButton(
                         onPressed: () => setState(
                           () {

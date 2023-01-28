@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:opencanteen/lang/lang_cz.dart';
-import 'package:opencanteen/loginmanager.dart';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/util.dart';
@@ -15,9 +13,9 @@ import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-import 'lang/lang.dart';
-import 'lang/lang_en.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'color_schemes.g.dart';
+import 'loginmanager.dart';
 /*
 Copyright (C) 2022  Matyáš Caras a přispěvatelé
 
@@ -45,10 +43,10 @@ void setupNotification(SharedPreferences prefs, tz.Location l) async {
   String locale = Intl.getCurrentLocale();
   switch (locale) {
     case "cs_CZ":
-      title = LanguageCz().lunchNotif;
+      title = "Dnes máte objednáno";
       break;
     default:
-      title = LanguageEn().lunchNotif;
+      title = "Today's ordered meal";
   }
 
   /*if (prefs.getBool("offline") ?? false) {
@@ -130,10 +128,10 @@ class MyApp extends StatelessWidget {
         ? MaterialApp(
             debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
-              AppLocalizationsDelegate(),
+              AppLocalizations.delegate,
               ...GlobalMaterialLocalizations.delegates
             ],
-            supportedLocales: const [Locale("cs", ""), Locale("en", "")],
+            supportedLocales: AppLocalizations.supportedLocales,
             title: "OpenCanteen",
             theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
             darkTheme: ThemeData(
@@ -145,10 +143,10 @@ class MyApp extends StatelessWidget {
         : const CupertinoApp(
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
-              AppLocalizationsDelegate(),
+              AppLocalizations.delegate,
               ...GlobalMaterialLocalizations.delegates
             ],
-            supportedLocales: [Locale("cs", ""), Locale("en", "")],
+            supportedLocales: AppLocalizations.supportedLocales,
             title: "OpenCanteen",
             theme: CupertinoThemeData(
               primaryColor: Colors.purple,
@@ -156,26 +154,4 @@ class MyApp extends StatelessWidget {
             home: LoginPage(),
           );
   }
-}
-
-class AppLocalizationsDelegate extends LocalizationsDelegate<Languages> {
-  const AppLocalizationsDelegate();
-
-  @override
-  bool isSupported(Locale locale) => ['cs', 'en'].contains(locale.languageCode);
-
-  @override
-  Future<Languages> load(Locale locale) => _load(locale);
-
-  static Future<Languages> _load(Locale locale) async {
-    switch (locale.languageCode) {
-      case 'cs':
-        return LanguageCz();
-      default:
-        return LanguageEn();
-    }
-  }
-
-  @override
-  bool shouldReload(LocalizationsDelegate<Languages> old) => false;
 }

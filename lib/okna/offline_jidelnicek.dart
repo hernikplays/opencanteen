@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OfflineMealView extends StatefulWidget {
   const OfflineMealView({Key? key}) : super(key: key);
@@ -56,25 +56,25 @@ class _OfflineMealViewState extends State<OfflineMealView> {
     currentDay = jidelnicek[0].day;
     switch (currentDay.weekday) {
       case 2:
-        dayOWeek = Languages.of(context)!.tuesday;
+        dayOWeek = AppLocalizations.of(context)!.tuesday;
         break;
       case 3:
-        dayOWeek = Languages.of(context)!.wednesday;
+        dayOWeek = AppLocalizations.of(context)!.wednesday;
         break;
       case 4:
-        dayOWeek = Languages.of(context)!.thursday;
+        dayOWeek = AppLocalizations.of(context)!.thursday;
         break;
       case 5:
-        dayOWeek = Languages.of(context)!.friday;
+        dayOWeek = AppLocalizations.of(context)!.friday;
         break;
       case 6:
-        dayOWeek = Languages.of(context)!.saturday;
+        dayOWeek = AppLocalizations.of(context)!.saturday;
         break;
       case 7:
-        dayOWeek = Languages.of(context)!.sunday;
+        dayOWeek = AppLocalizations.of(context)!.sunday;
         break;
       default:
-        dayOWeek = Languages.of(context)!.monday;
+        dayOWeek = AppLocalizations.of(context)!.monday;
     }
     content = [];
     for (OfflineMeal j in jidelnicek) {
@@ -93,7 +93,7 @@ class _OfflineMealViewState extends State<OfflineMealView> {
                   ),
                 ),
                 Text((j.onExchange)
-                    ? Languages.of(context)!.inExchange
+                    ? AppLocalizations.of(context)!.inExchange
                     : "${j.price} Kč"),
                 Checkbox(
                   value: j.ordered,
@@ -112,34 +112,34 @@ class _OfflineMealViewState extends State<OfflineMealView> {
   }
 
   void click(String value, BuildContext context) async {
-    if (value == Languages.of(context)!.signOut) {
+    if (value == AppLocalizations.of(context)!.signOut) {
       const storage = FlutterSecureStorage();
       storage.deleteAll();
       Navigator.pushReplacement(
           context, platformRouter((c) => const LoginPage()));
-    } else if (value == Languages.of(context)!.review) {
+    } else if (value == AppLocalizations.of(context)!.review) {
       launchUrl(
           Uri.parse((Platform.isAndroid)
               ? "market://details?id=cz.hernikplays.opencanteen"
               : "https://apps.apple.com/cz/app/opencanteen/id1621124445"),
           mode: LaunchMode.externalApplication);
-    } else if (value == Languages.of(context)!.reportBugs) {
+    } else if (value == AppLocalizations.of(context)!.reportBugs) {
       launchUrl(Uri.parse("https://forms.gle/jKN7QeFJwpaApSbC8"),
           mode: LaunchMode.externalApplication);
-    } else if (value == Languages.of(context)!.about) {
+    } else if (value == AppLocalizations.of(context)!.about) {
       var packageInfo = await PackageInfo.fromPlatform();
       if (!mounted) return;
       showAboutDialog(
         context: context,
         applicationName: "OpenCanteen",
         applicationLegalese:
-            "${Languages.of(context)!.copyright}\n${Languages.of(context)!.license}",
+            "${AppLocalizations.of(context)!.copyright}\n${AppLocalizations.of(context)!.license}",
         applicationVersion: packageInfo.version,
         children: [
           PlatformButton(
             onPressed: (() => launchUrl(
                 Uri.parse("https://git.mnau.xyz/hernik/opencanteen"))),
-            text: Languages.of(context)!.source,
+            text: AppLocalizations.of(context)!.source,
           )
         ],
       );
@@ -163,17 +163,17 @@ class _OfflineMealViewState extends State<OfflineMealView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Languages.of(context)!.menu),
+        title: Text(AppLocalizations.of(context)!.menu),
         automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton(
             onSelected: ((String value) => click(value, context)),
             itemBuilder: (BuildContext context) {
               return {
-                Languages.of(context)!.reportBugs,
-                Languages.of(context)!.review,
-                Languages.of(context)!.about,
-                Languages.of(context)!.signOut
+                AppLocalizations.of(context)!.reportBugs,
+                AppLocalizations.of(context)!.review,
+                AppLocalizations.of(context)!.about,
+                AppLocalizations.of(context)!.signOut
               }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
@@ -192,10 +192,10 @@ class _OfflineMealViewState extends State<OfflineMealView> {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  Languages.of(context)!.offline,
+                  AppLocalizations.of(context)!.offline,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(Languages.of(context)!.mustLogout),
+                Text(AppLocalizations.of(context)!.mustLogout),
                 const SizedBox(height: 10),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
