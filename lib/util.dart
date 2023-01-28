@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:opencanteen/okna/burza.dart';
 import 'package:opencanteen/okna/jidelnicek.dart';
-import 'lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
   Drawer drawer = const Drawer();
@@ -17,17 +17,17 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
         child: ListView(
           children: [
             DrawerHeader(
-              child: Text(Languages.of(context)!.appName),
+              child: Text(AppLocalizations.of(context)!.appName),
             ),
             ListTile(
               selected: true,
-              title: Text(Languages.of(context)!.home),
+              title: Text(AppLocalizations.of(context)!.home),
               leading: const Icon(Icons.home),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.store),
-              title: Text(Languages.of(context)!.exchange),
+              title: Text(AppLocalizations.of(context)!.exchange),
               onTap: () => Navigator.push(
                 context,
                 platformRouter((context) => BurzaView(canteen: canteen)),
@@ -43,11 +43,11 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
         child: ListView(
           children: [
             DrawerHeader(
-              child: Text(Languages.of(context)!.appName),
+              child: Text(AppLocalizations.of(context)!.appName),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: Text(Languages.of(context)!.home),
+              title: Text(AppLocalizations.of(context)!.home),
               onTap: () => Navigator.push(
                 context,
                 platformRouter((c) => MealView(canteen: canteen)),
@@ -56,7 +56,7 @@ Drawer drawerGenerator(BuildContext context, Canteen canteen, int p) {
             ListTile(
               leading: const Icon(Icons.store),
               selected: true,
-              title: Text(Languages.of(context)!.exchange),
+              title: Text(AppLocalizations.of(context)!.exchange),
               onTap: () => Navigator.pop(context),
             ),
           ],

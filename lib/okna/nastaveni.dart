@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../../lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../loginmanager.dart';
 import '../../main.dart';
 import '../../util.dart';
@@ -74,7 +74,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Languages.of(context)!.settings),
+        title: Text(AppLocalizations.of(context)!.settings),
       ),
       body: Center(
         child: SizedBox(
@@ -84,7 +84,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(Languages.of(context)!.saveOffline),
+                  Text(AppLocalizations.of(context)!.saveOffline),
                   PlatformSwitch(
                     value: _saveOffline,
                     onChanged: (value) {
@@ -100,7 +100,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(Languages.of(context)!.saveCount),
+                  Text(AppLocalizations.of(context)!.saveCount),
                   SizedBox(
                     width: 35,
                     child: PlatformField(
@@ -121,7 +121,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(Languages.of(context)!.skipWeekend),
+                  Text(AppLocalizations.of(context)!.skipWeekend),
                   PlatformSwitch(
                     value: _skipWeekend,
                     onChanged: (value) {
@@ -138,7 +138,8 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(child: Text(Languages.of(context)!.checkOrdered)),
+                  Flexible(
+                      child: Text(AppLocalizations.of(context)!.checkOrdered)),
                   PlatformSwitch(
                     value: _checkWeek,
                     onChanged: (value) {
@@ -155,7 +156,8 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(child: Text(Languages.of(context)!.notifyLunch)),
+                  Flexible(
+                      child: Text(AppLocalizations.of(context)!.notifyLunch)),
                   PlatformSwitch(
                     value: _notifyMeal,
                     thumbColor: (!_remember ? Colors.grey : null),
@@ -164,11 +166,11 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
                         showDialog(
                           context: context,
                           builder: (bc) => PlatformDialog(
-                            title: Languages.of(context)!.error,
-                            content: Languages.of(context)!.needRemember,
+                            title: AppLocalizations.of(context)!.error,
+                            content: AppLocalizations.of(context)!.needRemember,
                             actions: [
                               PlatformButton(
-                                text: Languages.of(context)!.ok,
+                                text: AppLocalizations.of(context)!.ok,
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -183,11 +185,12 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
                             showDialog(
                               context: context,
                               builder: (context) => PlatformDialog(
-                                title: Languages.of(context)!.warning,
-                                content: Languages.of(context)!.notifyWarning,
+                                title: AppLocalizations.of(context)!.warning,
+                                content:
+                                    AppLocalizations.of(context)!.notifyWarning,
                                 actions: [
                                   PlatformButton(
-                                    text: Languages.of(context)!.ok,
+                                    text: AppLocalizations.of(context)!.ok,
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -204,7 +207,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
                   )
                 ],
               ),
-              Text(Languages.of(context)!.notifyAt),
+              Text(AppLocalizations.of(context)!.notifyAt),
               PlatformButton(
                 onPressed: () async {
                   if (_notifyMeal) {
@@ -272,7 +275,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
           await flutterLocalNotificationsPlugin.zonedSchedule(
               // schedules a notification
               0,
-              Languages.of(context)!.lunchNotif,
+              AppLocalizations.of(context)!.lunchNotif,
               "${jidlo.varianta} - ${jidlo.nazev}",
               tz.TZDateTime.from(den, l),
               const NotificationDetails(android: androidSpec),

@@ -5,7 +5,7 @@ import 'package:opencanteen/pw/platformbutton.dart';
 import 'package:opencanteen/pw/platformdialog.dart';
 import 'package:opencanteen/util.dart';
 
-import '../../lang/lang.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BurzaView extends StatefulWidget {
   const BurzaView({Key? key, required this.canteen}) : super(key: key);
@@ -34,10 +34,10 @@ class _BurzaViewState extends State<BurzaView> {
       if (burza.isEmpty) {
         content = [
           Text(
-            Languages.of(context)!.noExchange,
+            AppLocalizations.of(context)!.noExchange,
             style: const TextStyle(fontSize: 20),
           ),
-          Text(Languages.of(context)!.pullToReload)
+          Text(AppLocalizations.of(context)!.pullToReload)
         ];
       } else {
         for (var b in burza) {
@@ -63,11 +63,12 @@ class _BurzaViewState extends State<BurzaView> {
                             showDialog(
                               context: context,
                               builder: (context) => PlatformDialog(
-                                title: Languages.of(context)!.ordered,
-                                content: Languages.of(context)!.orderSuccess,
+                                title: AppLocalizations.of(context)!.ordered,
+                                content:
+                                    AppLocalizations.of(context)!.orderSuccess,
                                 actions: [
                                   PlatformButton(
-                                    text: Languages.of(context)!.ok,
+                                    text: AppLocalizations.of(context)!.ok,
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                   )
@@ -78,11 +79,13 @@ class _BurzaViewState extends State<BurzaView> {
                             showDialog(
                               context: context,
                               builder: (context) => PlatformDialog(
-                                title: Languages.of(context)!.cannotOrder,
-                                content: Languages.of(context)!.errorOrdering,
+                                title:
+                                    AppLocalizations.of(context)!.cannotOrder,
+                                content:
+                                    AppLocalizations.of(context)!.errorOrdering,
                                 actions: [
                                   PlatformButton(
-                                    text: Languages.of(context)!.ok,
+                                    text: AppLocalizations.of(context)!.ok,
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                   )
@@ -94,7 +97,7 @@ class _BurzaViewState extends State<BurzaView> {
                         },
                       );
                     },
-                    text: Languages.of(context)!.order,
+                    text: AppLocalizations.of(context)!.order,
                   ),
                 ],
               ),
@@ -117,7 +120,7 @@ class _BurzaViewState extends State<BurzaView> {
     return Scaffold(
       drawer: drawerGenerator(context, widget.canteen, 3),
       appBar: AppBar(
-        title: Text(Languages.of(context)!.exchange),
+        title: Text(AppLocalizations.of(context)!.exchange),
       ),
       body: RefreshIndicator(
           child: Center(
@@ -126,7 +129,7 @@ class _BurzaViewState extends State<BurzaView> {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  Text("${Languages.of(context)!.balance}$balance Kč"),
+                  Text("${AppLocalizations.of(context)!.balance}$balance Kč"),
                   const SizedBox(height: 10),
                   SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
