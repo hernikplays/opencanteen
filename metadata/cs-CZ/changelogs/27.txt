@@ -1,0 +1,3 @@
+- Aktualizovány knihovny
+- Vylepšen kódový základ
+- Přidána podpora Material 3

@@ -1,3 +1,8 @@
+# 1.7.0
+- Implementovat Material 3 (Android)
+- Upravit chování dle platformy
+- Předělat jazykový systém na ARB
+- Aktualizovat flutter_secure_storage
 # 1.6.1
 - opravit chybu s přidáváním do burzy aktualizací knihovny
 # 1.6.0

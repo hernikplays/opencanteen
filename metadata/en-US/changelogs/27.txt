@@ -1,0 +1,3 @@
+- Updated libraries
+- Polished codebase
+- Added Material 3 support
