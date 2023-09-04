@@ -29,10 +29,19 @@ Jednoduchý návod k použití naleznete [zde](https://github.com/hernikplays/op
 
 ## Přispět
 Přispět na vývoj můžete skrz
-- Liberapay: https://liberapay.com/hernikplays
 - Monero: `49uzFSxAsT92sXUsCEgh11VX7pmNZcoeKi4fEWbLGc2oWGMUVNcDDqGVB97ak96LqEBqsMXLS752bjgyVzbFcVwLNke4pNd`
 - Bitcoin: `3NzqkBZgWgjj1NYj2JwmBBptPWw6wt7dHS`
 - Kód: viz CONTRIBUTING
+
+## Používám GitHub pod protestem
+
+Tento projekt je aktuálně hostován i na GitHubu.  To není ideální; GitHub je uzavřený systém plný obchodních tajemství. Doporučuji přečíst si o kampani
+[Give up GitHub](https://GiveUpGitHub.org) od
+[Software Freedom Conservancy](https://sfconservancy.org) pro pochopení proč GitHub není ideální místo pro FOSS projekty.
+
+Příspěvky do kódu přijímám **pouze** skrz mou Forgejo instanci na adrese https://git.mnau.xyz/hernik/opencanteen
+
+Jakékoli použití kódu pro učení umělých inteligencí, které neumožňuje samotná licence GNU GPL 3.0 či novější, je děláno bez mého souhlasu a vědomí.
 
 ## Licence
 **Copyright (c) 2022 Matyáš Caras a přispěvatelé**

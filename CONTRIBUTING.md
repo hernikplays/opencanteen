@@ -2,6 +2,16 @@
 OpenCanteen je **aplikace** pro přístup do iCanteen. Pokud chcete přispět kód související s komunikací s iCanteen, podívejte se na [canteenlib](https://github.com/hernikplays/canteenlib).
 
 ## Jak přispět do vývoje
+
+### Používám GitHub pod protestem
+
+Tento projekt je aktuálně hostován i na GitHubu.  To není ideální; GitHub je uzavřený systém plný obchodních tajemství. Doporučuji přečíst si o kampani
+[Give up GitHub](https://GiveUpGitHub.org) od
+[Software Freedom Conservancy](https://sfconservancy.org) pro pochopení proč GitHub není ideální místo pro FOSS projekty.
+
+**Příspěvky do kódu přijímám **pouze** skrz mou Forgejo instanci na adrese https://git.mnau.xyz/hernik/opencanteen**
+
+Jakékoli použití kódu pro učení umělých inteligencí, které neumožňuje samotná licence GNU GPL 3.0 či novější, je děláno bez mého souhlasu a vědomí.
 ### Nahlašování chyb
 Prosté vyhledání a nahlášení chyby je asi nejjednodušší a zároveň nejpřínosnější způsob přispívání. Stačí vám běžné zařízení a stažená aplikace, pokud objevíte jakoukoliv chybu nebo nesrovnalost, nahlaste ji v [Issues](https://github.com/hernikplays/opencanteen/issues/new/choose).
 
