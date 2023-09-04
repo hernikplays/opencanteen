@@ -1,3 +1,7 @@
+# 1.8.0
+- aktualizace závislostí
+- předělání nastavení
+- změna nastavení nyní nevyžaduje restart aplikace
 # 1.7.0
 - Implementovat Material 3 (Android)
 - Upravit chování dle platformy

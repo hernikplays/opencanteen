@@ -35,6 +35,7 @@ Copyright (C) 2022  Matyáš Caras a přispěvatelé
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+final settings = SettingsManager();
 
 /// Used to setup notifications about ordered food
 void setupNotification(SharedPreferences prefs, tz.Location l) async {
@@ -104,6 +105,9 @@ void main() async {
   if (prefs.getBool("oznamit") ?? false) {
     setupNotification(prefs, l);
   }
+  settings.checkOrdered = prefs.getBool("tyden") ?? false;
+  settings.saveOffline = prefs.getBool("oznamit") ?? false;
+  settings.skipWeekend = prefs.getBool("skip") ?? false;
 
   // notif library setup
   const AndroidInitializationSettings initializationSettingsAndroid =

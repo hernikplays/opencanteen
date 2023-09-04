@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:opencanteen/main.dart';
 import 'package:opencanteen/okna/login.dart';
 import 'package:opencanteen/okna/nastaveni.dart';
 import 'package:opencanteen/pw/platformbutton.dart';
@@ -28,11 +29,9 @@ class _MealViewState extends State<MealView> {
   DateTime day = DateTime.now();
   String dayOWeek = "";
   double balance = 0.0;
-  bool _skipWeekend = false;
 
   void checkWeek(BuildContext context) async {
-    var prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("tyden") ?? false) {
+    if (settings.checkOrdered) {
       // Check if user has ordered a meal in the next week
       var pristi = day.add(const Duration(days: 6));
       for (var i = 0; i < 5; i++) {
@@ -87,15 +86,16 @@ class _MealViewState extends State<MealView> {
       default:
         dayOWeek = AppLocalizations.of(context)!.monday;
     }
-    var uzivatel = await widget.canteen.ziskejUzivatele().catchError(
-      (o) {
-        if (!widget.canteen.prihlasen) {
-          Navigator.pushReplacement(
-              context, platformRouter((c) => const LoginPage()));
-        }
-        return Uzivatel(kredit: 0);
-      },
-    );
+    Uzivatel uzivatel;
+    try {
+      uzivatel = await widget.canteen.ziskejUzivatele();
+    } catch (e) {
+      if (!widget.canteen.prihlasen) {
+        Navigator.pushReplacement(
+            context, platformRouter((c) => const LoginPage()));
+      }
+      return;
+    }
     balance = uzivatel.kredit;
     var jd = await widget.canteen.jidelnicekDen(den: day).catchError((_) {
       showInfo(context, AppLocalizations.of(context)!.errorContacting);
@@ -386,58 +386,54 @@ class _MealViewState extends State<MealView> {
   }
 
   void loadSettings() async {
-    var prefs = await SharedPreferences.getInstance();
-    _skipWeekend = prefs.getBool("skip") ?? false;
     if (!mounted) return;
     checkWeek(context);
   }
 
   void saveOffline() async {
+    if (!settings.saveOffline) return;
+    // clear offline storage
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    for (var f in appDocDir.listSync()) {
+      if (f.path.contains("jidelnicek")) {
+        f.deleteSync();
+      }
+    }
     var prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("offline") ?? false) {
-      // clear offline storage
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      for (var f in appDocDir.listSync()) {
-        if (f.path.contains("jidelnicek")) {
-          f.deleteSync();
+    // save X meal lists
+    var pocet = prefs.getInt("offline_pocet") ?? 1;
+    if (pocet > 7) pocet = 7;
+    for (var i = 0; i < pocet; i++) {
+      var d = day.add(Duration(days: i));
+      Jidelnicek? j;
+      try {
+        j = await widget.canteen.jidelnicekDen(den: d);
+      } catch (e) {
+        if (!widget.canteen.prihlasen) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorSaving),
+            duration: const Duration(seconds: 5),
+          ));
+          break;
         }
       }
-
-      // save X meal lists
-      var pocet = prefs.getInt("offline_pocet") ?? 1;
-      if (pocet > 7) pocet = 7;
-      for (var i = 0; i < pocet; i++) {
-        var d = day.add(Duration(days: i));
-        Jidelnicek? j;
-        try {
-          j = await widget.canteen.jidelnicekDen(den: d);
-        } catch (e) {
-          if (!widget.canteen.prihlasen) {
-            if (!mounted) return;
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(AppLocalizations.of(context)!.errorSaving),
-              duration: const Duration(seconds: 5),
-            ));
-            break;
-          }
-        }
-        var soubor = File(
-            "${appDocDir.path}/jidelnicek_${d.year}-${d.month}-${d.day}.json");
-        soubor.createSync();
-        var jidla = [];
-        for (var jidlo in j!.jidla) {
-          jidla.add({
-            "nazev": jidlo.nazev,
-            "varianta": jidlo.varianta,
-            "objednano": jidlo.objednano,
-            "cena": jidlo.cena,
-            "naBurze": jidlo.naBurze,
-            "den": d.toString()
-          });
-        }
-        await soubor.writeAsString(json.encode(jidla));
+      var soubor = File(
+          "${appDocDir.path}/jidelnicek_${d.year}-${d.month}-${d.day}.json");
+      soubor.createSync();
+      var jidla = [];
+      for (var jidlo in j!.jidla) {
+        jidla.add({
+          "nazev": jidlo.nazev,
+          "varianta": jidlo.varianta,
+          "objednano": jidlo.objednano,
+          "cena": jidlo.cena,
+          "naBurze": jidlo.naBurze,
+          "den": d.toString()
+        });
       }
+      await soubor.writeAsString(json.encode(jidla));
     }
   }
 
@@ -491,7 +487,7 @@ class _MealViewState extends State<MealView> {
                         onPressed: () {
                           setState(() {
                             day = day.subtract(const Duration(days: 1));
-                            if (day.weekday == 7 && _skipWeekend) {
+                            if (day.weekday == 7 && settings.skipWeekend) {
                               day = day.subtract(const Duration(days: 2));
                             }
                             loadMeals();
@@ -519,7 +515,7 @@ class _MealViewState extends State<MealView> {
                       onPressed: () {
                         setState(() {
                           day = day.add(const Duration(days: 1));
-                          if (day.weekday == 6 && _skipWeekend) {
+                          if (day.weekday == 6 && settings.skipWeekend) {
                             day = day.add(const Duration(days: 2));
                           }
                           loadMeals();
@@ -556,7 +552,7 @@ class _MealViewState extends State<MealView> {
                       if (details.primaryVelocity?.compareTo(0) == -1) {
                         setState(() {
                           day = day.add(const Duration(days: 1));
-                          if (day.weekday == 6 && _skipWeekend) {
+                          if (day.weekday == 6 && settings.skipWeekend) {
                             day = day.add(const Duration(days: 2));
                           }
                           loadMeals();
@@ -565,7 +561,7 @@ class _MealViewState extends State<MealView> {
                         setState(
                           () {
                             day = day.subtract(const Duration(days: 1));
-                            if (day.weekday == 7 && _skipWeekend) {
+                            if (day.weekday == 7 && settings.skipWeekend) {
                               day = day.subtract(const Duration(days: 2));
                             }
                             loadMeals();

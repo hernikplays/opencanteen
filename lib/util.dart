@@ -123,3 +123,9 @@ Route platformRouter(Widget Function(BuildContext context) builder) =>
     (Platform.isAndroid)
         ? MaterialPageRoute(builder: builder)
         : CupertinoPageRoute(builder: builder);
+
+class SettingsManager {
+  bool skipWeekend = false;
+  bool checkOrdered = false;
+  bool saveOffline = false;
+}

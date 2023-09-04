@@ -10,6 +10,7 @@ import 'package:opencanteen/pw/platformdialog.dart';
 import 'package:opencanteen/pw/platformfield.dart';
 import 'package:opencanteen/pw/platformswitch.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -76,167 +77,177 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings),
       ),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width / 1.1,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context)!.saveOffline),
-                  PlatformSwitch(
-                    value: _saveOffline,
-                    onChanged: (value) {
-                      setState(() {
-                        _saveOffline = value;
-                        clear(value);
-                        changeSetting("offline", value);
-                      });
-                    },
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context)!.saveCount),
-                  SizedBox(
-                    width: 35,
-                    child: PlatformField(
-                      controller: _countController,
-                      enabled: _saveOffline,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChanged: (c) {
-                        var cislo = int.tryParse(c);
-                        if (cislo != null) {
-                          preferences!.setInt("offline_pocet", cislo);
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(AppLocalizations.of(context)!.skipWeekend),
-                  PlatformSwitch(
-                    value: _skipWeekend,
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          _skipWeekend = value;
-                          changeSetting("skip", value);
-                        },
-                      );
-                    },
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                      child: Text(AppLocalizations.of(context)!.checkOrdered)),
-                  PlatformSwitch(
-                    value: _checkWeek,
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          _checkWeek = value;
-                          changeSetting("tyden", value);
-                        },
-                      );
-                    },
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                      child: Text(AppLocalizations.of(context)!.notifyLunch)),
-                  PlatformSwitch(
-                    value: _notifyMeal,
-                    thumbColor: (!_remember ? Colors.grey : null),
-                    onChanged: (value) {
-                      if (!_remember) {
-                        showDialog(
-                          context: context,
-                          builder: (bc) => PlatformDialog(
-                            title: AppLocalizations.of(context)!.error,
-                            content: AppLocalizations.of(context)!.needRemember,
-                            actions: [
-                              PlatformButton(
-                                text: AppLocalizations.of(context)!.ok,
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                          ),
-                        );
-                      } else {
-                        setState(() {
-                          _notifyMeal = value;
-                          if (_notifyMeal) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => PlatformDialog(
-                                title: AppLocalizations.of(context)!.warning,
-                                content:
-                                    AppLocalizations.of(context)!.notifyWarning,
-                                actions: [
-                                  PlatformButton(
-                                    text: AppLocalizations.of(context)!.ok,
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              ),
-                            );
-                            createNotif(timeToDate(_notifTime));
-                          }
-                          changeSetting("oznamit", value);
-                        });
-                      }
-                    },
-                  )
-                ],
-              ),
-              Text(AppLocalizations.of(context)!.notifyAt),
-              PlatformButton(
-                onPressed: () async {
-                  if (_notifyMeal) {
-                    var cas = await showTimePicker(
-                        context: context, initialTime: _notifTime);
-                    if (cas != null) {
-                      var prefs = await SharedPreferences.getInstance();
-                      prefs.setString(
-                          "oznameni_cas",
-                          timeToDate(cas)
-                              .toString()); // aktualizovat vybraný čas
-                      var den = timeToDate(cas);
-                      debugPrint(den.isAfter(DateTime.now()).toString());
-                      if (den.isAfter(DateTime.now())) {
-                        // znovu vytvořit oznámení POUZE když je čas v budoucnosti
-                        createNotif(den);
-                      }
-                    }
-                    setState(() {
-                      _notifTime = cas ?? _notifTime;
-                    });
-                  }
+      body: SettingsList(
+        platform: DevicePlatform.device,
+        sections: [
+          SettingsSection(
+            tiles: [
+              SettingsTile.switchTile(
+                initialValue: _saveOffline,
+                onToggle: (value) {
+                  _saveOffline = value;
+                  settings.saveOffline = value;
+                  changeSetting("offline", value);
+                  setState(() {});
                 },
-                text:
-                    "${(_notifTime.hour < 10 ? "0" : "") + _notifTime.hour.toString()}:${(_notifTime.minute < 10 ? "0" : "") + _notifTime.minute.toString()}",
+                title: Text(AppLocalizations.of(context)!.saveOffline),
+              ),
+              CustomSettingsTile(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.76,
+                      child: Text(
+                        AppLocalizations.of(context)!.saveCount,
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: (Platform.isAndroid) ? 18 : 17,
+                          fontWeight:
+                              (Platform.isAndroid) ? FontWeight.w400 : null,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 35,
+                      child: PlatformField(
+                        controller: _countController,
+                        enabled: _saveOffline,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (c) {
+                          var cislo = int.tryParse(c);
+                          if (cislo != null) {
+                            preferences!.setInt("offline_pocet", cislo);
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SettingsTile.switchTile(
+                initialValue: _skipWeekend,
+                onToggle: (value) {
+                  _skipWeekend = value;
+                  settings.skipWeekend = value;
+                  changeSetting("skip", value);
+                  setState(() {});
+                },
+                title: Text(AppLocalizations.of(context)!.skipWeekend),
+              ),
+              SettingsTile.switchTile(
+                initialValue: _checkWeek,
+                onToggle: (value) {
+                  _checkWeek = value;
+                  settings.checkOrdered = value;
+                  changeSetting("tyden", value);
+                  setState(() {});
+                },
+                title: Text(AppLocalizations.of(context)!.checkOrdered),
               ),
             ],
+            title: Text(AppLocalizations.of(context)!.settingsExperience),
           ),
-        ),
+          SettingsSection(
+            tiles: [
+              SettingsTile.switchTile(
+                initialValue: _notifyMeal,
+                enabled: _remember,
+                onToggle: (value) {
+                  if (!_remember) {
+                    showDialog(
+                      context: context,
+                      builder: (bc) => PlatformDialog(
+                        title: AppLocalizations.of(context)!.error,
+                        content: AppLocalizations.of(context)!.needRemember,
+                        actions: [
+                          PlatformButton(
+                            text: AppLocalizations.of(context)!.ok,
+                            onPressed: () {
+                              Navigator.of(bc).pop();
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  } else {
+                    _notifyMeal = value;
+                    if (_notifyMeal) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => PlatformDialog(
+                          title: AppLocalizations.of(context)!.warning,
+                          content: AppLocalizations.of(context)!.notifyWarning,
+                          actions: [
+                            PlatformButton(
+                              text: AppLocalizations.of(context)!.ok,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                      createNotif(timeToDate(_notifTime));
+                    }
+                    changeSetting("oznamit", value);
+                    setState(() {});
+                  }
+                },
+                title: Text(
+                  AppLocalizations.of(context)!.notifyLunch,
+                ),
+              ),
+              CustomSettingsTile(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.notifyAt,
+                      style: TextStyle(
+                        fontSize: (Platform.isAndroid) ? 18 : 17,
+                        fontWeight:
+                            (Platform.isAndroid) ? FontWeight.w400 : null,
+                      ),
+                    ),
+                    PlatformButton(
+                      textStyle:
+                          TextStyle(fontSize: (Platform.isAndroid ? 18 : 17)),
+                      text: _notifTime.format(context),
+                      onPressed: () async {
+                        if (!_notifyMeal) return;
+                        var cas = await showTimePicker(
+                            context: context, initialTime: _notifTime);
+                        if (cas == null) return;
+                        var prefs = await SharedPreferences.getInstance();
+                        prefs.setString(
+                            "oznameni_cas",
+                            timeToDate(cas)
+                                .toString()); // aktualizovat vybraný čas
+                        var den = timeToDate(cas);
+                        debugPrint(den.isAfter(DateTime.now()).toString());
+                        if (den.isAfter(DateTime.now())) {
+                          // znovu vytvořit oznámení POUZE když je čas v budoucnosti
+                          createNotif(den);
+                        }
+
+                        _notifTime = cas;
+                        setState(() {});
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
+            title: Text(AppLocalizations.of(context)!.settingsFunctions),
+          )
+        ],
       ),
     );
   }
