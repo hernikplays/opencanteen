@@ -1,8 +1,0 @@
-'pr: pubspec':
-- pubspec.yaml
-
-'pr: funkce':
-- lib/*
-
-'pr: okno':
-- lib/okna/*
