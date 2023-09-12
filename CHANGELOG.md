@@ -1,3 +1,6 @@
+# 1.9.0
+- Opravit vzhled na iOS
+- Opravit chybu s burzou (update canteenlib)
 # 1.8.1
 - aktualizace závislostí
 # 1.8.0
