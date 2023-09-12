@@ -130,9 +130,16 @@ class _MealViewState extends State<MealView> {
                           : "${j.cena} Kč"),
                       Checkbox(
                         value: j.objednano,
-                        fillColor: (j.lzeObjednat)
+                        side: BorderSide(
+                            width: 2,
+                            color: (j.lzeObjednat)
+                                ? (Colors.purple)
+                                : (Colors.grey)),
+                        fillColor: (j.lzeObjednat && j.objednano)
                             ? MaterialStateProperty.all(Colors.purple)
-                            : MaterialStateProperty.all(Colors.grey),
+                            : (j.objednano)
+                                ? MaterialStateProperty.all(Colors.grey)
+                                : MaterialStateProperty.all(Colors.transparent),
                         onChanged: (v) async {
                           if (!j.lzeObjednat) {
                             showDialog(
@@ -475,7 +482,7 @@ class _MealViewState extends State<MealView> {
         onRefresh: loadMeals,
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width - 50,
+            width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
                 const SizedBox(height: 10),
@@ -541,6 +548,7 @@ class _MealViewState extends State<MealView> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: GestureDetector(
                     child: Container(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
                       color: Theme.of(context)
                           .colorScheme
                           .onPrimary

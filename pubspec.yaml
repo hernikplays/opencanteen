@@ -12,7 +12,7 @@ environment:
   sdk: ">=2.18.2 <3.0.0"
 
 dependencies:
-  canteenlib: ^1.1.2
+  canteenlib: ^1.1.4
   flutter:
     sdk: flutter
   flutter_local_notifications: ^12.0.3+1

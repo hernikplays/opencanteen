@@ -144,18 +144,26 @@ class MyApp extends StatelessWidget {
                 colorScheme: darkColorScheme),
             home: const LoginPage(),
           )
-        : const CupertinoApp(
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
-              AppLocalizations.delegate,
-              ...GlobalMaterialLocalizations.delegates
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            title: "OpenCanteen",
-            theme: CupertinoThemeData(
-              primaryColor: Colors.purple,
+        : Theme(
+            data: ThemeData(
+                useMaterial3: true,
+                colorScheme: (MediaQuery.of(context).platformBrightness ==
+                        Brightness.dark)
+                    ? darkColorScheme
+                    : lightColorScheme),
+            child: const CupertinoApp(
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                ...GlobalMaterialLocalizations.delegates
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              title: "OpenCanteen",
+              theme: CupertinoThemeData(
+                primaryColor: Colors.purple,
+              ),
+              home: LoginPage(),
             ),
-            home: LoginPage(),
           );
   }
 }
