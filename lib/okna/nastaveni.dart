@@ -8,7 +8,6 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:opencanteen/pw/platformbutton.dart';
 import 'package:opencanteen/pw/platformdialog.dart';
 import 'package:opencanteen/pw/platformfield.dart';
-import 'package:opencanteen/pw/platformswitch.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
