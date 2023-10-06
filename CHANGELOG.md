@@ -1,3 +1,5 @@
+# 1.9.1
+- Opravit chybu s propisováním HTML do názvu obědů
 # 1.9.0
 - Opravit vzhled na iOS
 - Opravit chybu s burzou (update canteenlib)
