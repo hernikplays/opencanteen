@@ -5,7 +5,7 @@ import 'package:opencanteen/pw/platformwidget.dart';
 
 class PlatformField extends PlatformWidget<TextField, CupertinoTextField> {
   final TextEditingController? controller;
-  final bool? enabled;
+  final bool enabled;
   final bool obscureText;
   final String? labelText;
   final bool autocorrect;
@@ -16,13 +16,13 @@ class PlatformField extends PlatformWidget<TextField, CupertinoTextField> {
   const PlatformField({
     super.key,
     this.controller,
-    this.enabled,
     this.labelText,
     this.obscureText = false,
     this.autocorrect = false,
     this.keyboardType,
     this.inputFormatters = const [],
     this.onChanged,
+    this.enabled = true,
     this.autofillHints,
   });
 

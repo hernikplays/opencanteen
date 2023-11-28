@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OfflineMealView extends StatefulWidget {
-  const OfflineMealView({Key? key}) : super(key: key);
+  const OfflineMealView({super.key});
   @override
   State<OfflineMealView> createState() => _OfflineMealViewState();
 }

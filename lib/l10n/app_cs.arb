@@ -78,5 +78,6 @@
     "errorSaving": "Při ukládání offline nastala chyba, zkuste to znovu později.",
     "todayTooltip": "Přejít na dnešní jídelníček",
     "settingsExperience":"Zážitek",
-    "settingsFunctions":"Extra funkce"
+    "settingsFunctions":"Extra funkce",
+    "showAllergens":"Zobrazovat alergeny, jsou-li dostupné"
 }

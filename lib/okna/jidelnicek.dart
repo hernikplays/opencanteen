@@ -18,7 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MealView extends StatefulWidget {
-  const MealView({Key? key, required this.canteen}) : super(key: key);
+  const MealView({super.key, required this.canteen});
   final Canteen canteen;
   @override
   State<MealView> createState() => _MealViewState();
@@ -90,7 +90,7 @@ class _MealViewState extends State<MealView> {
     try {
       uzivatel = await widget.canteen.ziskejUzivatele();
     } catch (e) {
-      if (!widget.canteen.prihlasen) {
+      if (!widget.canteen.prihlasen && mounted) {
         Navigator.pushReplacement(
             context, platformRouter((c) => const LoginPage()));
       }
@@ -122,7 +122,9 @@ class _MealViewState extends State<MealView> {
                       const SizedBox(width: 10),
                       Flexible(
                         child: Text(
-                          j.nazev,
+                          (settings.allergens && j.alergeny.isNotEmpty)
+                              ? "${j.nazev} (${j.alergeny.map<String>((e) => (e.kod != null) ? e.kod.toString() : e.nazev).join(', ')})"
+                              : j.nazev,
                         ),
                       ),
                       Text((j.naBurze)

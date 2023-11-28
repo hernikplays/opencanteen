@@ -8,7 +8,7 @@ import 'package:opencanteen/util.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BurzaView extends StatefulWidget {
-  const BurzaView({Key? key, required this.canteen}) : super(key: key);
+  const BurzaView({super.key, required this.canteen});
   final Canteen canteen;
   @override
   State<BurzaView> createState() => _BurzaViewState();

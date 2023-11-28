@@ -84,7 +84,7 @@ void setupNotification(SharedPreferences prefs, tz.Location l) async {
             "${jidlo.varianta} - ${jidlo.nazev}",
             tz.TZDateTime.from(cas, l),
             const NotificationDetails(android: androidSpec),
-            androidAllowWhileIdle: true,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime);
       } on StateError catch (_) {
@@ -108,6 +108,7 @@ void main() async {
   settings.checkOrdered = prefs.getBool("tyden") ?? false;
   settings.saveOffline = prefs.getBool("oznamit") ?? false;
   settings.skipWeekend = prefs.getBool("skip") ?? false;
+  settings.allergens = prefs.getBool("allergens") ?? false;
 
   // notif library setup
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -123,7 +124,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

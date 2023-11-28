@@ -78,5 +78,6 @@
     "errorSaving": "An error occured while trying to save menu offline, try again later.",
     "todayTooltip": "Go to today's meal",
     "settingsExperience":"App Experience",
-    "settingsFunctions":"Extra Functions"
+    "settingsFunctions":"Extra Functions",
+    "showAllergens":"Show allergens, if available"
 }

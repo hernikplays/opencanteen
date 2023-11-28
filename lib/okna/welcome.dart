@@ -7,7 +7,7 @@ import 'package:opencanteen/okna/jidelnicek.dart';
 import 'package:opencanteen/util.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key, required this.canteen}) : super(key: key);
+  const WelcomePage({super.key, required this.canteen});
 
   final Canteen canteen;
 

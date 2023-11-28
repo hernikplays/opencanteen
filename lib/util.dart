@@ -128,4 +128,5 @@ class SettingsManager {
   bool skipWeekend = false;
   bool checkOrdered = false;
   bool saveOffline = false;
+  bool allergens = false;
 }
