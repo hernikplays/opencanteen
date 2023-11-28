@@ -23,7 +23,7 @@ dependencies:
   fluttertoast: ^8.1.2
   intl: ^0.18.0
   introduction_screen: ^3.0.1
-  package_info_plus: ^4.1.0
+  package_info_plus: ^5.0.0
   path_provider: ^2.0.9
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.13
