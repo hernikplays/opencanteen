@@ -1,3 +1,9 @@
+# 1.10.0
+- Aktualizovat závislosti
+- Změnit minSdk na 21
+- Přidat možnost zobrazit alergeny
+- Změnit fungování oznámení s aktualizací knihovny
+- Žádost o oprávnění k posílání oznámení by se mělo posílat už jen v případě, že uživatel bude chtít používat funkci oznámení
 # 1.9.1
 - Opravit chybu s propisováním HTML do názvu obědů
 # 1.9.0

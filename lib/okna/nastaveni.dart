@@ -19,7 +19,7 @@ import '../../main.dart';
 import '../../util.dart';
 
 class AndroidNastaveni extends StatefulWidget {
-  const AndroidNastaveni({Key? key}) : super(key: key);
+  const AndroidNastaveni({super.key});
 
   @override
   State<AndroidNastaveni> createState() => _AndroidNastaveniState();
@@ -31,6 +31,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
   bool _checkWeek = false;
   bool _notifyMeal = false;
   bool _remember = false;
+  bool _allergens = false;
   TimeOfDay _notifTime = TimeOfDay.now();
   final TextEditingController _countController =
       TextEditingController(text: "1");
@@ -81,6 +82,16 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
         sections: [
           SettingsSection(
             tiles: [
+              SettingsTile.switchTile(
+                initialValue: _allergens,
+                onToggle: (value) {
+                  _allergens = value;
+                  settings.allergens = value;
+                  changeSetting("allergens", _allergens);
+                  setState(() {});
+                },
+                title: Text(AppLocalizations.of(context)!.showAllergens),
+              ),
               SettingsTile.switchTile(
                 initialValue: _saveOffline,
                 onToggle: (value) {
@@ -281,6 +292,19 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
                   ticker: 'today meal');
           var l =
               tz.getLocation(await FlutterNativeTimezone.getLocalTimezone());
+          var notifGranted = await flutterLocalNotificationsPlugin
+                  .resolvePlatformSpecificImplementation<
+                      AndroidFlutterLocalNotificationsPlugin>()
+                  ?.requestNotificationsPermission() ??
+              true; // request android notification access
+
+          var granted = await flutterLocalNotificationsPlugin
+                  .resolvePlatformSpecificImplementation<
+                      AndroidFlutterLocalNotificationsPlugin>()
+                  ?.requestExactAlarmsPermission() ??
+              true; // request android exact alarm permission
+
+          if (!granted || !notifGranted) return;
           if (!mounted) return;
           await flutterLocalNotificationsPlugin.zonedSchedule(
               // schedules a notification
@@ -289,7 +313,7 @@ class _AndroidNastaveniState extends State<AndroidNastaveni> {
               "${jidlo.varianta} - ${jidlo.nazev}",
               tz.TZDateTime.from(den, l),
               const NotificationDetails(android: androidSpec),
-              androidAllowWhileIdle: true,
+              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
               uiLocalNotificationDateInterpretation:
                   UILocalNotificationDateInterpretation.absoluteTime);
         } on StateError catch (_) {

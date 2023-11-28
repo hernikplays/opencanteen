@@ -1,7 +1,6 @@
 import 'package:canteenlib/canteenlib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:opencanteen/okna/welcome.dart';
 import 'package:opencanteen/pw/platformbutton.dart';
@@ -9,14 +8,13 @@ import 'package:opencanteen/pw/platformfield.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../loginmanager.dart';
-import '../../main.dart';
 import '../../util.dart';
 import '../pw/platformswitch.dart';
 import 'jidelnicek.dart';
 import 'offline_jidelnicek.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -33,12 +31,6 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     LoginManager.getDetails().then((r) async {
-      // request android notification access
-      flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestPermission();
-
       if (r != null) {
         // Autologin
         showDialog(
