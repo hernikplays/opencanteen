@@ -15,7 +15,7 @@ dependencies:
   canteenlib: ^3.0.0
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^16.0.0
+  flutter_local_notifications: ^17.0.0
   flutter_localizations:
     sdk: flutter
   flutter_native_timezone: ^2.0.0
